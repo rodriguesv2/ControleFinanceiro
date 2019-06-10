@@ -1,4 +1,4 @@
-package br.com.rubensrodrigues.controlefinanceiro.recyclerview.adapter
+package br.com.rubensrodrigues.controlefinanceiro.ui.recyclerview.adapter
 
 import android.content.Context
 import android.support.constraint.ConstraintSet
