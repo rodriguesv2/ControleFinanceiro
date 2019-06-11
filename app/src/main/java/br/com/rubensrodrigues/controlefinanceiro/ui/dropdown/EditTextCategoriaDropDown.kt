@@ -7,47 +7,51 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.ListPopupWindow
 
-class EditTextCategoriaDropDown{
+object EditTextCategoriaDropDown{
 
-    private lateinit var context: Context
-    private lateinit var campoCategoria: TextInputEditText
-    private lateinit var listaCategoria: Array<String>
+    fun injetaDropdown(context: Context,
+                       campoCategoria: TextInputEditText,
+                       listaCategoria: Array<String>,
+                       posicaoInicial: Int = 0) {
 
-    fun injetaDropdown(context: Context, campoCategoria: TextInputEditText, listaCategoria: Array<String>) {
-        this.context = context
-        this.campoCategoria = campoCategoria
-        this.listaCategoria = listaCategoria
-
-        this.campoCategoria.setText(this.listaCategoria[0])
-        configuraDropDownCategoria()
+        campoCategoria.setText(listaCategoria[posicaoInicial])
+        configuraDropDownCategoria(context, campoCategoria, listaCategoria)
     }
 
-    private fun configuraDropDownCategoria() {
+    private fun configuraDropDownCategoria(context: Context,
+                                           campoCategoria: TextInputEditText,
+                                           listaCategoria: Array<String>) {
         val popupListaCategoria = ListPopupWindow(context)
 
-        configuraAdapterEAncora(popupListaCategoria)
-        abrirListaPopUp(popupListaCategoria)
-        selecionaItemDaLista(popupListaCategoria)
+        configuraAdapterEAncora(context, popupListaCategoria, listaCategoria, campoCategoria)
+        abrirListaPopUp(popupListaCategoria, campoCategoria)
+        selecionaItemDaLista(popupListaCategoria, campoCategoria, listaCategoria)
     }
 
-    private fun configuraAdapterEAncora(popupListaCategoria: ListPopupWindow) {
+    private fun configuraAdapterEAncora(context: Context,
+                                        popupListaCategoria: ListPopupWindow,
+                                        listaCategoria: Array<String>,
+                                        campoCategoria: TextInputEditText) {
         popupListaCategoria.setAdapter(ArrayAdapter<String>(context, android.R.layout.simple_list_item_1, listaCategoria))
         popupListaCategoria.anchorView = campoCategoria
         popupListaCategoria.isModal = false
     }
 
-    private fun selecionaItemDaLista(popupListaCategoria: ListPopupWindow) {
+    private fun abrirListaPopUp(popupListaCategoria: ListPopupWindow, campoCategoria: TextInputEditText) {
+        campoCategoria.setOnClickListener {
+            popupListaCategoria.show()
+        }
+    }
+
+    private fun selecionaItemDaLista(popupListaCategoria: ListPopupWindow,
+                                     campoCategoria: TextInputEditText,
+                                     listaCategoria: Array<String>) {
+
         popupListaCategoria.setOnItemClickListener(object : AdapterView.OnItemClickListener {
             override fun onItemClick(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                 campoCategoria.setText(listaCategoria[position])
                 popupListaCategoria.dismiss()
             }
         })
-    }
-
-    private fun abrirListaPopUp(popupListaCategoria: ListPopupWindow) {
-        campoCategoria.setOnClickListener {
-            popupListaCategoria.show()
-        }
     }
 }

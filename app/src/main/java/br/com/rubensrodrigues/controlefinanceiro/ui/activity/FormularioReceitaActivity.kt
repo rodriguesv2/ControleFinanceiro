@@ -18,7 +18,9 @@ import br.com.rubensrodrigues.controlefinanceiro.extensions.toCalendar
 import br.com.rubensrodrigues.controlefinanceiro.model.Tipo
 import br.com.rubensrodrigues.controlefinanceiro.model.TipoSaldo
 import br.com.rubensrodrigues.controlefinanceiro.model.Transacao
+import br.com.rubensrodrigues.controlefinanceiro.ui.dialog.DateDialog
 import br.com.rubensrodrigues.controlefinanceiro.ui.dropdown.EditTextCategoriaDropDown
+import br.com.rubensrodrigues.controlefinanceiro.util.DateUtil
 import kotlinx.android.synthetic.main.activity_formulario_receita.*
 import java.math.BigDecimal
 import java.util.*
@@ -28,7 +30,7 @@ class FormularioReceitaActivity : AppCompatActivity() {
     private val campoTitulo by lazy {formulario_receita_titulo_edittext}
     private val campoCategoria by lazy {formulario_receita_categoria_edittext}
     private val campoValor by lazy {formulario_receita_valor_edittext}
-    private val campoData by lazy {setaDataAtual()}
+    private val campoData by lazy {formulario_receita_data_edittext}
     private val barra by lazy {formulario_receita_proporcao_barra}
     private val labelValorSuperfluo by lazy {formulario_receita_superfluo_valor}
     private val labelValorImportante by lazy {formulario_receita_importante_valor}
@@ -42,16 +44,24 @@ class FormularioReceitaActivity : AppCompatActivity() {
 
         setTitle("Adicionar Receita")
 
-        EditTextCategoriaDropDown()
-            .injetaDropdown(this,
-                campoCategoria,
-                resources.getStringArray(R.array.receita))
-        configuraCliqueCampoData()
-        configuraCampoValor()
+        injetaDropdownCampoCategoria()
 
+        DateUtil.setaDataAtualNoCampoData(campoData)
+        DateDialog.configuraCliqueCampoData(this, campoData)
+
+        configuraCampoValor()
         desabilitaSeekBarSeCampoValorVazio()
 
         configuraCliqueBotaoSalvar()
+    }
+
+    private fun injetaDropdownCampoCategoria() {
+        EditTextCategoriaDropDown
+            .injetaDropdown(
+                this,
+                campoCategoria,
+                resources.getStringArray(R.array.receita)
+            )
     }
 
     private fun configuraCliqueBotaoSalvar() {
@@ -90,13 +100,6 @@ class FormularioReceitaActivity : AppCompatActivity() {
                 insere(transacaoImportante)
             }
         }
-    }
-
-    private fun setaDataAtual(): TextInputEditText {
-        val campoData = formulario_receita_data_edittext
-        val hoje = Calendar.getInstance()
-        campoData.setText(hoje.formatoBrasileiro())
-        return campoData
     }
 
     private fun desabilitaSeekBarSeCampoValorVazio() {
@@ -165,26 +168,5 @@ class FormularioReceitaActivity : AppCompatActivity() {
 
         labelValorSuperfluo.text = "R$ ${valorCalculadoSuperfluo.duasCasasVirgula()}"
         labelValorImportante.text = "R$ ${valorCalculadoImportante.duasCasasVirgula()}"
-    }
-
-    private fun configuraCliqueCampoData() {
-        campoData.setOnClickListener {
-
-            val diaSelecionado = campoData.text.toString().toCalendar()
-
-            DatePickerDialog(
-                this, object : DatePickerDialog.OnDateSetListener {
-                    override fun onDateSet(view: DatePicker?, year: Int, month: Int, dayOfMonth: Int) {
-                        val dataSeleciona = Calendar.getInstance()
-                        dataSeleciona.set(year, month, dayOfMonth)
-
-                        campoData.setText(dataSeleciona.formatoBrasileiro())
-                    }
-                },
-                diaSelecionado.get(Calendar.YEAR),
-                diaSelecionado.get(Calendar.MONTH),
-                diaSelecionado.get(Calendar.DAY_OF_MONTH)
-            ).show()
-        }
     }
 }
