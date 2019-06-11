@@ -1,4 +1,4 @@
-package br.com.rubensrodrigues.controlefinanceiro.ui
+package br.com.rubensrodrigues.controlefinanceiro.ui.activity
 
 import android.content.Intent
 import android.os.Bundle
@@ -21,6 +21,7 @@ class MainActivity : AppCompatActivity() {
     private val campoValorImportante by lazy {main_container_info_importante_valor}
     private val campoValorSuperpluo by lazy {main_container_info_supérfluo_valor}
     private val fabReceita by lazy {main_fab_receita}
+    private val fabDespesa by lazy {main_fab_despesa}
     private val fabMenu by lazy {main_fab_menu}
 
 
@@ -35,6 +36,14 @@ class MainActivity : AppCompatActivity() {
             override fun onClick(v: View?) {
                 fabMenu.close(true)
                 val intent = Intent(this@MainActivity, FormularioReceitaActivity::class.java)
+                startActivity(intent)
+            }
+        })
+
+        fabDespesa.setOnClickListener(object : View.OnClickListener{
+            override fun onClick(v: View?) {
+                fabMenu.close(true)
+                val intent = Intent(this@MainActivity, FormularioDespesaActivity::class.java)
                 startActivity(intent)
             }
         })

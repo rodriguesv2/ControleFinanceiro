@@ -1,4 +1,4 @@
-package br.com.rubensrodrigues.controlefinanceiro.ui
+package br.com.rubensrodrigues.controlefinanceiro.ui.activity
 
 import android.app.DatePickerDialog
 import android.os.Bundle
@@ -18,6 +18,7 @@ import br.com.rubensrodrigues.controlefinanceiro.extensions.toCalendar
 import br.com.rubensrodrigues.controlefinanceiro.model.Tipo
 import br.com.rubensrodrigues.controlefinanceiro.model.TipoSaldo
 import br.com.rubensrodrigues.controlefinanceiro.model.Transacao
+import br.com.rubensrodrigues.controlefinanceiro.ui.dropdown.EditTextCategoriaDropDown
 import kotlinx.android.synthetic.main.activity_formulario_receita.*
 import java.math.BigDecimal
 import java.util.*
@@ -39,13 +40,22 @@ class FormularioReceitaActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_formulario_receita)
 
-        configuraCampoCategoria()
+        setTitle("Adicionar Receita")
+
+        EditTextCategoriaDropDown()
+            .injetaDropdown(this,
+                campoCategoria,
+                resources.getStringArray(R.array.receita))
         configuraCliqueCampoData()
         configuraCampoValor()
 
         desabilitaSeekBarSeCampoValorVazio()
 
-        botaoSalvar.setOnClickListener(object : View.OnClickListener{
+        configuraCliqueBotaoSalvar()
+    }
+
+    private fun configuraCliqueBotaoSalvar() {
+        botaoSalvar.setOnClickListener(object : View.OnClickListener {
             override fun onClick(v: View?) {
                 val titulo = campoTitulo.text.toString()
                 val categoria = campoCategoria.text.toString()
@@ -53,23 +63,33 @@ class FormularioReceitaActivity : AppCompatActivity() {
                 val valorSuperfluo = labelValorSuperfluo.text.converterReaisParaBigDecimal()
                 val valorImportante = labelValorImportante.text.converterReaisParaBigDecimal()
 
-                val transacaoSuperfluo = Transacao(valorSuperfluo, Tipo.RECEITA, titulo, categoria, TipoSaldo.SUPERFLUO, data)
-                val transacaoImportante = Transacao(valorImportante, Tipo.RECEITA, titulo, categoria, TipoSaldo.IMPORTANTE, data)
+                val transacaoSuperfluo =
+                    Transacao(valorSuperfluo, Tipo.RECEITA, titulo, categoria, TipoSaldo.SUPERFLUO, data)
+                val transacaoImportante =
+                    Transacao(valorImportante, Tipo.RECEITA, titulo, categoria, TipoSaldo.IMPORTANTE, data)
 
-                with(dao) {
-                    if (valorSuperfluo.compareTo(BigDecimal.ZERO) == 0) {
-                        insere(transacaoImportante)
-                    } else if (valorImportante.compareTo(BigDecimal.ZERO) == 0) {
-                        insere(transacaoSuperfluo)
-                    } else {
-                        insere(transacaoSuperfluo)
-                        insere(transacaoImportante)
-                    }
-                }
-
+                salvaTransacoes(valorSuperfluo, transacaoImportante, valorImportante, transacaoSuperfluo)
                 finish()
             }
         })
+    }
+
+    private fun salvaTransacoes(
+        valorSuperfluo: BigDecimal,
+        transacaoImportante: Transacao,
+        valorImportante: BigDecimal,
+        transacaoSuperfluo: Transacao
+    ) {
+        with(dao) {
+            if (valorSuperfluo.compareTo(BigDecimal.ZERO) == 0) {
+                insere(transacaoImportante)
+            } else if (valorImportante.compareTo(BigDecimal.ZERO) == 0) {
+                insere(transacaoSuperfluo)
+            } else {
+                insere(transacaoSuperfluo)
+                insere(transacaoImportante)
+            }
+        }
     }
 
     private fun setaDataAtual(): TextInputEditText {
@@ -165,47 +185,6 @@ class FormularioReceitaActivity : AppCompatActivity() {
                 diaSelecionado.get(Calendar.MONTH),
                 diaSelecionado.get(Calendar.DAY_OF_MONTH)
             ).show()
-        }
-    }
-
-    private fun configuraCampoCategoria() {
-        campoCategoria.setText(resources.getStringArray(R.array.receita)[0])
-        configuraDropDownCategoria()
-    }
-
-    private fun configuraDropDownCategoria() {
-        val arrayReceita = resources.getStringArray(R.array.receita)
-        val popupListaCategoria = ListPopupWindow(this)
-
-        configuraAdapterEAncora(popupListaCategoria, arrayReceita)
-        abrirListaPopUp(popupListaCategoria)
-        selecionaItemDaLista(popupListaCategoria, arrayReceita)
-    }
-
-    private fun configuraAdapterEAncora(
-        popupListaCategoria: ListPopupWindow,
-        arrayReceita: Array<out String>
-    ) {
-        popupListaCategoria.setAdapter(ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, arrayReceita))
-        popupListaCategoria.anchorView = campoCategoria
-        popupListaCategoria.isModal = false
-    }
-
-    private fun selecionaItemDaLista(
-        popupListaCategoria: ListPopupWindow,
-        arrayReceita: Array<String>
-    ) {
-        popupListaCategoria.setOnItemClickListener(object : AdapterView.OnItemClickListener {
-            override fun onItemClick(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                campoCategoria.setText(arrayReceita[position])
-                popupListaCategoria.dismiss()
-            }
-        })
-    }
-
-    private fun abrirListaPopUp(popupListaCategoria: ListPopupWindow) {
-        campoCategoria.setOnClickListener {
-            popupListaCategoria.show()
         }
     }
 }

@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string-array name="receita">
-        <item>Receita indefinida</item>
         <item>Economias</item>
         <item>Empréstimo</item>
         <item>Freelance</item>
@@ -9,5 +8,19 @@
         <item>Presente</item>
         <item>Salário</item>
         <item>Vendas</item>
+        <item>Outro…</item>
+    </string-array>
+    <string-array name="despesa">
+        <item>Casa</item>
+        <item>Comida</item>
+        <item>Comunicações</item>
+        <item>Contas</item>
+        <item>Lazer</item>
+        <item>Roupas</item>
+        <item>Saúde</item>
+        <item>Supermercado</item>
+        <item>Transporte</item>
+        <item>Transferência</item>
+        <item>Outro…</item>
     </string-array>
 </resources>
