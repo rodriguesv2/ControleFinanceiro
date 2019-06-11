@@ -27,10 +27,12 @@
         >
 
             <android.support.design.widget.TextInputEditText
+                    android:id="@+id/formulario_receita_titulo_edittext"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:maxLines="1"
+                    android:inputType="text"
                     android:hint="Titulo"
-
             />
         </android.support.design.widget.TextInputLayout>
 
@@ -178,7 +180,7 @@
                 android:text="Salvar"
                 android:backgroundTint="@color/button"
                 android:textColor="@android:color/white"
-                android:layout_margin="8dp"
+                android:layout_marginTop="8dp"
                 app:layout_constraintStart_toStartOf="@id/formulario_receita_valor"
                 app:layout_constraintEnd_toEndOf="@id/formulario_receita_valor"
                 app:layout_constraintTop_toBottomOf="@id/formulario_receita_superfluo_valor"

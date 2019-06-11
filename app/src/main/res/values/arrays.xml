@@ -1,8 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string-array name="receita">
+        <item>Receita indefinida</item>
+        <item>Economias</item>
+        <item>Empréstimo</item>
+        <item>Freelance</item>
+        <item>Pagamento</item>
+        <item>Presente</item>
         <item>Salário</item>
-        <item>Freelancer</item>
         <item>Vendas</item>
     </string-array>
 </resources>
