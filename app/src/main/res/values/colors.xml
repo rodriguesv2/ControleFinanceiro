@@ -2,8 +2,9 @@
 <resources>
     <color name="colorPrimary">#008577</color>
     <color name="colorPrimaryDark">#00574B</color>
-    <color name="colorAccent">#1B3AD8</color>
+    <color name="colorAccent">#3543AA</color>
     <color name="fab_normal">#e27b0d</color>
     <color name="fab_Pressed">#a86014</color>
     <color name="fab_Ripple">#c47829</color>
+    <color name="button">#1E88E5</color>
 </resources>

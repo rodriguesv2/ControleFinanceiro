@@ -4,6 +4,9 @@ import android.app.DatePickerDialog
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.design.widget.TextInputEditText
+import android.text.Editable
+import android.text.Selection
+import android.text.TextWatcher
 import android.view.View
 import android.widget.*
 import br.com.rubensrodrigues.controlefinanceiro.R
@@ -19,7 +22,35 @@ class FormularioReceitaActivity : AppCompatActivity() {
 
         configuraCampoCategoria()
         configuraCampoData()
+        configuraCampoValor()
+    }
 
+    private fun configuraCampoValor() {
+        val campoValor = formulario_receita_valor_edittext
+        campoValor.setText("R$ ")
+        Selection.setSelection(campoValor.text, campoValor.text!!.length)
+
+        adicionaPrefixoReais(campoValor)
+    }
+
+    private fun adicionaPrefixoReais(campoValor: TextInputEditText) {
+        campoValor.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(s: Editable?) {
+                if (!s.toString().startsWith("R$ ")) {
+                    campoValor.setText("R$ ")
+                    Selection.setSelection(campoValor.text, campoValor.text!!.length)
+                }
+            }
+
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+
+            }
+
+        })
     }
 
     private fun configuraCampoData() {
