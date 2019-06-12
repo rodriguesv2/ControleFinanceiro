@@ -5,11 +5,13 @@
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:fillViewport="true"
         tools:context=".ui.activity.FormularioDespesaActivity">
 
     <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+    >
 
         <android.support.design.widget.TextInputLayout
                 android:id="@+id/formulario_despesa_titulo"
@@ -89,6 +91,40 @@
                     android:hint="Valor"/>
         </android.support.design.widget.TextInputLayout>
 
+        <TextView
+                android:id="@+id/formulario_despesa_label_saldo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="selecione o saldo"
+                android:textSize="18sp"
+                android:layout_marginTop="8dp"
+                app:layout_constraintStart_toStartOf="@id/formulario_despesa_valor"
+                app:layout_constraintTop_toBottomOf="@id/formulario_despesa_valor"
+        />
+
+        <RadioGroup
+                android:id="@+id/formulario_despesa_seletor_saldo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toStartOf="@id/formulario_despesa_label_saldo"
+                app:layout_constraintTop_toBottomOf="@id/formulario_despesa_label_saldo">
+
+                <RadioButton
+                        android:id="@+id/formulario_despesa_radio_superfluo"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textSize="18sp"
+                        android:text="Supérfluo"/>
+
+                <RadioButton
+                        android:id="@+id/formulario_despesa_radio_importante"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textSize="18sp"
+                        android:text="Importante"/>
+
+        </RadioGroup>
+
         <Button
                 android:id="@+id/formulario_despesa_botao"
                 android:layout_width="match_parent"
@@ -96,11 +132,12 @@
                 android:text="Salvar"
                 android:backgroundTint="@color/button"
                 android:textColor="@android:color/white"
-                android:layout_margin="8dp"
-                app:layout_constraintStart_toStartOf="@id/formulario_despesa_valor"
+                android:layout_marginTop="8dp"
+                android:layout_marginStart="5dp"
+                android:layout_marginEnd="5dp"
+                app:layout_constraintStart_toStartOf="@id/formulario_despesa_seletor_saldo"
                 app:layout_constraintEnd_toEndOf="@id/formulario_despesa_valor"
-                app:layout_constraintTop_toBottomOf="@id/formulario_despesa_valor"
-        />
+                app:layout_constraintTop_toBottomOf="@id/formulario_despesa_seletor_saldo"/>
 
     </android.support.constraint.ConstraintLayout>
 

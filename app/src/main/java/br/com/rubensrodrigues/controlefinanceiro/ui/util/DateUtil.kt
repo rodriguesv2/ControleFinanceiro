@@ -1,4 +1,4 @@
-package br.com.rubensrodrigues.controlefinanceiro.util
+package br.com.rubensrodrigues.controlefinanceiro.ui.util
 
 import android.support.design.widget.TextInputEditText
 import br.com.rubensrodrigues.controlefinanceiro.extensions.formatoBrasileiro

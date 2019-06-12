@@ -1,29 +1,25 @@
 package br.com.rubensrodrigues.controlefinanceiro.ui.activity
 
-import android.app.DatePickerDialog
 import android.os.Bundle
-import android.support.design.widget.TextInputEditText
 import android.support.v7.app.AppCompatActivity
 import android.text.Editable
 import android.text.Selection
 import android.text.TextWatcher
 import android.view.View
-import android.widget.*
+import android.widget.SeekBar
 import br.com.rubensrodrigues.controlefinanceiro.R
 import br.com.rubensrodrigues.controlefinanceiro.dao.TransacaoDAO
 import br.com.rubensrodrigues.controlefinanceiro.extensions.converterReaisParaBigDecimal
 import br.com.rubensrodrigues.controlefinanceiro.extensions.duasCasasVirgula
-import br.com.rubensrodrigues.controlefinanceiro.extensions.formatoBrasileiro
 import br.com.rubensrodrigues.controlefinanceiro.extensions.toCalendar
 import br.com.rubensrodrigues.controlefinanceiro.model.Tipo
 import br.com.rubensrodrigues.controlefinanceiro.model.TipoSaldo
 import br.com.rubensrodrigues.controlefinanceiro.model.Transacao
 import br.com.rubensrodrigues.controlefinanceiro.ui.dialog.DateDialog
-import br.com.rubensrodrigues.controlefinanceiro.ui.dropdown.EditTextCategoriaDropDown
-import br.com.rubensrodrigues.controlefinanceiro.util.DateUtil
+import br.com.rubensrodrigues.controlefinanceiro.ui.dropdown.EditTextDropDown
+import br.com.rubensrodrigues.controlefinanceiro.ui.util.DateUtil
 import kotlinx.android.synthetic.main.activity_formulario_receita.*
 import java.math.BigDecimal
-import java.util.*
 
 class FormularioReceitaActivity : AppCompatActivity() {
 
@@ -56,7 +52,7 @@ class FormularioReceitaActivity : AppCompatActivity() {
     }
 
     private fun injetaDropdownCampoCategoria() {
-        EditTextCategoriaDropDown
+        EditTextDropDown
             .injetaDropdown(
                 this,
                 campoCategoria,
@@ -125,6 +121,15 @@ class FormularioReceitaActivity : AppCompatActivity() {
         })
     }
 
+    private fun adicionaSimboloDeReais(editable: Editable?): String {
+        val valorStr = editable.toString()
+        if (!valorStr.startsWith("R$ ")) {
+            campoValor.setText("R$ ")
+            Selection.setSelection(campoValor.text, campoValor.text!!.length)
+        }
+        return valorStr
+    }
+
     private fun configuraProporcaoPeloCampoValor(valorStr: String) {
         barra.isEnabled = !valorStr.equals("R$ ")
 
@@ -141,15 +146,6 @@ class FormularioReceitaActivity : AppCompatActivity() {
             labelValorSuperfluo.text = ""
             labelValorImportante.text = ""
         }
-    }
-
-    private fun adicionaSimboloDeReais(editable: Editable?): String {
-        val valorStr = editable.toString()
-        if (!valorStr.startsWith("R$ ")) {
-            campoValor.setText("R$ ")
-            Selection.setSelection(campoValor.text, campoValor.text!!.length)
-        }
-        return valorStr
     }
 
     private fun configuraListenerSeekBar(valor: BigDecimal) {
