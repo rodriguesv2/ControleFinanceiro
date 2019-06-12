@@ -11,8 +11,9 @@ import br.com.rubensrodrigues.controlefinanceiro.model.TipoSaldo
 import br.com.rubensrodrigues.controlefinanceiro.model.Transacao
 import br.com.rubensrodrigues.controlefinanceiro.ui.dialog.DateDialog
 import br.com.rubensrodrigues.controlefinanceiro.ui.dropdown.EditTextDropDown
+import br.com.rubensrodrigues.controlefinanceiro.ui.util.CampoValorUtil
 import br.com.rubensrodrigues.controlefinanceiro.ui.util.DateUtil
-import br.com.rubensrodrigues.controlefinanceiro.ui.util.PrefixoCampoValorUtil
+import br.com.rubensrodrigues.controlefinanceiro.ui.util.FormularioUtil
 import kotlinx.android.synthetic.main.activity_formulario_transacao.*
 
 class FormularioTrasacaoActivity : AppCompatActivity() {
@@ -34,51 +35,72 @@ class FormularioTrasacaoActivity : AppCompatActivity() {
 
         setTitle("Adiciona Despesa")
 
-        populaCamposSeEdição()
-
+        SetaPadraoParaSaldo()
+        populaCamposSeEdicao()
+        aplicaRegraDeEdicaoDeTextoCampoValor()
         configuraDropdownCategoria()
         configuraCampoData()
-
         configuraCliqueBotaoSalvar()
     }
 
-    private fun populaCamposSeEdição() {
+    private fun SetaPadraoParaSaldo() {
+        seletorSaldoSuperfluo.isChecked = true
+    }
+
+    private fun aplicaRegraDeEdicaoDeTextoCampoValor() {
+        CampoValorUtil.unicaVirgula(campoValor)
+    }
+
+    private fun populaCamposSeEdicao() {
         val transacaoIntent = intent
+
         if (transacaoIntent.hasExtra("transacao")) {
             val transacao = intent.getSerializableExtra("transacao") as Transacao
-            campoTitulo.setText(transacao.titulo)
-            campoCategoria.setText(transacao.categoria)
-            campoData.setText(transacao.data.formatoBrasileiro())
-            campoValor.setText(transacao.valor.duasCasas())
-            if (transacao.tipoSaldo == TipoSaldo.SUPERFLUO) {
-                seletorSaldoSuperfluo.isChecked = true
-            } else {
-                seletorSaldoImportante.isChecked = true
-            }
 
-            if (transacao.tipo == Tipo.DESPESA)
-                setTitle("Edita Despesa")
-            else
-                setTitle("Edita Receita")
+            setaCamposQuandoEdicao(transacao)
+            escolheTituloAppBarQuandoEdicao(transacao)
         }
+    }
+
+    private fun setaCamposQuandoEdicao(transacao: Transacao) {
+        campoTitulo.setText(transacao.titulo)
+        campoCategoria.setText(transacao.categoria)
+        campoData.setText(transacao.data.formatoBrasileiro())
+        campoValor.setText(transacao.valor.duasCasas())
+
+        if (transacao.tipoSaldo == TipoSaldo.SUPERFLUO) {
+            seletorSaldoSuperfluo.isChecked = true
+        } else {
+            seletorSaldoImportante.isChecked = true
+        }
+    }
+
+    private fun escolheTituloAppBarQuandoEdicao(transacao: Transacao) {
+        if (transacao.tipo == Tipo.DESPESA)
+            setTitle("Edita Despesa")
+        else
+            setTitle("Edita Receita")
     }
 
     private fun configuraCliqueBotaoSalvar() {
         botaoSalvar.setOnClickListener(object : View.OnClickListener {
             override fun onClick(v: View?) {
-                val titulo = campoTitulo.text.toString()
-                val categoria = campoCategoria.text.toString()
-                val data = campoData.text.toString().toCalendar()
-                val valor = campoValor.text.toString().converterReaisParaBigDecimal()
-                val tipoSaldo = if (seletorSaldo.checkedRadioButtonId == R.id.formulario_transacao_radio_superfluo) {
-                    TipoSaldo.SUPERFLUO
-                } else {
-                    TipoSaldo.IMPORTANTE
-                }
+                if (!FormularioUtil.seCamposMalPreechidos(campoTitulo, campoValor)) {
+                    val titulo = campoTitulo.text.toString()
+                    val categoria = campoCategoria.text.toString()
+                    val data = campoData.text.toString().toCalendar()
+                    val valor = campoValor.text.toString().converterReaisParaBigDecimal()
+                    val tipoSaldo =
+                        if (seletorSaldo.checkedRadioButtonId == R.id.formulario_transacao_radio_superfluo) {
+                            TipoSaldo.SUPERFLUO
+                        } else {
+                            TipoSaldo.IMPORTANTE
+                        }
 
-                val transacao = Transacao(valor, Tipo.DESPESA, titulo, categoria, tipoSaldo, data)
-                dao.insere(transacao)
-                finish()
+                    val transacao = Transacao(valor, Tipo.DESPESA, titulo, categoria, tipoSaldo, data)
+                    dao.insere(transacao)
+                    finish()
+                }
             }
         })
     }

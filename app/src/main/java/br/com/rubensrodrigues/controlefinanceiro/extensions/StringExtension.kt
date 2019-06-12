@@ -22,3 +22,8 @@ fun CharSequence.converterReaisParaBigDecimal() : BigDecimal{
     val valorLimpo = valor.replace("R$ ", "").replace(",", ".")
     return valorLimpo.toBigDecimal()
 }
+
+fun String.toBigDecimalOrNullDeVirgulaParaPonto() : BigDecimal?{
+    val novaString = this.replace(",", ".")
+    return novaString.toBigDecimalOrNull()
+}
