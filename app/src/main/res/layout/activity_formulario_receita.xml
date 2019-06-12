@@ -97,8 +97,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="number|numberDecimal"
-                    android:hint="Valor"
-
+                    android:hint="Valor (R$)"
             />
         </android.support.design.widget.TextInputLayout>
 

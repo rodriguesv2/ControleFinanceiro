@@ -30,9 +30,11 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         configuraRecyclerView()
+        configuraCliqueFabs()
+    }
 
-
-        fabReceita.setOnClickListener(object : View.OnClickListener{
+    private fun configuraCliqueFabs() {
+        fabReceita.setOnClickListener(object : View.OnClickListener {
             override fun onClick(v: View?) {
                 fabMenu.close(true)
                 val intent = Intent(this@MainActivity, FormularioReceitaActivity::class.java)
@@ -40,10 +42,10 @@ class MainActivity : AppCompatActivity() {
             }
         })
 
-        fabDespesa.setOnClickListener(object : View.OnClickListener{
+        fabDespesa.setOnClickListener(object : View.OnClickListener {
             override fun onClick(v: View?) {
                 fabMenu.close(true)
-                val intent = Intent(this@MainActivity, FormularioDespesaActivity::class.java)
+                val intent = Intent(this@MainActivity, FormularioTrasacaoActivity::class.java)
                 startActivity(intent)
             }
         })
@@ -58,9 +60,15 @@ class MainActivity : AppCompatActivity() {
     private fun configuraRecyclerView() {
         val listaTransacoesAdapter = ListaTransacoesAdapter(this, transacoes)
         main_lista.adapter = listaTransacoesAdapter
+        configuraCliqueItemListaTransacoes(listaTransacoesAdapter)
+    }
+
+    private fun configuraCliqueItemListaTransacoes(listaTransacoesAdapter: ListaTransacoesAdapter) {
         listaTransacoesAdapter.setOnItemClickListener(object : ListaTransacoesAdapter.ListaTransacoesAdapterListener {
             override fun listener(transacao: Transacao) {
-                Toast.makeText(this@MainActivity, transacao.titulo, Toast.LENGTH_LONG).show()
+                val vaiParaFormulario = Intent(this@MainActivity, FormularioTrasacaoActivity::class.java)
+                vaiParaFormulario.putExtra("transacao", transacao)
+                startActivity(vaiParaFormulario)
             }
 
         })

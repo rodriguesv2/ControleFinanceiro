@@ -6,7 +6,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:fillViewport="true"
-        tools:context=".ui.activity.FormularioDespesaActivity">
+        tools:context=".ui.activity.FormularioTrasacaoActivity">
 
     <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"
@@ -14,7 +14,7 @@
     >
 
         <android.support.design.widget.TextInputLayout
-                android:id="@+id/formulario_despesa_titulo"
+                android:id="@+id/formulario_transacao_titulo"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_margin="8dp"
@@ -26,7 +26,7 @@
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
             <android.support.design.widget.TextInputEditText
-                    android:id="@+id/formulario_despesa_titulo_edittext"
+                    android:id="@+id/formulario_transacao_titulo_edittext"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:maxLines="1"
@@ -35,17 +35,17 @@
         </android.support.design.widget.TextInputLayout>
 
         <android.support.design.widget.TextInputLayout
-                android:id="@+id/formulario_despesa_categoria"
+                android:id="@+id/formulario_transacao_categoria"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                app:layout_constraintTop_toBottomOf="@id/formulario_despesa_titulo"
-                app:layout_constraintStart_toStartOf="@id/formulario_despesa_titulo"
-                app:layout_constraintEnd_toEndOf="@id/formulario_despesa_titulo"
+                app:layout_constraintTop_toBottomOf="@id/formulario_transacao_titulo"
+                app:layout_constraintStart_toStartOf="@id/formulario_transacao_titulo"
+                app:layout_constraintEnd_toEndOf="@id/formulario_transacao_titulo"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
             <android.support.design.widget.TextInputEditText
-                    android:id="@+id/formulario_despesa_categoria_edittext"
+                    android:id="@+id/formulario_transacao_categoria_edittext"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:drawableEnd="@drawable/input_arrow_down"
@@ -54,18 +54,18 @@
         </android.support.design.widget.TextInputLayout>
 
         <android.support.design.widget.TextInputLayout
-                android:id="@+id/formulario_despesa_data"
+                android:id="@+id/formulario_transacao_data"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                app:layout_constraintTop_toBottomOf="@id/formulario_despesa_categoria"
-                app:layout_constraintStart_toStartOf="@id/formulario_despesa_categoria"
-                app:layout_constraintEnd_toEndOf="@id/formulario_despesa_categoria"
+                app:layout_constraintTop_toBottomOf="@id/formulario_transacao_categoria"
+                app:layout_constraintStart_toStartOf="@id/formulario_transacao_categoria"
+                app:layout_constraintEnd_toEndOf="@id/formulario_transacao_categoria"
                 app:layout_constraintVertical_bias="0"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
             <android.support.design.widget.TextInputEditText
-                    android:id="@+id/formulario_despesa_data_edittext"
+                    android:id="@+id/formulario_Transacao_data_edittext"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="Data"
@@ -73,51 +73,51 @@
         </android.support.design.widget.TextInputLayout>
 
         <android.support.design.widget.TextInputLayout
-                android:id="@+id/formulario_despesa_valor"
+                android:id="@+id/formulario_transacao_valor"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                app:layout_constraintTop_toBottomOf="@id/formulario_despesa_data"
-                app:layout_constraintStart_toStartOf="@id/formulario_despesa_data"
-                app:layout_constraintEnd_toEndOf="@id/formulario_despesa_data"
+                app:layout_constraintTop_toBottomOf="@id/formulario_transacao_data"
+                app:layout_constraintStart_toStartOf="@id/formulario_transacao_data"
+                app:layout_constraintEnd_toEndOf="@id/formulario_transacao_data"
                 app:layout_constraintVertical_bias="0"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
             <android.support.design.widget.TextInputEditText
-                    android:id="@+id/formulario_despesa_valor_edittext"
+                    android:id="@+id/formulario_transacao_valor_edittext"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="number|numberDecimal"
-                    android:hint="Valor"/>
+                    android:hint="Valor (R$)"/>
         </android.support.design.widget.TextInputLayout>
 
         <TextView
-                android:id="@+id/formulario_despesa_label_saldo"
+                android:id="@+id/formulario_transacao_label_saldo"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="selecione o saldo"
                 android:textSize="18sp"
                 android:layout_marginTop="8dp"
-                app:layout_constraintStart_toStartOf="@id/formulario_despesa_valor"
-                app:layout_constraintTop_toBottomOf="@id/formulario_despesa_valor"
+                app:layout_constraintStart_toStartOf="@id/formulario_transacao_valor"
+                app:layout_constraintTop_toBottomOf="@id/formulario_transacao_valor"
         />
 
         <RadioGroup
-                android:id="@+id/formulario_despesa_seletor_saldo"
+                android:id="@+id/formulario_transacao_seletor_saldo"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:layout_constraintStart_toStartOf="@id/formulario_despesa_label_saldo"
-                app:layout_constraintTop_toBottomOf="@id/formulario_despesa_label_saldo">
+                app:layout_constraintStart_toStartOf="@id/formulario_transacao_label_saldo"
+                app:layout_constraintTop_toBottomOf="@id/formulario_transacao_label_saldo">
 
                 <RadioButton
-                        android:id="@+id/formulario_despesa_radio_superfluo"
+                        android:id="@+id/formulario_transacao_radio_superfluo"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:textSize="18sp"
                         android:text="Supérfluo"/>
 
                 <RadioButton
-                        android:id="@+id/formulario_despesa_radio_importante"
+                        android:id="@+id/formulario_transacao_radio_importante"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:textSize="18sp"
@@ -126,7 +126,7 @@
         </RadioGroup>
 
         <Button
-                android:id="@+id/formulario_despesa_botao"
+                android:id="@+id/formulario_transacao_botao"
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
                 android:text="Salvar"
@@ -135,9 +135,9 @@
                 android:layout_marginTop="8dp"
                 android:layout_marginStart="5dp"
                 android:layout_marginEnd="5dp"
-                app:layout_constraintStart_toStartOf="@id/formulario_despesa_seletor_saldo"
-                app:layout_constraintEnd_toEndOf="@id/formulario_despesa_valor"
-                app:layout_constraintTop_toBottomOf="@id/formulario_despesa_seletor_saldo"/>
+                app:layout_constraintStart_toStartOf="@id/formulario_transacao_seletor_saldo"
+                app:layout_constraintEnd_toEndOf="@id/formulario_transacao_valor"
+                app:layout_constraintTop_toBottomOf="@id/formulario_transacao_seletor_saldo"/>
 
     </android.support.constraint.ConstraintLayout>
 

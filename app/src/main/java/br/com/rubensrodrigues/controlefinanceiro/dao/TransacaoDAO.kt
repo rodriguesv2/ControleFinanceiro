@@ -11,14 +11,14 @@ class TransacaoDAO {
     companion object {
 
         private val transacoes: MutableList<Transacao> = mutableListOf(
-//            Transacao(BigDecimal(20.5), Tipo.DESPESA, "Pastel na Feira", "Comida", TipoSaldo.SUPERFLUO, Calendar.getInstance()),
-//            Transacao(BigDecimal(115.75), Tipo.RECEITA, "DOC", "Transferência", TipoSaldo.IMPORTANTE, Calendar.getInstance()),
-//            Transacao(BigDecimal(17), Tipo.DESPESA, "Sorvete", "Comida", TipoSaldo.SUPERFLUO, Calendar.getInstance()),
-//            Transacao(BigDecimal(38), Tipo.DESPESA, "Cinema", "Entretenimento", TipoSaldo.IMPORTANTE, Calendar.getInstance()),
-//            Transacao(BigDecimal(20.5), Tipo.DESPESA, "Pastel na Feira", "Comida", TipoSaldo.SUPERFLUO, Calendar.getInstance()),
-//            Transacao(BigDecimal(115.75), Tipo.RECEITA, "DOC", "Transferência", TipoSaldo.IMPORTANTE, Calendar.getInstance()),
-//            Transacao(BigDecimal(17), Tipo.DESPESA, "Sorvete", "Comida", TipoSaldo.SUPERFLUO, Calendar.getInstance()),
-//            Transacao(BigDecimal(38), Tipo.DESPESA, "Cinema", "Entretenimento", TipoSaldo.IMPORTANTE, Calendar.getInstance())
+            Transacao(BigDecimal(20.5), Tipo.DESPESA, "Pastel na Feira", "Comida", TipoSaldo.SUPERFLUO, Calendar.getInstance()),
+            Transacao(BigDecimal(115.75), Tipo.RECEITA, "DOC", "Transferência", TipoSaldo.IMPORTANTE, Calendar.getInstance()),
+            Transacao(BigDecimal(17), Tipo.DESPESA, "Sorvete", "Comida", TipoSaldo.SUPERFLUO, Calendar.getInstance()),
+            Transacao(BigDecimal(38), Tipo.DESPESA, "Cinema", "Entretenimento", TipoSaldo.IMPORTANTE, Calendar.getInstance()),
+            Transacao(BigDecimal(20.5), Tipo.DESPESA, "Pastel na Feira", "Comida", TipoSaldo.SUPERFLUO, Calendar.getInstance()),
+            Transacao(BigDecimal(115.75), Tipo.RECEITA, "DOC", "Transferência", TipoSaldo.IMPORTANTE, Calendar.getInstance()),
+            Transacao(BigDecimal(17), Tipo.DESPESA, "Sorvete", "Comida", TipoSaldo.SUPERFLUO, Calendar.getInstance()),
+            Transacao(BigDecimal(38), Tipo.DESPESA, "Cinema", "Entretenimento", TipoSaldo.IMPORTANTE, Calendar.getInstance())
         )
     }
 

@@ -38,7 +38,7 @@ class FormularioReceitaActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_formulario_receita)
 
-        setTitle("Adicionar Receita")
+        setTitle("Adiciona Receita")
 
         injetaDropdownCampoCategoria()
 
@@ -98,21 +98,14 @@ class FormularioReceitaActivity : AppCompatActivity() {
         }
     }
 
-    private fun desabilitaSeekBarSeCampoValorVazio() {
-        barra.isEnabled = !campoValor.text.toString().equals("R$ ")
-    }
-
     private fun configuraCampoValor() {
-        campoValor.setText("R$ ")
-        Selection.setSelection(campoValor.text, campoValor.text!!.length)
-
         configuraListenerDeTextoAlterado()
     }
 
     private fun configuraListenerDeTextoAlterado() {
         campoValor.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(editable: Editable?) {
-                val valorStr = adicionaSimboloDeReais(editable)
+                val valorStr = campoValor.text.toString()
                 configuraProporcaoPeloCampoValor(valorStr)
             }
 
@@ -121,20 +114,11 @@ class FormularioReceitaActivity : AppCompatActivity() {
         })
     }
 
-    private fun adicionaSimboloDeReais(editable: Editable?): String {
-        val valorStr = editable.toString()
-        if (!valorStr.startsWith("R$ ")) {
-            campoValor.setText("R$ ")
-            Selection.setSelection(campoValor.text, campoValor.text!!.length)
-        }
-        return valorStr
-    }
-
     private fun configuraProporcaoPeloCampoValor(valorStr: String) {
-        barra.isEnabled = !valorStr.equals("R$ ")
+        barra.isEnabled = !campoValor.text.isNullOrBlank()
 
         if (barra.isEnabled) {
-            val valor = valorStr.replace("R$ ", "").toBigDecimalOrNull()
+            val valor = valorStr.toBigDecimalOrNull()
             if (valor != null) {
                 val progresso = barra.progress
                 calculaProporcao(valor, progresso)
@@ -146,6 +130,10 @@ class FormularioReceitaActivity : AppCompatActivity() {
             labelValorSuperfluo.text = ""
             labelValorImportante.text = ""
         }
+    }
+
+    private fun desabilitaSeekBarSeCampoValorVazio() {
+        barra.isEnabled = !campoValor.text.isNullOrBlank()
     }
 
     private fun configuraListenerSeekBar(valor: BigDecimal) {
