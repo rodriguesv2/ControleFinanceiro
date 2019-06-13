@@ -1,0 +1,17 @@
+package br.com.rubensrodrigues.controlefinanceiro.persistence.converter
+
+import android.arch.persistence.room.TypeConverter
+import br.com.rubensrodrigues.controlefinanceiro.model.TipoSaldo
+
+class ConversorTipoSaldo {
+
+    @TypeConverter
+    fun paraString(valor: TipoSaldo) : String{
+        return valor.name
+    }
+
+    @TypeConverter
+    fun paraTipoSaldo(valor: String) : TipoSaldo {
+        return TipoSaldo.valueOf(valor)
+    }
+}

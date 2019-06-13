@@ -111,14 +111,17 @@ class FormularioTrasacaoActivity : AppCompatActivity() {
     }
 
     private fun configuraDropdownCategoria() {
+        var lista = listaCategoriaPorTipo()
+        EditTextDropDown.injetaDropdown(this, campoCategoria, lista)
+    }
+
+    private fun listaCategoriaPorTipo(): Array<String> {
         var lista = resources.getStringArray(R.array.despesa)
-        if (intent.hasExtra("transacao")){
+        if (intent.hasExtra("transacao")) {
             val transacao = intent.getSerializableExtra("transacao") as Transacao
             if (transacao.tipo == Tipo.RECEITA)
                 lista = resources.getStringArray(R.array.receita)
         }
-
-        EditTextDropDown
-            .injetaDropdown(this, campoCategoria, lista)
+        return lista
     }
 }
