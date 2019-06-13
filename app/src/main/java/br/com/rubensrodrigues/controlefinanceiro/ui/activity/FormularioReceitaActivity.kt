@@ -1,14 +1,14 @@
 package br.com.rubensrodrigues.controlefinanceiro.ui.activity
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
-import android.widget.EditText
 import android.widget.SeekBar
 import br.com.rubensrodrigues.controlefinanceiro.R
-import br.com.rubensrodrigues.controlefinanceiro.dao.TransacaoDAO
 import br.com.rubensrodrigues.controlefinanceiro.extensions.converterReaisParaBigDecimal
 import br.com.rubensrodrigues.controlefinanceiro.extensions.duasCasasVirgula
 import br.com.rubensrodrigues.controlefinanceiro.extensions.toBigDecimalOrNullDeVirgulaParaPonto
@@ -23,7 +23,6 @@ import br.com.rubensrodrigues.controlefinanceiro.ui.util.DateUtil
 import br.com.rubensrodrigues.controlefinanceiro.ui.util.FormularioUtil
 import kotlinx.android.synthetic.main.activity_formulario_receita.*
 import java.math.BigDecimal
-import java.util.regex.Pattern
 
 class FormularioReceitaActivity : AppCompatActivity() {
 
@@ -36,7 +35,6 @@ class FormularioReceitaActivity : AppCompatActivity() {
     private val labelValorImportante by lazy {formulario_receita_importante_valor}
     private val botaoSalvar by lazy {formulario_receita_botao}
 
-    private val dao = TransacaoDAO()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -85,27 +83,33 @@ class FormularioReceitaActivity : AppCompatActivity() {
             val transacaoImportante =
                 Transacao(valorImportante, Tipo.RECEITA, titulo, categoria, TipoSaldo.IMPORTANTE, data)
 
-            salvaTransacoes(valorSuperfluo, transacaoImportante, valorImportante, transacaoSuperfluo)
-            finish()
+            retornaParaListaComTransacoes(valorSuperfluo, transacaoImportante, valorImportante, transacaoSuperfluo)
         }
     }
 
-    private fun salvaTransacoes(
-        valorSuperfluo: BigDecimal,
-        transacaoImportante: Transacao,
-        valorImportante: BigDecimal,
-        transacaoSuperfluo: Transacao
-    ) {
-        with(dao) {
-            if (valorSuperfluo.compareTo(BigDecimal.ZERO) == 0) {
-                insere(transacaoImportante)
-            } else if (valorImportante.compareTo(BigDecimal.ZERO) == 0) {
-                insere(transacaoSuperfluo)
-            } else {
-                insere(transacaoSuperfluo)
-                insere(transacaoImportante)
-            }
+    private fun retornaParaListaComTransacoes(valorSuperfluo: BigDecimal,
+                                              transacaoImportante: Transacao,
+                                              valorImportante: BigDecimal,
+                                              transacaoSuperfluo: Transacao){
+
+        var mapTransacoes = hashMapOf<String, Transacao>()
+
+        if (valorSuperfluo.compareTo(BigDecimal.ZERO) == 0) {
+            mapTransacoes.put("importante", transacaoImportante)
+        } else if (valorImportante.compareTo(BigDecimal.ZERO) == 0) {
+            mapTransacoes.put("superfluo", transacaoSuperfluo)
+        } else {
+            mapTransacoes = hashMapOf("importante" to transacaoImportante, "superfluo" to transacaoSuperfluo)
         }
+
+        preparaTransacoesResult(mapTransacoes)
+        finish()
+    }
+
+    private fun preparaTransacoesResult(mapTransacoes: HashMap<String, Transacao>) {
+        val resultadoInsercao = Intent()
+        resultadoInsercao.putExtra("transacoes", mapTransacoes)
+        setResult(Activity.RESULT_OK, resultadoInsercao)
     }
 
     private fun configuraCampoValor() {

@@ -9,14 +9,16 @@ import android.view.ViewGroup
 import br.com.rubensrodrigues.controlefinanceiro.R
 import br.com.rubensrodrigues.controlefinanceiro.model.TipoSaldo
 import br.com.rubensrodrigues.controlefinanceiro.model.Transacao
+import br.com.rubensrodrigues.controlefinanceiro.persistence.util.DBUtil
 import kotlinx.android.synthetic.main.item_transacao.view.*
 
 class ListaTransacoesAdapter(
     private val context: Context,
-    private val transacoes: MutableList<Transacao>
+    private var transacoes: MutableList<Transacao>
 ) : RecyclerView.Adapter<ListaTransacoesAdapter.TransacoesViewHolder>() {
 
     private lateinit var listener: ListaTransacoesAdapterListener
+    private val dao = DBUtil.getInstance(context).getTransacaoDao()
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, p1: Int): TransacoesViewHolder {
         val view = LayoutInflater.from(context).inflate(R.layout.item_transacao, viewGroup, false)
@@ -36,6 +38,10 @@ class ListaTransacoesAdapter(
         this.listener = listener
     }
 
+    fun atualiza(transacoes: List<Transacao>) {
+        this.transacoes = transacoes.toMutableList()
+        notifyDataSetChanged()
+    }
 
     class TransacoesViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView){
 
