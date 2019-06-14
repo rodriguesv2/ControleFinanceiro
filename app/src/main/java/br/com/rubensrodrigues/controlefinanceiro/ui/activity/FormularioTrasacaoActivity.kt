@@ -1,11 +1,15 @@
 package br.com.rubensrodrigues.controlefinanceiro.ui.activity
 
-import android.support.v7.app.AppCompatActivity
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
+import android.support.v7.app.AppCompatActivity
 import android.view.View
 import br.com.rubensrodrigues.controlefinanceiro.R
-import br.com.rubensrodrigues.controlefinanceiro.dao.TransacaoDAO
-import br.com.rubensrodrigues.controlefinanceiro.extensions.*
+import br.com.rubensrodrigues.controlefinanceiro.extensions.converterReaisParaBigDecimal
+import br.com.rubensrodrigues.controlefinanceiro.extensions.duasCasas
+import br.com.rubensrodrigues.controlefinanceiro.extensions.formatoBrasileiro
+import br.com.rubensrodrigues.controlefinanceiro.extensions.toCalendar
 import br.com.rubensrodrigues.controlefinanceiro.model.Tipo
 import br.com.rubensrodrigues.controlefinanceiro.model.TipoSaldo
 import br.com.rubensrodrigues.controlefinanceiro.model.Transacao
@@ -26,8 +30,6 @@ class FormularioTrasacaoActivity : AppCompatActivity() {
     private val seletorSaldoSuperfluo by lazy {formulario_transacao_radio_superfluo}
     private val seletorSaldoImportante by lazy {formulario_transacao_radio_importante}
     private val botaoSalvar by lazy {formulario_transacao_botao}
-
-    private val dao = TransacaoDAO()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -85,7 +87,7 @@ class FormularioTrasacaoActivity : AppCompatActivity() {
     private fun configuraCliqueBotaoSalvar() {
         botaoSalvar.setOnClickListener(object : View.OnClickListener {
             override fun onClick(v: View?) {
-                if (!FormularioUtil.seCamposMalPreechidos(campoTitulo, campoValor)) {
+                if (!FormularioUtil.ehCamposMalPreechidos(campoTitulo, campoValor)) {
                     val titulo = campoTitulo.text.toString()
                     val categoria = campoCategoria.text.toString()
                     val data = campoData.text.toString().toCalendar()
@@ -98,7 +100,11 @@ class FormularioTrasacaoActivity : AppCompatActivity() {
                         }
 
                     val transacao = Transacao(valor, Tipo.DESPESA, titulo, categoria, tipoSaldo, data)
-                    dao.insere(transacao)
+
+                    val resultadoInsercao = Intent()
+                    resultadoInsercao.putExtra("transacao", transacao)
+                    setResult(Activity.RESULT_OK, resultadoInsercao)
+
                     finish()
                 }
             }

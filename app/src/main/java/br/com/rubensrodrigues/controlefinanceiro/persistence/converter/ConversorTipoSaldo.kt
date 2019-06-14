@@ -6,12 +6,15 @@ import br.com.rubensrodrigues.controlefinanceiro.model.TipoSaldo
 class ConversorTipoSaldo {
 
     @TypeConverter
-    fun paraString(valor: TipoSaldo) : String{
-        return valor.name
+    fun paraString(valor: TipoSaldo?) : String?{
+        return valor?.name
     }
 
     @TypeConverter
-    fun paraTipoSaldo(valor: String) : TipoSaldo {
-        return TipoSaldo.valueOf(valor)
+    fun paraTipoSaldo(valor: String?) : TipoSaldo? {
+        return if (valor != null)
+            TipoSaldo.valueOf(valor)
+        else
+            null
     }
 }

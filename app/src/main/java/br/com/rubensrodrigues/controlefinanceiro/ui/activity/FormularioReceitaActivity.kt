@@ -71,7 +71,7 @@ class FormularioReceitaActivity : AppCompatActivity() {
     }
 
     private fun preparaParaSalvar() {
-        if (!FormularioUtil.seCamposMalPreechidos(campoTitulo, campoValor)) {
+        if (!FormularioUtil.ehCamposMalPreechidos(campoTitulo, campoValor)) {
             val titulo = campoTitulo.text.toString()
             val categoria = campoCategoria.text.toString()
             val data = campoData.text.toString().toCalendar()

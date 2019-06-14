@@ -6,12 +6,18 @@ import java.math.BigDecimal
 class ConversorBigDecimal {
 
     @TypeConverter
-    fun paraFloat(valor: BigDecimal) : Float{
-        return valor.toFloat()
+    fun paraFloat(valor: BigDecimal?) : Float?{
+        return if(valor != null)
+            valor.toFloat()
+        else
+            0f
     }
 
     @TypeConverter
-    fun paraBigDecimal(valor: Float) : BigDecimal{
-        return valor.toBigDecimal()
+    fun paraBigDecimal(valor: Float?) : BigDecimal?{
+        return if (valor != null)
+            valor.toBigDecimal()
+        else
+            BigDecimal.ZERO
     }
 }

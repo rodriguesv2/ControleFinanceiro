@@ -5,7 +5,7 @@ import java.util.regex.Pattern
 
 object FormularioUtil {
 
-    fun seCamposMalPreechidos(campoTitulo: EditText, campoValor: EditText): Boolean {
+    fun ehCamposMalPreechidos(campoTitulo: EditText, campoValor: EditText): Boolean {
         val titulo = campoTitulo.text.toString()
         val valor = campoValor.text.toString()
 

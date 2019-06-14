@@ -20,6 +20,7 @@ class ListaTransacoesAdapter(
     private lateinit var listener: ListaTransacoesAdapterListener
     private val dao = DBUtil.getInstance(context).getTransacaoDao()
 
+
     override fun onCreateViewHolder(viewGroup: ViewGroup, p1: Int): TransacoesViewHolder {
         val view = LayoutInflater.from(context).inflate(R.layout.item_transacao, viewGroup, false)
         return TransacoesViewHolder(view)
@@ -33,6 +34,7 @@ class ListaTransacoesAdapter(
     override fun getItemCount(): Int {
         return transacoes.size
     }
+
 
     fun setOnItemClickListener(listener: ListaTransacoesAdapterListener){
         this.listener = listener

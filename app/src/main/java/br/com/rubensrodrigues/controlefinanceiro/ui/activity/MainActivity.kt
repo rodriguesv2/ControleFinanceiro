@@ -6,20 +6,18 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.view.View
 import br.com.rubensrodrigues.controlefinanceiro.R
-import br.com.rubensrodrigues.controlefinanceiro.dao.TransacaoDAO
 import br.com.rubensrodrigues.controlefinanceiro.extensions.formatoBrasileiroMonetario
-import br.com.rubensrodrigues.controlefinanceiro.model.TipoSaldo
 import br.com.rubensrodrigues.controlefinanceiro.model.Transacao
 import br.com.rubensrodrigues.controlefinanceiro.persistence.asynktask.AdicionaTransacaoTask
+import br.com.rubensrodrigues.controlefinanceiro.persistence.asynktask.AdicionaTransacoesTask
 import br.com.rubensrodrigues.controlefinanceiro.persistence.asynktask.BuscaTodosTask
+import br.com.rubensrodrigues.controlefinanceiro.persistence.asynktask.TotaisPorTipoTask
 import br.com.rubensrodrigues.controlefinanceiro.persistence.util.DBUtil
 import br.com.rubensrodrigues.controlefinanceiro.ui.recyclerview.adapter.ListaTransacoesAdapter
 import kotlinx.android.synthetic.main.activity_main.*
+import java.math.BigDecimal
 
 class MainActivity : AppCompatActivity() {
-
-    private val transacoes by lazy {dao.transacoes}
-    private val dao = TransacaoDAO()
 
     private val campoValorImportante by lazy {main_container_info_importante_valor}
     private val campoValorSuperpluo by lazy {main_container_info_supérfluo_valor}
@@ -30,7 +28,7 @@ class MainActivity : AppCompatActivity() {
     private val CODIGO_REQUEST_INSERIR_RECEITA = 1
     private val CODIGO_REQUEST_INSERIR_DESPESA = 2
 
-    private val daoDB by lazy {DBUtil.getInstance(this).getTransacaoDao()}
+    private val dao by lazy {DBUtil.getInstance(this).getTransacaoDao()}
 
     private lateinit var listaTransacoesAdapter: ListaTransacoesAdapter
 
@@ -38,7 +36,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        BuscaTodosTask(daoDB, object : BuscaTodosTask.OnPostExecuteListener{
+        BuscaTodosTask(dao, object : BuscaTodosTask.OnPostExecuteListener{
             override fun posThread(listaTransacoes: List<Transacao>) {
                 configuraRecyclerView(listaTransacoes)
             }
@@ -90,33 +88,52 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun configuraCamposDeSaldos() {
-        campoValorImportante.text = dao.somaValoresPor(TipoSaldo.IMPORTANTE).formatoBrasileiroMonetario()
-        campoValorSuperpluo.text = dao.somaValoresPor(TipoSaldo.SUPERFLUO).formatoBrasileiroMonetario()
+        TotaisPorTipoTask(dao, object: TotaisPorTipoTask.OnPostExecuteListener{
+            override fun posThread(valores: HashMap<String, BigDecimal>) {
+                campoValorImportante.text = valores["importante"]!!.formatoBrasileiroMonetario()
+                campoValorSuperpluo.text = valores["superfluo"]!!.formatoBrasileiroMonetario()
+            }
+        }).execute()
+
+//        campoValorImportante.text = dao.somaValoresPor(TipoSaldo.IMPORTANTE).formatoBrasileiroMonetario()
+//        campoValorSuperpluo.text = dao.somaValoresPor(TipoSaldo.SUPERFLUO).formatoBrasileiroMonetario()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
-        if (validaTransacaoValidaDoFormularioReceita(requestCode, resultCode, data)) {
+        if (validaTransacaoVindaDoFormularioReceita(requestCode, resultCode, data)) {
             insereReceitasNoBanco(data)
         }
-    }
 
-    private fun insereReceitasNoBanco(data: Intent?) {
-        val mapTransacoes = data!!.getSerializableExtra("transacoes") as MutableMap<String, Transacao>
+        if(requestCode == CODIGO_REQUEST_INSERIR_DESPESA && resultCode == Activity.RESULT_OK && data!!.hasExtra("transacao")){
+            val transacao = data.getSerializableExtra("transacao") as Transacao
 
-        AdicionaTransacaoTask(daoDB, mapTransacoes["superfluo"], mapTransacoes["importante"],
-            object : AdicionaTransacaoTask.OnPostExecuteListener {
-                override fun porThread(transacoes: List<Transacao>) {
+            AdicionaTransacaoTask(dao, transacao, object: AdicionaTransacaoTask.OnPostExecuteListener{
+                override fun posThread(transacoes: List<Transacao>) {
                     listaTransacoesAdapter.atualiza(transacoes)
                 }
             }).execute()
+        }
+
+
     }
 
-    private fun validaTransacaoValidaDoFormularioReceita(
+    private fun validaTransacaoVindaDoFormularioReceita(
         requestCode: Int,
         resultCode: Int,
         data: Intent?
     ) =
         requestCode == CODIGO_REQUEST_INSERIR_RECEITA && resultCode == Activity.RESULT_OK && data!!.hasExtra("transacoes")
+
+    private fun insereReceitasNoBanco(data: Intent?) {
+        val mapTransacoes = data!!.getSerializableExtra("transacoes") as MutableMap<String, Transacao>
+
+        AdicionaTransacoesTask(dao, mapTransacoes["superfluo"], mapTransacoes["importante"],
+            object : AdicionaTransacoesTask.OnPostExecuteListener {
+                override fun porThread(transacoes: List<Transacao>) {
+                    listaTransacoesAdapter.atualiza(transacoes)
+                }
+            }).execute()
+    }
 }
