@@ -27,6 +27,7 @@ class MainActivity : AppCompatActivity() {
 
     private val CODIGO_REQUEST_INSERIR_RECEITA = 1
     private val CODIGO_REQUEST_INSERIR_DESPESA = 2
+    private val CODIGO_REQUEST_ALTERAR = 3
 
     private val dao by lazy {DBUtil.getInstance(this).getTransacaoDao()}
 
@@ -36,15 +37,18 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        BuscaTodosTask(dao, object : BuscaTodosTask.OnPostExecuteListener{
-            override fun posThread(listaTransacoes: List<Transacao>) {
-                configuraRecyclerView(listaTransacoes)
-            }
-        }).execute()
+        threadDeConfiguracaoDaRecycleView()
 
         configuraCliqueFabs()
     }
 
+    private fun threadDeConfiguracaoDaRecycleView() {
+        BuscaTodosTask(dao, object : BuscaTodosTask.OnPostExecuteListener {
+            override fun posThread(listaTransacoes: List<Transacao>) {
+                configuraRecyclerView(listaTransacoes)
+            }
+        }).execute()
+    }
 
 
     private fun configuraCliqueFabs() {
@@ -82,7 +86,7 @@ class MainActivity : AppCompatActivity() {
             override fun listener(transacao: Transacao) {
                 val vaiParaFormulario = Intent(this@MainActivity, FormularioTrasacaoActivity::class.java)
                 vaiParaFormulario.putExtra("transacao", transacao)
-                startActivity(vaiParaFormulario)
+                startActivityForResult(vaiParaFormulario, CODIGO_REQUEST_ALTERAR)
             }
         })
     }
@@ -94,9 +98,6 @@ class MainActivity : AppCompatActivity() {
                 campoValorSuperpluo.text = valores["superfluo"]!!.formatoBrasileiroMonetario()
             }
         }).execute()
-
-//        campoValorImportante.text = dao.somaValoresPor(TipoSaldo.IMPORTANTE).formatoBrasileiroMonetario()
-//        campoValorSuperpluo.text = dao.somaValoresPor(TipoSaldo.SUPERFLUO).formatoBrasileiroMonetario()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -106,14 +107,8 @@ class MainActivity : AppCompatActivity() {
             insereReceitasNoBanco(data)
         }
 
-        if(requestCode == CODIGO_REQUEST_INSERIR_DESPESA && resultCode == Activity.RESULT_OK && data!!.hasExtra("transacao")){
-            val transacao = data.getSerializableExtra("transacao") as Transacao
-
-            AdicionaTransacaoTask(dao, transacao, object: AdicionaTransacaoTask.OnPostExecuteListener{
-                override fun posThread(transacoes: List<Transacao>) {
-                    listaTransacoesAdapter.atualiza(transacoes)
-                }
-            }).execute()
+        if(validaTransacaoFormularioDespesa(requestCode, resultCode, data)){
+            insereDespesaNoBanco(data)
         }
 
 
@@ -135,5 +130,22 @@ class MainActivity : AppCompatActivity() {
                     listaTransacoesAdapter.atualiza(transacoes)
                 }
             }).execute()
+    }
+
+    private fun validaTransacaoFormularioDespesa(
+        requestCode: Int,
+        resultCode: Int,
+        data: Intent?
+    ) =
+        requestCode == CODIGO_REQUEST_INSERIR_DESPESA && resultCode == Activity.RESULT_OK && data!!.hasExtra("transacao")
+
+    private fun insereDespesaNoBanco(data: Intent?) {
+        val transacao = data!!.getSerializableExtra("transacao") as Transacao
+
+        AdicionaTransacaoTask(dao, transacao, object : AdicionaTransacaoTask.OnPostExecuteListener {
+            override fun posThread(transacoes: List<Transacao>) {
+                listaTransacoesAdapter.atualiza(transacoes)
+            }
+        }).execute()
     }
 }

@@ -7,6 +7,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import br.com.rubensrodrigues.controlefinanceiro.R
+import br.com.rubensrodrigues.controlefinanceiro.extensions.formatoBrasileiro
+import br.com.rubensrodrigues.controlefinanceiro.extensions.formatoBrasileiroMonetario
 import br.com.rubensrodrigues.controlefinanceiro.model.TipoSaldo
 import br.com.rubensrodrigues.controlefinanceiro.model.Transacao
 import br.com.rubensrodrigues.controlefinanceiro.persistence.util.DBUtil
@@ -52,6 +54,7 @@ class ListaTransacoesAdapter(
         private val categoria = itemView.item_transacao_categoria
         private val valor = itemView.item_transacao_valor
         private val cardView = itemView.item_transacao_cardview
+        private val data = itemView.item_transacao_data
 
         fun vincula(
             transacao: Transacao,
@@ -86,7 +89,8 @@ class ListaTransacoesAdapter(
             tipo.text = transacao.tipo.name
             titulo.text = transacao.titulo
             categoria.text = transacao.categoria
-            valor.text = transacao.valor.toString()
+            valor.text = transacao.valor.formatoBrasileiroMonetario()
+            data.text = transacao.data.formatoBrasileiro()
         }
     }
 

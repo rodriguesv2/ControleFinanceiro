@@ -54,15 +54,15 @@ class FormularioTrasacaoActivity : AppCompatActivity() {
     }
 
     private fun populaCamposSeEdicao() {
-        val transacaoIntent = intent
-
-        if (transacaoIntent.hasExtra("transacao")) {
+        if (ehEdicao()) {
             val transacao = intent.getSerializableExtra("transacao") as Transacao
 
             setaCamposQuandoEdicao(transacao)
             escolheTituloAppBarQuandoEdicao(transacao)
         }
     }
+
+    private fun ehEdicao() = intent.hasExtra("transacao")
 
     private fun setaCamposQuandoEdicao(transacao: Transacao) {
         campoTitulo.setText(transacao.titulo)
@@ -101,18 +101,22 @@ class FormularioTrasacaoActivity : AppCompatActivity() {
 
                     val transacao = Transacao(valor, Tipo.DESPESA, titulo, categoria, tipoSaldo, data)
 
-                    val resultadoInsercao = Intent()
-                    resultadoInsercao.putExtra("transacao", transacao)
-                    setResult(Activity.RESULT_OK, resultadoInsercao)
-
+                    preparaTransacoesResult(transacao)
                     finish()
                 }
             }
         })
     }
 
+    private fun preparaTransacoesResult(transacao: Transacao) {
+        val resultadoInsercao = Intent()
+        resultadoInsercao.putExtra("transacao", transacao)
+        setResult(Activity.RESULT_OK, resultadoInsercao)
+    }
+
     private fun configuraCampoData() {
-        DateUtil.setaDataAtualNoCampoData(campoData)
+        if (!ehEdicao())
+            DateUtil.setaDataAtualNoCampoData(campoData)
         DateDialog.configuraCliqueCampoData(this, campoData)
     }
 
@@ -123,7 +127,7 @@ class FormularioTrasacaoActivity : AppCompatActivity() {
 
     private fun listaCategoriaPorTipo(): Array<String> {
         var lista = resources.getStringArray(R.array.despesa)
-        if (intent.hasExtra("transacao")) {
+        if (ehEdicao()) {
             val transacao = intent.getSerializableExtra("transacao") as Transacao
             if (transacao.tipo == Tipo.RECEITA)
                 lista = resources.getStringArray(R.array.receita)

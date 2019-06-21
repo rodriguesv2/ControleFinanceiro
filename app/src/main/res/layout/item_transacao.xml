@@ -16,7 +16,7 @@
             android:layout_margin="10dp"
             android:background="@android:color/white"
             app:cardCornerRadius="10dp"
-            app:layout_constraintWidth_percent=".5"
+            app:layout_constraintWidth_percent=".65"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -69,7 +69,14 @@
                     tools:text="Comida"
             />
 
-
+            <TextView
+                    android:id="@+id/item_transacao_data"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    tools:text="20/09/1990"
+                    app:layout_constraintTop_toTopOf="@id/item_transacao_categoria"
+                    app:layout_constraintEnd_toEndOf="@id/item_transacao_valor"
+            />
 
         </android.support.constraint.ConstraintLayout>
 
