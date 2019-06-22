@@ -59,6 +59,9 @@ class ListaTransacoesAdapter(
         private val id = itemView.item_transacao_id
         private val saldo = itemView.item_transacao_saldo
 
+        private val HORIZONTAL_BIAS_DIREITA = 1f
+        private val HORIZONTAL_BIAS_ESQUERDA = 0f
+
         fun vincula(
             transacao: Transacao,
             listener: ListaTransacoesAdapterListener){
@@ -81,11 +84,17 @@ class ListaTransacoesAdapter(
 
         private fun setaBiasHorizontalDoCardview(transacao: Transacao) {
             if (transacao.tipoSaldo == TipoSaldo.IMPORTANTE) {
-                val constraintSet = ConstraintSet()
-                constraintSet.clone(itemView.item_transacao_layout)
-                constraintSet.setHorizontalBias(cardView.id, 1f)
-                constraintSet.applyTo(itemView.item_transacao_layout)
+                escolheLado(HORIZONTAL_BIAS_DIREITA)
+            } else {
+                escolheLado(HORIZONTAL_BIAS_ESQUERDA)
             }
+        }
+
+        private fun escolheLado(bias: Float) {
+            val constraintSet = ConstraintSet()
+            constraintSet.clone(itemView.item_transacao_layout)
+            constraintSet.setHorizontalBias(cardView.id, bias)
+            constraintSet.applyTo(itemView.item_transacao_layout)
         }
 
         private fun setaCampos(transacao: Transacao) {
