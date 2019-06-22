@@ -60,6 +60,15 @@
             />
 
             <TextView
+                    android:id="@+id/item_transacao_saldo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    tools:text="Importante"
+                    app:layout_constraintTop_toTopOf="@id/item_transacao_titulo"
+                    app:layout_constraintEnd_toEndOf="@id/item_transacao_valor"
+            />
+
+            <TextView
                     android:id="@+id/item_transacao_categoria"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -77,6 +86,17 @@
                     app:layout_constraintTop_toTopOf="@id/item_transacao_categoria"
                     app:layout_constraintEnd_toEndOf="@id/item_transacao_valor"
             />
+
+            <TextView
+                    android:id="@+id/item_transacao_id"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    tools:text="ID: 1"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintVertical_bias="1.0" android:layout_marginBottom="8dp"/>
 
         </android.support.constraint.ConstraintLayout>
 

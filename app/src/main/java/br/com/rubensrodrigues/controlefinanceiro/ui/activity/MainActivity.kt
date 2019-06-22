@@ -19,8 +19,8 @@ import java.math.BigDecimal
 
 class MainActivity : AppCompatActivity() {
 
-    private val campoValorImportante by lazy {main_container_info_importante_valor}
-    private val campoValorSuperpluo by lazy {main_container_info_supérfluo_valor}
+    private val infoValorImportante by lazy {main_container_info_importante_valor}
+    private val infoValorSuperpluo by lazy {main_container_info_supérfluo_valor}
     private val fabReceita by lazy {main_fab_receita}
     private val fabDespesa by lazy {main_fab_despesa}
     private val fabMenu by lazy {main_fab_menu}
@@ -94,8 +94,8 @@ class MainActivity : AppCompatActivity() {
     private fun configuraCamposDeSaldos() {
         TotaisPorTipoTask(dao, object: TotaisPorTipoTask.OnPostExecuteListener{
             override fun posThread(valores: HashMap<String, BigDecimal>) {
-                campoValorImportante.text = valores["importante"]!!.formatoBrasileiroMonetario()
-                campoValorSuperpluo.text = valores["superfluo"]!!.formatoBrasileiroMonetario()
+                infoValorImportante.text = valores["importante"]!!.formatoBrasileiroMonetario()
+                infoValorSuperpluo.text = valores["superfluo"]!!.formatoBrasileiroMonetario()
             }
         }).execute()
     }

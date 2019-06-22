@@ -121,7 +121,7 @@ class FormularioTrasacaoActivity : AppCompatActivity() {
     }
 
     private fun configuraDropdownCategoria() {
-        var lista = listaCategoriaPorTipo()
+        val lista = listaCategoriaPorTipo()
         EditTextDropDown.injetaDropdown(this, campoCategoria, lista)
     }
 

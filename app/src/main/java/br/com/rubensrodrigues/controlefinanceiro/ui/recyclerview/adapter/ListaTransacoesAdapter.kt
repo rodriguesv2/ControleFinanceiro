@@ -56,6 +56,9 @@ class ListaTransacoesAdapter(
         private val cardView = itemView.item_transacao_cardview
         private val data = itemView.item_transacao_data
 
+        private val id = itemView.item_transacao_id
+        private val saldo = itemView.item_transacao_saldo
+
         fun vincula(
             transacao: Transacao,
             listener: ListaTransacoesAdapterListener){
@@ -91,6 +94,9 @@ class ListaTransacoesAdapter(
             categoria.text = transacao.categoria
             valor.text = transacao.valor.formatoBrasileiroMonetario()
             data.text = transacao.data.formatoBrasileiro()
+
+            id.text = "ID: ${transacao.id}"
+            saldo.text = transacao.tipoSaldo.name
         }
     }
 

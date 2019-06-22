@@ -20,12 +20,16 @@ interface TransacaoDAO {
     @Update
     fun edita(transacao: Transacao)
 
-    @Query("SELECT * FROM Transacao ORDER BY data DESC")
+    @Query("SELECT * FROM Transacao ORDER BY data DESC, id DESC")
     fun todos() : List<Transacao>
 
     @Query("SELECT * FROM Transacao WHERE id = :id")
     fun pegaTransacao(id: Long) : Transacao
 
-    @Query("SELECT SUM(valor) FROM Transacao WHERE tipoSaldo = :tipoSaldo")
+    @Query("SELECT " +
+            "(SELECT SUM(valor) FROM Transacao WHERE tipoSaldo = :tipoSaldo and tipo = 'RECEITA')" +
+            "-" +
+            "(SELECT SUM(valor) FROM Transacao WHERE tipoSaldo = :tipoSaldo and tipo = 'DESPESA')" +
+            "as total")
     fun totalPor(tipoSaldo: TipoSaldo) : BigDecimal
 }
