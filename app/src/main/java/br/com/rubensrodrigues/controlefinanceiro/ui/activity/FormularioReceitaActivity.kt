@@ -163,8 +163,8 @@ class FormularioReceitaActivity : AppCompatActivity() {
     }
 
     private fun calculaProporcao(valor: BigDecimal, progresso: Int) {
-        val valorCalculadoSuperfluo = valor.toFloat() * (progresso.toFloat() / 100f)
-        val valorCalculadoImportante = valor.toFloat() * ((100f - progresso.toFloat()) / 100f)
+        val valorCalculadoImportante = valor.toFloat() * (progresso.toFloat() / 100f)
+        val valorCalculadoSuperfluo = valor.toFloat() * ((100f - progresso.toFloat()) / 100f)
 
         labelValorSuperfluo.text = "R$ ${valorCalculadoSuperfluo.duasCasasVirgula()}"
         labelValorImportante.text = "R$ ${valorCalculadoImportante.duasCasasVirgula()}"
