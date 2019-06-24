@@ -1,17 +1,17 @@
 package br.com.rubensrodrigues.controlefinanceiro.ui.activity
 
 import android.app.Activity
+import android.app.AlertDialog
 import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import android.view.MenuItem
 import android.view.View
+import android.widget.Toast
 import br.com.rubensrodrigues.controlefinanceiro.R
 import br.com.rubensrodrigues.controlefinanceiro.extensions.formatoBrasileiroMonetario
 import br.com.rubensrodrigues.controlefinanceiro.model.Transacao
-import br.com.rubensrodrigues.controlefinanceiro.persistence.asynktask.AdicionaTransacaoTask
-import br.com.rubensrodrigues.controlefinanceiro.persistence.asynktask.AdicionaTransacoesTask
-import br.com.rubensrodrigues.controlefinanceiro.persistence.asynktask.BuscaTodosTask
-import br.com.rubensrodrigues.controlefinanceiro.persistence.asynktask.TotaisPorTipoTask
+import br.com.rubensrodrigues.controlefinanceiro.persistence.asynktask.*
 import br.com.rubensrodrigues.controlefinanceiro.persistence.util.DBUtil
 import br.com.rubensrodrigues.controlefinanceiro.ui.recyclerview.adapter.ListaTransacoesAdapter
 import kotlinx.android.synthetic.main.activity_main.*
@@ -42,6 +42,39 @@ class MainActivity : AppCompatActivity() {
         configuraCliqueFabs()
     }
 
+    override fun onContextItemSelected(item: MenuItem?): Boolean {
+        val itemId = item!!.itemId
+
+        if(itemId == R.id.recyclerview_menu_remover) {
+            dialogoConfimaExclusao()
+        }
+
+        return super.onContextItemSelected(item)
+    }
+
+    private fun dialogoConfimaExclusao() {
+        AlertDialog.Builder(this)
+            .setTitle("Remover")
+            .setMessage("Deseja remove transação?")
+            .setPositiveButton("Sim") { dialog, which ->
+                logicaBotaoPositivoDialogoRemocao()
+            }
+            .setNegativeButton("Não", null)
+            .show()
+    }
+
+    private fun logicaBotaoPositivoDialogoRemocao() {
+        val transacao = listaTransacoesAdapter.transacao
+        RemoveTransacaoTask(dao, transacao, object : RemoveTransacaoTask.OnPostExecuteListener {
+            override fun posThread(transacoes: List<Transacao>) {
+                listaTransacoesAdapter.remove(transacoes)
+                configuraCamposDeSaldos()
+            }
+        }).execute()
+
+
+    }
+
     private fun threadDeConfiguracaoDaRecycleView() {
         BuscaTodosTask(dao, object : BuscaTodosTask.OnPostExecuteListener {
             override fun posThread(listaTransacoes: List<Transacao>) {
@@ -49,7 +82,6 @@ class MainActivity : AppCompatActivity() {
             }
         }).execute()
     }
-
 
     private fun configuraCliqueFabs() {
         fabReceita.setOnClickListener(object : View.OnClickListener {
@@ -83,7 +115,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun configuraCliqueItemListaTransacoes() {
         listaTransacoesAdapter.setOnItemClickListener(object : ListaTransacoesAdapter.ListaTransacoesAdapterListener {
-            override fun listener(transacao: Transacao) {
+            override fun simplesCliqueItem(transacao: Transacao) {
                 val vaiParaFormulario = Intent(this@MainActivity, FormularioTrasacaoActivity::class.java)
                 vaiParaFormulario.putExtra("transacao", transacao)
                 startActivityForResult(vaiParaFormulario, CODIGO_REQUEST_ALTERAR)
@@ -110,8 +142,6 @@ class MainActivity : AppCompatActivity() {
         if(validaTransacaoFormularioDespesa(requestCode, resultCode, data)){
             insereDespesaNoBanco(data)
         }
-
-
     }
 
     private fun validaTransacaoVindaDoFormularioReceita(

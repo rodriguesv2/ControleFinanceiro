@@ -3,9 +3,7 @@ package br.com.rubensrodrigues.controlefinanceiro.ui.recyclerview.adapter
 import android.content.Context
 import android.support.constraint.ConstraintSet
 import android.support.v7.widget.RecyclerView
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import br.com.rubensrodrigues.controlefinanceiro.R
 import br.com.rubensrodrigues.controlefinanceiro.extensions.formatoBrasileiro
 import br.com.rubensrodrigues.controlefinanceiro.extensions.formatoBrasileiroMonetario
@@ -19,6 +17,8 @@ class ListaTransacoesAdapter(
     private var transacoes: MutableList<Transacao>
 ) : RecyclerView.Adapter<ListaTransacoesAdapter.TransacoesViewHolder>() {
 
+    lateinit var transacao : Transacao
+    var posicao = -1
     private lateinit var listener: ListaTransacoesAdapterListener
     private val dao = DBUtil.getInstance(context).getTransacaoDao()
 
@@ -28,13 +28,27 @@ class ListaTransacoesAdapter(
         return TransacoesViewHolder(view)
     }
 
+    override fun getItemCount(): Int {
+        return transacoes.size
+    }
+
     override fun onBindViewHolder(viewHolder: TransacoesViewHolder, posicao: Int) {
         val transacao = transacoes[posicao]
+        setaParametrosParaRemocao(viewHolder, transacao)
         viewHolder.vincula(transacao, listener)
     }
 
-    override fun getItemCount(): Int {
-        return transacoes.size
+    private fun setaParametrosParaRemocao(
+        viewHolder: TransacoesViewHolder,
+        transacao: Transacao
+    ) {
+        viewHolder.itemView.setOnLongClickListener(object : View.OnLongClickListener {
+            override fun onLongClick(v: View?): Boolean {
+                this@ListaTransacoesAdapter.transacao = transacao
+                this@ListaTransacoesAdapter.posicao = viewHolder.adapterPosition
+                return false
+            }
+        })
     }
 
 
@@ -47,7 +61,12 @@ class ListaTransacoesAdapter(
         notifyDataSetChanged()
     }
 
-    class TransacoesViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView){
+    fun remove(transacoes: List<Transacao>) {
+        this.transacoes = transacoes.toMutableList()
+        notifyItemRemoved(posicao)
+    }
+
+    class TransacoesViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView), View.OnCreateContextMenuListener{
 
         private val tipo = itemView.item_transacao_tipo
         private val titulo = itemView.item_transacao_titulo
@@ -69,6 +88,12 @@ class ListaTransacoesAdapter(
             setaCampos(transacao)
             setaBiasHorizontalDoCardview(transacao)
             acaoDeClique(listener, transacao)
+
+            itemView.setOnCreateContextMenuListener(this)
+        }
+
+        override fun onCreateContextMenu(menu: ContextMenu?, v: View?, menuInfo: ContextMenu.ContextMenuInfo?) {
+            menu!!.add(Menu.NONE, R.id.recyclerview_menu_remover, 0, "Remover")
         }
 
         private fun acaoDeClique(
@@ -77,7 +102,7 @@ class ListaTransacoesAdapter(
 
             itemView.setOnClickListener(object : View.OnClickListener {
                 override fun onClick(v: View?) {
-                    listener.listener(transacao)
+                    listener.simplesCliqueItem(transacao)
                 }
             })
         }
@@ -107,10 +132,11 @@ class ListaTransacoesAdapter(
             id.text = "ID: ${transacao.id}"
             saldo.text = transacao.tipoSaldo.name
         }
+
     }
 
     interface ListaTransacoesAdapterListener{
-        fun listener(transacao: Transacao)
+        fun simplesCliqueItem(transacao: Transacao)
     }
 
 }
