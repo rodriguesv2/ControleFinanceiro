@@ -71,8 +71,6 @@ class MainActivity : AppCompatActivity() {
                 configuraCamposDeSaldos()
             }
         }).execute()
-
-
     }
 
     private fun threadDeConfiguracaoDaRecycleView() {

@@ -27,9 +27,10 @@ interface TransacaoDAO {
     fun pegaTransacao(id: Long) : Transacao
 
     @Query("SELECT " +
-            "(SELECT SUM(valor) FROM Transacao WHERE tipoSaldo = :tipoSaldo and tipo = 'RECEITA')" +
+            "IFNULL(" +
+            "(SELECT SUM(valor) FROM Transacao WHERE tipoSaldo = :tipoSaldo and tipo = 'RECEITA'),0)" +
             "-" +
-            "(SELECT SUM(valor) FROM Transacao WHERE tipoSaldo = :tipoSaldo and tipo = 'DESPESA')" +
-            "as total")
+            "IFNULL(" +
+            "(SELECT SUM(valor) FROM Transacao WHERE tipoSaldo = :tipoSaldo and tipo = 'DESPESA'),0)")
     fun totalPor(tipoSaldo: TipoSaldo) : BigDecimal
 }
