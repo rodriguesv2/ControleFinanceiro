@@ -7,8 +7,8 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.view.MenuItem
 import android.view.View
-import android.widget.Toast
 import br.com.rubensrodrigues.controlefinanceiro.R
+import br.com.rubensrodrigues.controlefinanceiro.extensions.converterReaisParaBigDecimal
 import br.com.rubensrodrigues.controlefinanceiro.extensions.formatoBrasileiroMonetario
 import br.com.rubensrodrigues.controlefinanceiro.model.Transacao
 import br.com.rubensrodrigues.controlefinanceiro.persistence.asynktask.*
@@ -68,7 +68,7 @@ class MainActivity : AppCompatActivity() {
         RemoveTransacaoTask(dao, transacao, object : RemoveTransacaoTask.OnPostExecuteListener {
             override fun posThread(transacoes: List<Transacao>) {
                 listaTransacoesAdapter.remove(transacoes)
-                configuraCamposDeSaldos()
+                configuraTextFieldsDeSaldos()
             }
         }).execute()
     }
@@ -92,17 +92,66 @@ class MainActivity : AppCompatActivity() {
 
         fabDespesa.setOnClickListener(object : View.OnClickListener {
             override fun onClick(v: View?) {
-                fabMenu.close(true)
-                val intent = Intent(this@MainActivity, FormularioTrasacaoActivity::class.java)
-                startActivityForResult(intent, CODIGO_REQUEST_INSERIR_DESPESA)
+                logicaParaIrFormularioDespesa()
             }
         })
     }
 
+    private fun logicaParaIrFormularioDespesa() {
+        val totalSuperfluo = infoValorSuperpluo.text.converterReaisParaBigDecimal()
+        val totalImportante = infoValorImportante.text.converterReaisParaBigDecimal()
+
+        if (ehSaldoMenorIgualAZero(totalSuperfluo) &&
+            ehSaldoMenorIgualAZero(totalImportante)
+        ) {
+            alertParaSemAmbosSaldos()
+        } else if (ehSaldoMenorIgualAZero(totalSuperfluo)) {
+            preparaIntentEVaiParaFormularioDespesa("importante")
+        } else if (ehSaldoMenorIgualAZero(totalImportante)) {
+            preparaIntentEVaiParaFormularioDespesa("superfluo")
+        } else {
+            vaiParaFormutarioDespesa(getIntentParaFomulario())
+        }
+    }
+
+    private fun alertParaSemAmbosSaldos() {
+        AlertDialog.Builder(this@MainActivity)
+            .setTitle("Saldos insuficientes")
+            .setMessage(
+                "Ambos os saldos estão insuficientes ou negativos. " +
+                        "Por favor, adicione receita em pelo menos UM saldo"
+            )
+            .setPositiveButton("OK", null)
+            .show()
+    }
+
+    private fun preparaIntentEVaiParaFormularioDespesa(saldo: String) {
+        val intent = getIntentParaFomulario()
+        intent.putExtra("apenas", saldo)
+        vaiParaFormutarioDespesa(intent)
+    }
+
+    private fun vaiParaFormutarioDespesa(intent: Intent) {
+        fabMenu.close(true)
+        startActivityForResult(intent, CODIGO_REQUEST_INSERIR_DESPESA)
+    }
+
+    private fun ehSaldoMenorIgualAZero(saldo: BigDecimal) =
+        saldo.compareTo(BigDecimal.ZERO) <= 0
+
     override fun onResume() {
         super.onResume()
 
-        configuraCamposDeSaldos()
+        configuraTextFieldsDeSaldos()
+    }
+
+    private fun configuraTextFieldsDeSaldos() {
+        TotaisPorTipoTask(dao, object: TotaisPorTipoTask.OnPostExecuteListener{
+            override fun posThread(valores: HashMap<String, BigDecimal>) {
+                infoValorImportante.text = valores["importante"]!!.formatoBrasileiroMonetario()
+                infoValorSuperpluo.text = valores["superfluo"]!!.formatoBrasileiroMonetario()
+            }
+        }).execute()
     }
 
     private fun configuraRecyclerView(listaTransacoes: List<Transacao>) {
@@ -114,21 +163,14 @@ class MainActivity : AppCompatActivity() {
     private fun configuraCliqueItemListaTransacoes() {
         listaTransacoesAdapter.setOnItemClickListener(object : ListaTransacoesAdapter.ListaTransacoesAdapterListener {
             override fun simplesCliqueItem(transacao: Transacao) {
-                val vaiParaFormulario = Intent(this@MainActivity, FormularioTrasacaoActivity::class.java)
+                val vaiParaFormulario = getIntentParaFomulario()
                 vaiParaFormulario.putExtra("transacao", transacao)
                 startActivityForResult(vaiParaFormulario, CODIGO_REQUEST_ALTERAR)
             }
         })
     }
 
-    private fun configuraCamposDeSaldos() {
-        TotaisPorTipoTask(dao, object: TotaisPorTipoTask.OnPostExecuteListener{
-            override fun posThread(valores: HashMap<String, BigDecimal>) {
-                infoValorImportante.text = valores["importante"]!!.formatoBrasileiroMonetario()
-                infoValorSuperpluo.text = valores["superfluo"]!!.formatoBrasileiroMonetario()
-            }
-        }).execute()
-    }
+    private fun getIntentParaFomulario() = Intent(this@MainActivity, FormularioTrasacaoActivity::class.java)
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)

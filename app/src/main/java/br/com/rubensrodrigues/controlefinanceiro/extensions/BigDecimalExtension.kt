@@ -8,7 +8,7 @@ fun BigDecimal.formatoBrasileiroMonetario() : String{
     val formatoBrasileiro = DecimalFormat.getCurrencyInstance(Locale("pt", "br"))
     return formatoBrasileiro.format(this)
         .replace("R$", "R$ ")
-        .replace("-R$", "R$ -")
+        .replace("-R$ ", "R$ -")
 }
 
 fun BigDecimal.duasCasas() : String{

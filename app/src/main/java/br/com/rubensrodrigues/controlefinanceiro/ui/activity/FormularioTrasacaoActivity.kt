@@ -30,6 +30,7 @@ class FormularioTrasacaoActivity : AppCompatActivity() {
     private val seletorSaldoSuperfluo by lazy {formulario_transacao_radio_superfluo}
     private val seletorSaldoImportante by lazy {formulario_transacao_radio_importante}
     private val botaoSalvar by lazy {formulario_transacao_botao}
+    private val infoSaldoInsuficiente by lazy {formulario_transacao_sem_saldo}
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,6 +48,21 @@ class FormularioTrasacaoActivity : AppCompatActivity() {
 
     private fun SetaPadraoParaSaldo() {
         seletorSaldoSuperfluo.isChecked = true
+
+        if (intent.hasExtra("apenas")){
+            val saldo = intent.getStringExtra("apenas")
+            if (saldo.equals("importante")){
+                seletorSaldoImportante.isChecked = true
+                seletorSaldoSuperfluo.isEnabled = false
+                infoSaldoInsuficiente.visibility = View.VISIBLE
+                infoSaldoInsuficiente.text = "*Saldo Supérfluo Insuficiente"
+            } else {
+                seletorSaldoSuperfluo.isChecked = true
+                seletorSaldoImportante.isEnabled = false
+                infoSaldoInsuficiente.visibility = View.VISIBLE
+                infoSaldoInsuficiente.text = "*Saldo Importante Insuficiente"
+            }
+        }
     }
 
     private fun aplicaRegraDeEdicaoDeTextoCampoValor() {

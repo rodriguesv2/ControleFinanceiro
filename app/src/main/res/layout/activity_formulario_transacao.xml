@@ -105,7 +105,7 @@
 
         <RadioGroup
                 android:id="@+id/formulario_transacao_seletor_saldo"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:layout_constraintStart_toStartOf="@id/formulario_transacao_label_saldo"
                 app:layout_constraintTop_toBottomOf="@id/formulario_transacao_label_saldo">
@@ -125,6 +125,20 @@
                         android:text="Importante"/>
 
         </RadioGroup>
+
+        <TextView
+                android:id="@+id/formulario_transacao_sem_saldo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:textStyle="bold"
+                android:textColor="@android:color/holo_red_dark"
+                android:visibility="invisible"
+                tools:text="*Superfluo indisponível"
+                app:layout_constraintTop_toTopOf="@+id/formulario_transacao_seletor_saldo"
+                app:layout_constraintBottom_toBottomOf="@+id/formulario_transacao_seletor_saldo"
+                app:layout_constraintStart_toEndOf="@+id/formulario_transacao_seletor_saldo"
+        />
 
         <Button
                 android:id="@+id/formulario_transacao_botao"
