@@ -182,6 +182,20 @@ class MainActivity : AppCompatActivity() {
         if(validaTransacaoFormularioDespesa(requestCode, resultCode, data)){
             insereDespesaNoBanco(data)
         }
+
+        if(requestCode == CODIGO_REQUEST_ALTERAR && resultCode == Activity.RESULT_OK && data!!.hasExtra("transacao")){
+            alteraTransacaoNoBanco(data)
+        }
+    }
+
+    private fun alteraTransacaoNoBanco(data: Intent) {
+        val transacao = data.getSerializableExtra("transacao") as Transacao
+        AlteraTransacaoTask(dao, transacao, object : AlteraTransacaoTask.OnPostExecuteListener {
+            override fun posThread(transacoes: List<Transacao>) {
+                val lista = transacoes
+                listaTransacoesAdapter.atualizaLista(lista)
+            }
+        }).execute()
     }
 
     private fun validaTransacaoVindaDoFormularioReceita(
@@ -197,7 +211,7 @@ class MainActivity : AppCompatActivity() {
         AdicionaTransacoesTask(dao, mapTransacoes["superfluo"], mapTransacoes["importante"],
             object : AdicionaTransacoesTask.OnPostExecuteListener {
                 override fun porThread(transacoes: List<Transacao>) {
-                    listaTransacoesAdapter.atualiza(transacoes)
+                    listaTransacoesAdapter.atualizaLista(transacoes)
                 }
             }).execute()
     }
@@ -214,7 +228,7 @@ class MainActivity : AppCompatActivity() {
 
         AdicionaTransacaoTask(dao, transacao, object : AdicionaTransacaoTask.OnPostExecuteListener {
             override fun posThread(transacoes: List<Transacao>) {
-                listaTransacoesAdapter.atualiza(transacoes)
+                listaTransacoesAdapter.atualizaLista(transacoes)
             }
         }).execute()
     }

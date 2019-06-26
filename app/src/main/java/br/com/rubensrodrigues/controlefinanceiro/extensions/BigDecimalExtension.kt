@@ -15,3 +15,9 @@ fun BigDecimal.duasCasas() : String{
     val df = DecimalFormat("0.00")
     return df.format(this).replace(",", ".")
 }
+
+fun BigDecimal.duasCasasComVirgula() : String{
+    val df = DecimalFormat("0.00")
+    return df.format(this)
+        //.replace(".", ",")
+}

@@ -6,10 +6,7 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.view.View
 import br.com.rubensrodrigues.controlefinanceiro.R
-import br.com.rubensrodrigues.controlefinanceiro.extensions.converterReaisParaBigDecimal
-import br.com.rubensrodrigues.controlefinanceiro.extensions.duasCasas
-import br.com.rubensrodrigues.controlefinanceiro.extensions.formatoBrasileiro
-import br.com.rubensrodrigues.controlefinanceiro.extensions.toCalendar
+import br.com.rubensrodrigues.controlefinanceiro.extensions.*
 import br.com.rubensrodrigues.controlefinanceiro.model.Tipo
 import br.com.rubensrodrigues.controlefinanceiro.model.TipoSaldo
 import br.com.rubensrodrigues.controlefinanceiro.model.Transacao
@@ -19,6 +16,8 @@ import br.com.rubensrodrigues.controlefinanceiro.ui.util.CampoValorUtil
 import br.com.rubensrodrigues.controlefinanceiro.ui.util.DateUtil
 import br.com.rubensrodrigues.controlefinanceiro.ui.util.FormularioUtil
 import kotlinx.android.synthetic.main.activity_formulario_transacao.*
+import java.math.BigDecimal
+import java.util.*
 
 class FormularioTrasacaoActivity : AppCompatActivity() {
 
@@ -84,7 +83,7 @@ class FormularioTrasacaoActivity : AppCompatActivity() {
         campoTitulo.setText(transacao.titulo)
         campoCategoria.setText(transacao.categoria)
         campoData.setText(transacao.data.formatoBrasileiro())
-        campoValor.setText(transacao.valor.duasCasas())
+        campoValor.setText(transacao.valor.duasCasasComVirgula())
 
         if (transacao.tipoSaldo == TipoSaldo.SUPERFLUO) {
             seletorSaldoSuperfluo.isChecked = true
@@ -104,18 +103,22 @@ class FormularioTrasacaoActivity : AppCompatActivity() {
         botaoSalvar.setOnClickListener(object : View.OnClickListener {
             override fun onClick(v: View?) {
                 if (!FormularioUtil.ehCamposMalPreechidos(campoTitulo, campoValor)) {
-                    val titulo = campoTitulo.text.toString()
-                    val categoria = campoCategoria.text.toString()
-                    val data = campoData.text.toString().toCalendar()
-                    val valor = campoValor.text.toString().converterReaisParaBigDecimal()
-                    val tipoSaldo =
+                    val tituloNovo = campoTitulo.text.toString()
+                    val categoriaNova = campoCategoria.text.toString()
+                    val dataNova = campoData.text.toString().toCalendar()
+                    val valorNovo = campoValor.text.toString().converterReaisParaBigDecimal()
+                    val tipoSaldoNovo =
                         if (seletorSaldo.checkedRadioButtonId == R.id.formulario_transacao_radio_superfluo) {
                             TipoSaldo.SUPERFLUO
                         } else {
                             TipoSaldo.IMPORTANTE
                         }
 
-                    val transacao = Transacao(valor, Tipo.DESPESA, titulo, categoria, tipoSaldo, data)
+                    val transacao = if(!ehEdicao()){
+                        novaTransacao(valorNovo, tituloNovo, categoriaNova, tipoSaldoNovo, dataNova)
+                    } else{
+                        transacaoAlterada(valorNovo, tituloNovo, categoriaNova, tipoSaldoNovo, dataNova)
+                    }
 
                     preparaTransacoesResult(transacao)
                     finish()
@@ -123,6 +126,32 @@ class FormularioTrasacaoActivity : AppCompatActivity() {
             }
         })
     }
+
+    private fun transacaoAlterada(
+        valorNovo: BigDecimal,
+        tituloNovo: String,
+        categoriaNova: String,
+        tipoSaldoNovo: TipoSaldo,
+        dataNova: Calendar
+    ): Transacao {
+        val transacao = intent.getSerializableExtra("transacao") as Transacao
+        with(transacao) {
+            valor = valorNovo
+            titulo = tituloNovo
+            categoria = categoriaNova
+            tipoSaldo = tipoSaldoNovo
+            data = dataNova
+        }
+        return transacao
+    }
+
+    private fun novaTransacao(
+        valorNovo: BigDecimal,
+        tituloNovo: String,
+        categoriaNova: String,
+        tipoSaldoNovo: TipoSaldo,
+        dataNova: Calendar
+    ) = Transacao(valorNovo, Tipo.DESPESA, tituloNovo, categoriaNova, tipoSaldoNovo, dataNova)
 
     private fun preparaTransacoesResult(transacao: Transacao) {
         val resultadoInsercao = Intent()

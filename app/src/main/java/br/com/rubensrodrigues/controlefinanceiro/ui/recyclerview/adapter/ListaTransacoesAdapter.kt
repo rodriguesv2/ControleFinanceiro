@@ -38,6 +38,9 @@ class ListaTransacoesAdapter(
         viewHolder.vincula(transacao, listener)
     }
 
+
+
+
     private fun setaParametrosParaRemocao(
         viewHolder: TransacoesViewHolder,
         transacao: Transacao
@@ -51,12 +54,11 @@ class ListaTransacoesAdapter(
         })
     }
 
-
     fun setOnItemClickListener(listener: ListaTransacoesAdapterListener){
         this.listener = listener
     }
 
-    fun atualiza(transacoes: List<Transacao>) {
+    fun atualizaLista(transacoes: List<Transacao>) {
         this.transacoes = transacoes.toMutableList()
         notifyDataSetChanged()
     }
