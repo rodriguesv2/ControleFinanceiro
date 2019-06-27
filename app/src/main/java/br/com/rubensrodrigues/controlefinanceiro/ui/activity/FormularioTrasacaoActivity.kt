@@ -50,7 +50,8 @@ class FormularioTrasacaoActivity : AppCompatActivity() {
 
         setTitle("Adiciona Despesa")
 
-        tipoSaldoOriginal = getTransacaoEdicao().tipoSaldo
+        if (ehEdicao())
+            tipoSaldoOriginal = getTransacaoEdicao().tipoSaldo
 
         SetaPadraoParaSaldo()
         populaCamposSeEdicao()
