@@ -183,13 +183,19 @@ class MainActivity : AppCompatActivity() {
             insereDespesaNoBanco(data)
         }
 
-        if(requestCode == CODIGO_REQUEST_ALTERAR && resultCode == Activity.RESULT_OK && data!!.hasExtra("transacao")){
+        if(validaTransacaoFormularioAlterar(requestCode, resultCode, data)){
             alteraTransacaoNoBanco(data)
         }
     }
 
-    private fun alteraTransacaoNoBanco(data: Intent) {
-        val transacao = data.getSerializableExtra("transacao") as Transacao
+    private fun validaTransacaoFormularioAlterar(
+        requestCode: Int,
+        resultCode: Int,
+        data: Intent?
+    ) = requestCode == CODIGO_REQUEST_ALTERAR && resultCode == Activity.RESULT_OK && data!!.hasExtra("transacao")
+
+    private fun alteraTransacaoNoBanco(data: Intent?) {
+        val transacao = data!!.getSerializableExtra("transacao") as Transacao
         AlteraTransacaoTask(dao, transacao, object : AlteraTransacaoTask.OnPostExecuteListener {
             override fun posThread(transacoes: List<Transacao>) {
                 val lista = transacoes
