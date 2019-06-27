@@ -27,3 +27,10 @@ fun String.toBigDecimalOrNullDeVirgulaParaPonto() : BigDecimal?{
     val novaString = this.replace(",", ".")
     return novaString.toBigDecimalOrNull()
 }
+
+fun String.vinteCaracteres() : String{
+    if(this.length > 20){
+        return "${this.substring(0, 20)}..."
+    }
+    return this
+}

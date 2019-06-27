@@ -7,6 +7,7 @@ import android.view.*
 import br.com.rubensrodrigues.controlefinanceiro.R
 import br.com.rubensrodrigues.controlefinanceiro.extensions.formatoBrasileiro
 import br.com.rubensrodrigues.controlefinanceiro.extensions.formatoBrasileiroMonetario
+import br.com.rubensrodrigues.controlefinanceiro.extensions.vinteCaracteres
 import br.com.rubensrodrigues.controlefinanceiro.model.TipoSaldo
 import br.com.rubensrodrigues.controlefinanceiro.model.Transacao
 import br.com.rubensrodrigues.controlefinanceiro.persistence.util.DBUtil
@@ -77,9 +78,6 @@ class ListaTransacoesAdapter(
         private val cardView = itemView.item_transacao_cardview
         private val data = itemView.item_transacao_data
 
-        private val id = itemView.item_transacao_id
-        private val saldo = itemView.item_transacao_saldo
-
         private val HORIZONTAL_BIAS_DIREITA = 1f
         private val HORIZONTAL_BIAS_ESQUERDA = 0f
 
@@ -126,13 +124,10 @@ class ListaTransacoesAdapter(
 
         private fun setaCampos(transacao: Transacao) {
             tipo.text = transacao.tipo.name
-            titulo.text = transacao.titulo
+            titulo.text = transacao.titulo.vinteCaracteres()
             categoria.text = transacao.categoria
             valor.text = transacao.valor.formatoBrasileiroMonetario()
             data.text = transacao.data.formatoBrasileiro()
-
-            id.text = "ID: ${transacao.id}"
-            saldo.text = transacao.tipoSaldo.name
         }
 
     }

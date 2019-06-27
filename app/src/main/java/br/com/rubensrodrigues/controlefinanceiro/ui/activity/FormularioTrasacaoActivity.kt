@@ -54,9 +54,9 @@ class FormularioTrasacaoActivity : AppCompatActivity() {
             tipoSaldoOriginal = getTransacaoEdicao().tipoSaldo
 
         SetaPadraoParaSaldo()
+        configuraDropdownCategoria()
         populaCamposSeEdicao()
         aplicaRegraDeEdicaoDeTextoCampoValor()
-        configuraDropdownCategoria()
         configuraCampoData()
         configuraCliqueBotaoSalvar()
     }
