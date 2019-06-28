@@ -45,18 +45,15 @@
                     app:layout_constraintTop_toBottomOf="@id/item_transacao_container_titulo"
                     android:background="#FF9800"/>
 
-            <TextView
-                    android:id="@+id/item_transacao_valor"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
-                    android:layout_marginBottom="5dp"
-                    tools:text="R$ 50"
-                    android:textSize="20sp"
-                    android:textColor="@color/receita"
-                    app:layout_constraintTop_toBottomOf="@id/item_transacao_categoria"
-                    app:layout_constraintStart_toStartOf="@+id/item_transacao_categoria"
-                    app:layout_constraintBottom_toBottomOf="parent"/>
+            <ImageView
+                    android:id="@+id/item_transacao_seta"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:src="@drawable/seta_receita"
+                    app:layout_constraintTop_toTopOf="@id/item_transacao_container_titulo"
+                    app:layout_constraintEnd_toEndOf="@id/item_transacao_container_titulo"
+                    app:layout_constraintBottom_toBottomOf="@id/item_transacao_container_titulo"
+            />
 
             <TextView
                     android:id="@+id/item_transacao_titulo"
@@ -80,6 +77,19 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="@id/item_transacao_separador"
                     tools:text="Comida"/>
+
+            <TextView
+                    android:id="@+id/item_transacao_valor"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginBottom="5dp"
+                    tools:text="R$ 50"
+                    android:textSize="20sp"
+                    android:textColor="@color/receita"
+                    app:layout_constraintTop_toBottomOf="@id/item_transacao_categoria"
+                    app:layout_constraintStart_toStartOf="@+id/item_transacao_categoria"
+                    app:layout_constraintBottom_toBottomOf="parent"/>
 
             <TextView
                     android:id="@+id/item_transacao_data"

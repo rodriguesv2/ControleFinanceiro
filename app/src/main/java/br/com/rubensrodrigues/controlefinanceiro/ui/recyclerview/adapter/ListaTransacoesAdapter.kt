@@ -74,6 +74,7 @@ class ListaTransacoesAdapter(
     class TransacoesViewHolder(val context: Context, itemView: View) : RecyclerView.ViewHolder(itemView), View.OnCreateContextMenuListener{
 
         private val containerTitulo = itemView.item_transacao_container_titulo
+        private val imagemSeta = itemView.item_transacao_seta
         private val titulo = itemView.item_transacao_titulo
         private val categoria = itemView.item_transacao_categoria
         private val valor = itemView.item_transacao_valor
@@ -130,18 +131,20 @@ class ListaTransacoesAdapter(
             data.text = transacao.data.formatoBrasileiro()
             valor.text = transacao.valor.formatoBrasileiroMonetario()
 
-            mudaCorPorTipo(transacao)
+            mudaDecoracaoPorTipo(transacao)
 
         }
 
-        private fun mudaCorPorTipo(transacao: Transacao) {
+        private fun mudaDecoracaoPorTipo(transacao: Transacao) {
             val vermelho = ContextCompat.getColor(context, R.color.despesa)
             val verde = ContextCompat.getColor(context, R.color.receita)
 
             if (transacao.tipo == Tipo.DESPESA) {
                 mudaCorCard(vermelho)
+                imagemSeta.setImageResource(R.drawable.seta_despesa)
             } else {
                 mudaCorCard(verde)
+                imagemSeta.setImageResource(R.drawable.seta_receita)
             }
         }
 
