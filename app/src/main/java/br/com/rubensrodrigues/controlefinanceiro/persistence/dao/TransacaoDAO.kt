@@ -1,6 +1,6 @@
 package br.com.rubensrodrigues.controlefinanceiro.persistence.dao
 
-import android.arch.persistence.room.*
+import androidx.room.*
 import br.com.rubensrodrigues.controlefinanceiro.model.TipoSaldo
 import br.com.rubensrodrigues.controlefinanceiro.model.Transacao
 import java.math.BigDecimal

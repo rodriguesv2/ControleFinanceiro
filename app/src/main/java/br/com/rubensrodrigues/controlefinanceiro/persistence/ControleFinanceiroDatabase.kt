@@ -1,8 +1,8 @@
 package br.com.rubensrodrigues.controlefinanceiro.persistence
 
-import android.arch.persistence.room.Database
-import android.arch.persistence.room.RoomDatabase
-import android.arch.persistence.room.TypeConverters
+import androidx.room.Database
+import androidx.room.RoomDatabase
+import androidx.room.TypeConverters
 import br.com.rubensrodrigues.controlefinanceiro.persistence.dao.TransacaoDAO
 import br.com.rubensrodrigues.controlefinanceiro.model.Transacao
 import br.com.rubensrodrigues.controlefinanceiro.persistence.converter.ConversorBigDecimal

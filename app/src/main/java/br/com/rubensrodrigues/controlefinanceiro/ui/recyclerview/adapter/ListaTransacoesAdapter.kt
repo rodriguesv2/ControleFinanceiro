@@ -1,9 +1,9 @@
 package br.com.rubensrodrigues.controlefinanceiro.ui.recyclerview.adapter
 
 import android.content.Context
-import android.support.constraint.ConstraintSet
-import android.support.v4.content.ContextCompat
-import android.support.v7.widget.RecyclerView
+import androidx.constraintlayout.widget.ConstraintSet
+import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.RecyclerView
 import android.view.*
 import br.com.rubensrodrigues.controlefinanceiro.R
 import br.com.rubensrodrigues.controlefinanceiro.extensions.formatoBrasileiro

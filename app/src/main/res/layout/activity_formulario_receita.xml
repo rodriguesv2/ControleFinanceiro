@@ -9,12 +9,12 @@
         android:fillViewport="true"
         tools:context=".ui.activity.FormularioReceitaActivity">
 
-    <android.support.constraint.ConstraintLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
 
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-        <android.support.design.widget.TextInputLayout
+        <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/formulario_receita_titulo"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -27,7 +27,7 @@
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         >
 
-            <android.support.design.widget.TextInputEditText
+            <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/formulario_receita_titulo_edittext"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -35,9 +35,9 @@
                     android:inputType="text"
                     android:hint="Titulo"
             />
-        </android.support.design.widget.TextInputLayout>
+        </com.google.android.material.textfield.TextInputLayout>
 
-        <android.support.design.widget.TextInputLayout
+        <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/formulario_receita_categoria"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -49,7 +49,7 @@
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         >
 
-            <android.support.design.widget.TextInputEditText
+            <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/formulario_receita_categoria_edittext"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -57,9 +57,9 @@
                     android:hint="Categoria"
                     android:focusable="false"
             />
-        </android.support.design.widget.TextInputLayout>
+        </com.google.android.material.textfield.TextInputLayout>
 
-        <android.support.design.widget.TextInputLayout
+        <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/formulario_receita_data"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -71,16 +71,16 @@
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         >
 
-            <android.support.design.widget.TextInputEditText
+            <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/formulario_receita_data_edittext"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="Data"
                     android:focusable="false"
             />
-        </android.support.design.widget.TextInputLayout>
+        </com.google.android.material.textfield.TextInputLayout>
 
-        <android.support.design.widget.TextInputLayout
+        <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/formulario_receita_valor"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -92,7 +92,7 @@
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         >
 
-            <android.support.design.widget.TextInputEditText
+            <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/formulario_receita_valor_edittext"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -100,7 +100,7 @@
                     android:inputType="numberDecimal"
                     android:hint="Valor (R$)"
             />
-        </android.support.design.widget.TextInputLayout>
+        </com.google.android.material.textfield.TextInputLayout>
 
         <TextView
                 android:id="@+id/formulario_receita_proporcao_info"
@@ -190,5 +190,5 @@
         />
 
 
-    </android.support.constraint.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

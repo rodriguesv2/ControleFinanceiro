@@ -1,6 +1,6 @@
 package br.com.rubensrodrigues.controlefinanceiro.persistence.converter
 
-import android.arch.persistence.room.TypeConverter
+import androidx.room.TypeConverter
 import br.com.rubensrodrigues.controlefinanceiro.model.Tipo
 
 class ConversorTipo {

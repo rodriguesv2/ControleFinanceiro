@@ -1,7 +1,7 @@
 package br.com.rubensrodrigues.controlefinanceiro.ui.dropdown
 
 import android.content.Context
-import android.support.design.widget.TextInputEditText
+import com.google.android.material.textfield.TextInputEditText
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
@@ -31,7 +31,8 @@ object EditTextDropDown{
     private fun configuraAdapterEAncora(context: Context,
                                         popupLista: ListPopupWindow,
                                         lista: Array<String>,
-                                        campoDeTexto: TextInputEditText) {
+                                        campoDeTexto: TextInputEditText
+    ) {
         popupLista.setAdapter(ArrayAdapter<String>(context, android.R.layout.simple_list_item_1, lista))
         popupLista.anchorView = campoDeTexto
         popupLista.isModal = false
