@@ -15,12 +15,13 @@ import br.com.rubensrodrigues.controlefinanceiro.persistence.asynktask.*
 import br.com.rubensrodrigues.controlefinanceiro.persistence.util.DBUtil
 import br.com.rubensrodrigues.controlefinanceiro.ui.recyclerview.adapter.ListaTransacoesAdapter
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.banner_saldos.*
 import java.math.BigDecimal
 
 class MainActivity : AppCompatActivity() {
 
-    private val infoValorImportante by lazy {main_container_info_importante_valor}
-    private val infoValorSuperpluo by lazy {main_container_info_supérfluo_valor}
+    private val infoValorImportante by lazy {banner_info_importante_valor}
+    private val infoValorSuperpluo by lazy {banner_info_superfluo_valor}
     private val fabReceita by lazy {main_fab_receita}
     private val fabDespesa by lazy {main_fab_despesa}
     private val fabMenu by lazy {main_fab_menu}
