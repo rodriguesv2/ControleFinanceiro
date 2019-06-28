@@ -38,7 +38,7 @@ object CampoValorUtil {
             quantidadeDeVirgulas++
 
         if (editavel!!.isNotEmpty()) {
-            if (quantidadeDeVirgulas >= 2 || editavel[0] == ',')
+            if (quantidadeDeVirgulas >= 2 || editavel[0] == ',' && posicaoCursor != 0)
                 editavel.delete(posicaoCursor - 1, posicaoCursor)
         }
     }
