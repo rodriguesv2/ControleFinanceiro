@@ -56,7 +56,7 @@ class MainActivity : AppCompatActivity() {
     private fun dialogoConfimaExclusao() {
         AlertDialog.Builder(this)
             .setTitle("Remover")
-            .setMessage("Deseja remove transação?")
+            .setMessage("Deseja remover transação?")
             .setPositiveButton("Sim") { dialog, which ->
                 logicaBotaoPositivoDialogoRemocao()
             }
