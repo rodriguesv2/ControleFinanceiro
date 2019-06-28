@@ -19,7 +19,10 @@ fun String.converterReaisParaBigDecimal() : BigDecimal{
 
 fun CharSequence.converterReaisParaBigDecimal() : BigDecimal{
     val valor = this.toString()
-    val valorLimpo = valor.replace("R$ ", "").replace(",", ".")
+    val valorLimpo = valor
+        .replace("R$ ", "")
+        .replace(".", "")
+        .replace(",", ".")
     return valorLimpo.toBigDecimal()
 }
 

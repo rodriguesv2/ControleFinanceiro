@@ -2,12 +2,14 @@ package br.com.rubensrodrigues.controlefinanceiro.ui.recyclerview.adapter
 
 import android.content.Context
 import android.support.constraint.ConstraintSet
+import android.support.v4.content.ContextCompat
 import android.support.v7.widget.RecyclerView
 import android.view.*
 import br.com.rubensrodrigues.controlefinanceiro.R
 import br.com.rubensrodrigues.controlefinanceiro.extensions.formatoBrasileiro
 import br.com.rubensrodrigues.controlefinanceiro.extensions.formatoBrasileiroMonetario
 import br.com.rubensrodrigues.controlefinanceiro.extensions.vinteCaracteres
+import br.com.rubensrodrigues.controlefinanceiro.model.Tipo
 import br.com.rubensrodrigues.controlefinanceiro.model.TipoSaldo
 import br.com.rubensrodrigues.controlefinanceiro.model.Transacao
 import br.com.rubensrodrigues.controlefinanceiro.persistence.util.DBUtil
@@ -26,7 +28,7 @@ class ListaTransacoesAdapter(
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, p1: Int): TransacoesViewHolder {
         val view = LayoutInflater.from(context).inflate(R.layout.item_transacao, viewGroup, false)
-        return TransacoesViewHolder(view)
+        return TransacoesViewHolder(context, view)
     }
 
     override fun getItemCount(): Int {
@@ -69,9 +71,9 @@ class ListaTransacoesAdapter(
         notifyItemRemoved(posicao)
     }
 
-    class TransacoesViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView), View.OnCreateContextMenuListener{
+    class TransacoesViewHolder(val context: Context, itemView: View) : RecyclerView.ViewHolder(itemView), View.OnCreateContextMenuListener{
 
-        private val tipo = itemView.item_transacao_tipo
+        private val containerTitulo = itemView.item_transacao_container_titulo
         private val titulo = itemView.item_transacao_titulo
         private val categoria = itemView.item_transacao_categoria
         private val valor = itemView.item_transacao_valor
@@ -85,7 +87,7 @@ class ListaTransacoesAdapter(
             transacao: Transacao,
             listener: ListaTransacoesAdapterListener){
 
-            setaCampos(transacao)
+            setaInfos(transacao)
             setaBiasHorizontalDoCardview(transacao)
             acaoDeClique(listener, transacao)
 
@@ -122,12 +124,30 @@ class ListaTransacoesAdapter(
             constraintSet.applyTo(itemView.item_transacao_layout)
         }
 
-        private fun setaCampos(transacao: Transacao) {
-            tipo.text = transacao.tipo.name
+        private fun setaInfos(transacao: Transacao) {
             titulo.text = transacao.titulo.vinteCaracteres()
             categoria.text = transacao.categoria
-            valor.text = transacao.valor.formatoBrasileiroMonetario()
             data.text = transacao.data.formatoBrasileiro()
+            valor.text = transacao.valor.formatoBrasileiroMonetario()
+
+            mudaCorPorTipo(transacao)
+
+        }
+
+        private fun mudaCorPorTipo(transacao: Transacao) {
+            val vermelho = ContextCompat.getColor(context, R.color.despesa)
+            val verde = ContextCompat.getColor(context, R.color.receita)
+
+            if (transacao.tipo == Tipo.DESPESA) {
+                mudaCorCard(vermelho)
+            } else {
+                mudaCorCard(verde)
+            }
+        }
+
+        private fun mudaCorCard(cor: Int) {
+            valor.setTextColor(cor)
+            containerTitulo.setBackgroundColor(cor)
         }
 
     }

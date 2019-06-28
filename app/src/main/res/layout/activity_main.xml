@@ -101,9 +101,9 @@
                 android:layout_height="wrap_content"
                 app:fab_label="Receita"
                 app:fab_size="mini"
-                app:fab_colorNormal="@color/fab_normal"
-                app:fab_colorPressed="@color/fab_Pressed"
-                app:fab_colorRipple="@color/fab_Ripple"
+                app:fab_colorNormal="@color/receita"
+                app:fab_colorPressed="@color/fab_pressed_receita"
+                app:fab_colorRipple="@color/fab_ripple_receita"
                 android:src="@drawable/fab_arrow_up"
         />
 
@@ -113,9 +113,9 @@
                 android:layout_height="wrap_content"
                 app:fab_label="Despesa"
                 app:fab_size="mini"
-                app:fab_colorNormal="@color/fab_normal"
-                app:fab_colorPressed="@color/fab_Pressed"
-                app:fab_colorRipple="@color/fab_Ripple"
+                app:fab_colorNormal="@color/despesa"
+                app:fab_colorPressed="@color/fab_pressed_despesa"
+                app:fab_colorRipple="@color/fab_ripple_despesa"
                 android:src="@drawable/fab_arrow_down"
         />
 

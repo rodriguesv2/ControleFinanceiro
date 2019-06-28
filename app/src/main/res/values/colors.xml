@@ -7,4 +7,10 @@
     <color name="fab_Pressed">#a86014</color>
     <color name="fab_Ripple">#c47829</color>
     <color name="button">#1E88E5</color>
+    <color name="despesa">#F44336</color>
+    <color name="receita">#0277BD</color>
+    <color name="fab_pressed_receita">#0288D1</color>
+    <color name="fab_ripple_receita">#039BE5</color>
+    <color name="fab_pressed_despesa">#EF5350</color>
+    <color name="fab_ripple_despesa">#E57373</color>
 </resources>
