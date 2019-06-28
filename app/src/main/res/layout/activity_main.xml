@@ -21,6 +21,7 @@
             />
 
     <com.google.android.material.appbar.AppBarLayout
+            android:id="@+id/main_collapse_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
@@ -31,8 +32,9 @@
             android:id="@+id/main_fab_menu"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:layout_marginEnd="10dp"
             android:layout_gravity="bottom|end"
-            android:layout_margin="10dp"
             app:menu_showShadow="true"
             app:menu_colorNormal="@color/fab_normal"
             app:menu_colorPressed="@color/fab_Pressed"
