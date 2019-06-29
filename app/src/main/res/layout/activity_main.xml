@@ -42,6 +42,18 @@
             app:menu_openDirection="up"
     >
         <com.github.clans.fab.FloatingActionButton
+                android:id="@+id/main_fab_transferencia"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:fab_label="Transferência"
+                app:fab_size="mini"
+                app:fab_colorNormal="@color/fab_normal"
+                app:fab_colorPressed="@color/fab_Pressed"
+                app:fab_colorRipple="@color/fab_Ripple"
+                android:src="@drawable/transferencia"
+        />
+
+        <com.github.clans.fab.FloatingActionButton
                 android:id="@+id/main_fab_receita"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
