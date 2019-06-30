@@ -74,22 +74,7 @@ class MainActivity : AppCompatActivity() {
         val transacao = listaTransacoesAdapter.transacao
 
         if(transacao.categoria == "Transferência"){
-            val idReceita: Long
-            val idDespesa: Long
-
-            if(transacao.tipo == Tipo.RECEITA){
-                idReceita = transacao.id
-                idDespesa = transacao.id - 1L
-            }else{
-                idReceita = transacao.id + 1L
-                idDespesa = transacao.id
-            }
-
-            RemoveTransacoesPorIdsTask(dao, object: RemoveTransacoesPorIdsTask.OnPostExecuteListener{
-                override fun posThread(transacoes: List<Transacao>) {
-                    listaTransacoesAdapter.removeTransferencias(transacoes,transacao)
-                }
-            }, idReceita, idDespesa).execute()
+            remocaoQuandoTransferencia(transacao)
 
         }else{
             RemoveTransacaoTask(dao, transacao, object : RemoveTransacaoTask.OnPostExecuteListener {
@@ -99,6 +84,25 @@ class MainActivity : AppCompatActivity() {
                 }
             }).execute()
         }
+    }
+
+    private fun remocaoQuandoTransferencia(transacao: Transacao) {
+        val idReceita: Long
+        val idDespesa: Long
+
+        if (transacao.tipo == Tipo.RECEITA) {
+            idReceita = transacao.id
+            idDespesa = transacao.id - 1L
+        } else {
+            idReceita = transacao.id + 1L
+            idDespesa = transacao.id
+        }
+
+        RemoveTransacoesPorIdsTask(dao, object : RemoveTransacoesPorIdsTask.OnPostExecuteListener {
+            override fun posThread(transacoes: List<Transacao>) {
+                listaTransacoesAdapter.removeTransferencias(transacoes, transacao)
+            }
+        }, idReceita, idDespesa).execute()
     }
 
     private fun threadDeConfiguracaoDaRecycleView() {

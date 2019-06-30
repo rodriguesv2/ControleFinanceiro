@@ -4,6 +4,7 @@ import android.app.AlertDialog
 import android.content.Context
 import android.content.DialogInterface
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import br.com.rubensrodrigues.controlefinanceiro.R
 import br.com.rubensrodrigues.controlefinanceiro.extensions.converterReaisParaBigDecimal
@@ -12,6 +13,7 @@ import br.com.rubensrodrigues.controlefinanceiro.model.Tipo
 import br.com.rubensrodrigues.controlefinanceiro.model.TipoSaldo
 import br.com.rubensrodrigues.controlefinanceiro.model.Transacao
 import br.com.rubensrodrigues.controlefinanceiro.ui.util.CampoValorUtil
+import br.com.rubensrodrigues.controlefinanceiro.ui.util.FormularioUtil
 import kotlinx.android.synthetic.main.transferencia_dialog.view.*
 import java.math.BigDecimal
 import java.util.*
@@ -31,16 +33,23 @@ class TransferenciaDialog(private val context: Context,
              delegate: (transacaoDespesa: Transacao, transacaoReceita: Transacao) -> Unit) {
 
         aplicaRegraDeEdicaoDeTextoCampoValor()
+        decideQuaisRadiosAtivos(ehSuperfluoInsuficiente, ehImportanteInsuficiente, delegate)
+    }
 
-        if (ehSuperfluoInsuficiente && ehImportanteInsuficiente){
-            alertaInformativosSemSaldoGeral()
+    private fun decideQuaisRadiosAtivos(
+        ehSuperfluoInsuficiente: Boolean,
+        ehImportanteInsuficiente: Boolean,
+        delegate: (transacaoDespesa: Transacao, transacaoReceita: Transacao) -> Unit
+    ) {
+        if (ehSuperfluoInsuficiente && ehImportanteInsuficiente) {
+            alertaInformativoSemSaldoGeral()
 
-        } else if (ehSuperfluoInsuficiente){
+        } else if (ehSuperfluoInsuficiente) {
             abreAlertFormulario(delegate)
             superfluoParaImportante.isEnabled = false
             importanteParaSuperfluo.isChecked = true
 
-        } else if (ehImportanteInsuficiente){
+        } else if (ehImportanteInsuficiente) {
             abreAlertFormulario(delegate)
             importanteParaSuperfluo.isEnabled = false
             superfluoParaImportante.isChecked = true
@@ -51,7 +60,7 @@ class TransferenciaDialog(private val context: Context,
         }
     }
 
-    private fun alertaInformativosSemSaldoGeral() {
+    private fun alertaInformativoSemSaldoGeral() {
         AlertDialog.Builder(context)
             .setTitle("Saldos insuficientes")
             .setMessage("Ambos os saldos estão zerados ou negativos")
@@ -60,16 +69,32 @@ class TransferenciaDialog(private val context: Context,
     }
 
     private fun abreAlertFormulario(delegate: (transacaoDespesa: Transacao, transacaoReceita: Transacao) -> Unit) {
-        AlertDialog.Builder(context)
+        val dialog = criaAlertDialog()
+        configuracaoBotaoPositivo(dialog, delegate)
+    }
+
+    private fun criaAlertDialog(): AlertDialog {
+        return AlertDialog.Builder(context)
             .setTitle("Transferência de Saldo")
             .setView(viewCriada)
-            .setPositiveButton("Salvar", object : DialogInterface.OnClickListener{
-                override fun onClick(dialog: DialogInterface?, which: Int) {
-                    acaoDoBotaoPositivoAlertFormulario(delegate)
-                }
-            })
+            .setPositiveButton("Salvar", null)
             .setNegativeButton("Cancelar", null)
             .show()
+    }
+
+    private fun configuracaoBotaoPositivo(
+        dialog: AlertDialog,
+        delegate: (transacaoDespesa: Transacao, transacaoReceita: Transacao) -> Unit
+    ) {
+        val positiveButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE)
+        positiveButton.setOnClickListener(object : View.OnClickListener {
+            override fun onClick(v: View?) {
+                if (!FormularioUtil.ehCampoValorMalPreenchido(campoValor)) {
+                    acaoDoBotaoPositivoAlertFormulario(delegate)
+                    dialog.dismiss()
+                }
+            }
+        })
     }
 
     private fun acaoDoBotaoPositivoAlertFormulario(delegate: (transacaoDespesa: Transacao, transacaoReceita: Transacao) -> Unit) {
