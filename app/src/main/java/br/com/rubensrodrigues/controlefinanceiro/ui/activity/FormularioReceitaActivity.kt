@@ -40,7 +40,7 @@ class FormularioReceitaActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_formulario_receita)
 
-        setTitle("Adiciona Receita")
+        title = "Adiciona Receita"
 
         injetaDropdownCampoCategoria()
 

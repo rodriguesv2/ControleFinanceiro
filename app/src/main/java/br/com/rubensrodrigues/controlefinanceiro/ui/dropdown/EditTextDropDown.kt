@@ -33,7 +33,7 @@ object EditTextDropDown{
                                         lista: Array<String>,
                                         campoDeTexto: TextInputEditText
     ) {
-        popupLista.setAdapter(ArrayAdapter<String>(context, android.R.layout.simple_list_item_1, lista))
+        popupLista.setAdapter(ArrayAdapter(context, android.R.layout.simple_list_item_1, lista))
         popupLista.anchorView = campoDeTexto
         popupLista.isModal = false
     }

@@ -23,7 +23,6 @@ class ListaTransacoesAdapter(
     lateinit var transacao : Transacao
     var posicao = -1
     private lateinit var listener: ListaTransacoesAdapterListener
-    private val dao = DBUtil.getInstance(context).getTransacaoDao()
 
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, p1: Int): TransacoesViewHolder {

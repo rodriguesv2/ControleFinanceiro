@@ -277,8 +277,7 @@ class MainActivity : AppCompatActivity() {
         val transacao = data!!.getSerializableExtra("transacao") as Transacao
         AlteraTransacaoTask(dao, transacao, object : AlteraTransacaoTask.OnPostExecuteListener {
             override fun posThread(transacoes: List<Transacao>) {
-                val lista = transacoes
-                listaTransacoesAdapter.atualizaLista(lista)
+                listaTransacoesAdapter.atualizaLista(transacoes)
             }
         }).execute()
     }

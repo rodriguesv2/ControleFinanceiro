@@ -48,12 +48,12 @@ class FormularioTrasacaoActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_formulario_transacao)
 
-        setTitle("Adiciona Despesa")
+        title = "Adiciona Despesa"
 
         if (ehEdicao())
             tipoSaldoOriginal = getTransacaoEdicao().tipoSaldo
 
-        SetaPadraoParaSaldo()
+        setaPadraoParaSaldo()
         configuraDropdownCategoria()
         populaCamposSeEdicao()
         aplicaRegraDeEdicaoDeTextoCampoValor()
@@ -61,7 +61,7 @@ class FormularioTrasacaoActivity : AppCompatActivity() {
         configuraCliqueBotaoSalvar()
     }
 
-    private fun SetaPadraoParaSaldo() {
+    private fun setaPadraoParaSaldo() {
         seletorSaldoSuperfluo.isChecked = true
         desabilitaRadioQuandoSaldoInsuficiente()
     }
@@ -115,9 +115,9 @@ class FormularioTrasacaoActivity : AppCompatActivity() {
 
     private fun escolheTituloAppBarQuandoEdicao(transacao: Transacao) {
         if (transacao.tipo == Tipo.DESPESA)
-            setTitle("Edita Despesa")
+            title = "Edita Despesa"
         else
-            setTitle("Edita Receita")
+            title = "Edita Receita"
     }
 
     private fun configuraCliqueBotaoSalvar() {
