@@ -18,10 +18,11 @@ object DateDialog {
             DatePickerDialog(
                 context, object : DatePickerDialog.OnDateSetListener {
                     override fun onDateSet(view: DatePicker?, year: Int, month: Int, dayOfMonth: Int) {
-                        val dataSeleciona = Calendar.getInstance()
-                        dataSeleciona.set(year, month, dayOfMonth)
+                        val dataSelecionada = Calendar.getInstance()
+                        dataSelecionada.clear()
+                        dataSelecionada.set(year, month, dayOfMonth)
 
-                        campoData.setText(dataSeleciona.formatoBrasileiro())
+                        campoData.setText(dataSelecionada.formatoBrasileiro())
                     }
                 },
                 diaSelecionado.get(Calendar.YEAR),

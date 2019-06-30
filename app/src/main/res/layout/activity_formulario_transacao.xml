@@ -73,7 +73,7 @@
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/formulario_transacao_valor"
+                android:id="@+id/transferencia_valor"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
@@ -99,8 +99,8 @@
                 android:text="selecione o saldo"
                 android:textSize="18sp"
                 android:layout_marginTop="8dp"
-                app:layout_constraintStart_toStartOf="@id/formulario_transacao_valor"
-                app:layout_constraintTop_toBottomOf="@id/formulario_transacao_valor"
+                app:layout_constraintStart_toStartOf="@id/transferencia_valor"
+                app:layout_constraintTop_toBottomOf="@id/transferencia_valor"
         />
 
         <RadioGroup
@@ -151,7 +151,7 @@
                 android:layout_marginStart="5dp"
                 android:layout_marginEnd="5dp"
                 app:layout_constraintStart_toStartOf="@id/formulario_transacao_seletor_saldo"
-                app:layout_constraintEnd_toEndOf="@id/formulario_transacao_valor"
+                app:layout_constraintEnd_toEndOf="@id/transferencia_valor"
                 app:layout_constraintTop_toBottomOf="@id/formulario_transacao_seletor_saldo"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>

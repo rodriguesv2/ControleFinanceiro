@@ -12,7 +12,7 @@ interface TransacaoDAO {
     fun insere(transacao: Transacao) : Long
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insereVarios(vararg transacoes: Transacao)
+    fun insereVarios(transacoes: List<Transacao>)
 
     @Delete
     fun remove(transacao: Transacao)

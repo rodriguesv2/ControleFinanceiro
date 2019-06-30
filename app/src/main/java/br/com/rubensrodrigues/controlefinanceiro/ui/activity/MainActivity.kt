@@ -7,12 +7,15 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import android.view.MenuItem
 import android.view.View
+import android.view.ViewGroup
+import android.widget.Toast
 import br.com.rubensrodrigues.controlefinanceiro.R
 import br.com.rubensrodrigues.controlefinanceiro.extensions.converterReaisParaBigDecimal
 import br.com.rubensrodrigues.controlefinanceiro.extensions.formatoBrasileiroMonetario
 import br.com.rubensrodrigues.controlefinanceiro.model.Transacao
 import br.com.rubensrodrigues.controlefinanceiro.persistence.asynktask.*
 import br.com.rubensrodrigues.controlefinanceiro.persistence.util.DBUtil
+import br.com.rubensrodrigues.controlefinanceiro.ui.dialog.TransferenciaDialog
 import br.com.rubensrodrigues.controlefinanceiro.ui.recyclerview.adapter.ListaTransacoesAdapter
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.banner_saldos.*
@@ -20,10 +23,13 @@ import java.math.BigDecimal
 
 class MainActivity : AppCompatActivity() {
 
+    private val viewGroup by lazy {window.decorView as ViewGroup}
+
     private val infoValorImportante by lazy {banner_info_importante_valor}
     private val infoValorSuperpluo by lazy {banner_info_superfluo_valor}
     private val fabReceita by lazy {main_fab_receita}
     private val fabDespesa by lazy {main_fab_despesa}
+    private val fabTransferencia by lazy {main_fab_transferencia}
     private val fabMenu by lazy {main_fab_menu}
 
     private val CODIGO_REQUEST_INSERIR_RECEITA = 1
@@ -39,7 +45,6 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         threadDeConfiguracaoDaRecycleView()
-
         configuraCliqueFabs()
     }
 
@@ -96,6 +101,46 @@ class MainActivity : AppCompatActivity() {
                 logicaParaIrFormularioDespesa()
             }
         })
+
+        fabTransferencia.setOnClickListener(object: View.OnClickListener{
+            override fun onClick(v: View?) {
+                mostraFormularioEAtualizaLista()
+            }
+        })
+    }
+
+    private fun mostraFormularioEAtualizaLista() {
+        TotaisPorTipoTask(dao, object : TotaisPorTipoTask.OnPostExecuteListener {
+            override fun posThread(valores: HashMap<String, BigDecimal>) {
+                val ehSuperfluoInsuficiente = valores["superfluo"]!!.compareTo(BigDecimal.ZERO) <= 0
+                val ehImportanteInsuficiente = valores["importante"]!!.compareTo(BigDecimal.ZERO) <= 0
+
+                fabMenu.close(true)
+                mostraDialog(ehSuperfluoInsuficiente, ehImportanteInsuficiente)
+            }
+        }).execute()
+    }
+
+    private fun mostraDialog(ehSuperfluoInsuficiente: Boolean, ehImportanteInsuficiente: Boolean) {
+        TransferenciaDialog(this@MainActivity, viewGroup)
+            .cria(
+                ehSuperfluoInsuficiente,
+                ehImportanteInsuficiente
+            ) { transacaoDespesa, transacaoReceita ->
+                adicionaTransacoesEAtualizaLista(transacaoDespesa, transacaoReceita)
+            }
+    }
+
+    private fun adicionaTransacoesEAtualizaLista(
+        transacaoDespesa: Transacao,
+        transacaoReceita: Transacao
+    ) {
+        AdicionaTransacoesTask(dao, object : AdicionaTransacoesTask.OnPostExecuteListener {
+            override fun porThread(transacoes: List<Transacao>) {
+                listaTransacoesAdapter.atualizaLista(transacoes)
+                configuraTextFieldsDeSaldos()
+            }
+        }, transacaoDespesa, transacaoReceita).execute()
     }
 
     private fun logicaParaIrFormularioDespesa() {
@@ -164,9 +209,16 @@ class MainActivity : AppCompatActivity() {
     private fun configuraCliqueItemListaTransacoes() {
         listaTransacoesAdapter.setOnItemClickListener(object : ListaTransacoesAdapter.ListaTransacoesAdapterListener {
             override fun simplesCliqueItem(transacao: Transacao) {
-                val vaiParaFormulario = getIntentParaFomulario()
-                vaiParaFormulario.putExtra("transacao", transacao)
-                startActivityForResult(vaiParaFormulario, CODIGO_REQUEST_ALTERAR)
+                if (transacao.categoria != "Transferência"){
+                    val vaiParaFormulario = getIntentParaFomulario()
+                    vaiParaFormulario.putExtra("transacao", transacao)
+                    startActivityForResult(vaiParaFormulario, CODIGO_REQUEST_ALTERAR)
+                } else {
+                    Toast
+                        .makeText(this@MainActivity, "Não é possível editar transferência", Toast.LENGTH_SHORT)
+                        .show()
+                }
+
             }
         })
     }
@@ -215,8 +267,8 @@ class MainActivity : AppCompatActivity() {
     private fun insereReceitasNoBanco(data: Intent?) {
         val mapTransacoes = data!!.getSerializableExtra("transacoes") as MutableMap<String, Transacao>
 
-        AdicionaTransacoesTask(dao, mapTransacoes["superfluo"], mapTransacoes["importante"],
-            object : AdicionaTransacoesTask.OnPostExecuteListener {
+        AdicionaTransacoesPorTipoTask(dao, mapTransacoes["superfluo"], mapTransacoes["importante"],
+            object : AdicionaTransacoesPorTipoTask.OnPostExecuteListener {
                 override fun porThread(transacoes: List<Transacao>) {
                     listaTransacoesAdapter.atualizaLista(transacoes)
                 }
