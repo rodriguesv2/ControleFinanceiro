@@ -17,6 +17,9 @@ interface TransacaoDAO {
     @Delete
     fun remove(transacao: Transacao)
 
+    @Query("DELETE FROM Transacao WHERE id = :id")
+    fun removePor(id: Long)
+
     @Update
     fun edita(transacao: Transacao)
 

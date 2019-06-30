@@ -1,7 +1,6 @@
 package br.com.rubensrodrigues.controlefinanceiro.persistence.asynktask
 
 import android.os.AsyncTask
-import br.com.rubensrodrigues.controlefinanceiro.model.TipoSaldo
 import br.com.rubensrodrigues.controlefinanceiro.model.Transacao
 import br.com.rubensrodrigues.controlefinanceiro.persistence.dao.TransacaoDAO
 

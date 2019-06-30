@@ -4,14 +4,15 @@ import android.app.Activity
 import android.app.AlertDialog
 import android.content.Intent
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import br.com.rubensrodrigues.controlefinanceiro.R
 import br.com.rubensrodrigues.controlefinanceiro.extensions.converterReaisParaBigDecimal
 import br.com.rubensrodrigues.controlefinanceiro.extensions.formatoBrasileiroMonetario
+import br.com.rubensrodrigues.controlefinanceiro.model.Tipo
 import br.com.rubensrodrigues.controlefinanceiro.model.Transacao
 import br.com.rubensrodrigues.controlefinanceiro.persistence.asynktask.*
 import br.com.rubensrodrigues.controlefinanceiro.persistence.util.DBUtil
@@ -71,12 +72,33 @@ class MainActivity : AppCompatActivity() {
 
     private fun logicaBotaoPositivoDialogoRemocao() {
         val transacao = listaTransacoesAdapter.transacao
-        RemoveTransacaoTask(dao, transacao, object : RemoveTransacaoTask.OnPostExecuteListener {
-            override fun posThread(transacoes: List<Transacao>) {
-                listaTransacoesAdapter.remove(transacoes)
-                configuraTextFieldsDeSaldos()
+
+        if(transacao.categoria == "Transferência"){
+            val idReceita: Long
+            val idDespesa: Long
+
+            if(transacao.tipo == Tipo.RECEITA){
+                idReceita = transacao.id
+                idDespesa = transacao.id - 1L
+            }else{
+                idReceita = transacao.id + 1L
+                idDespesa = transacao.id
             }
-        }).execute()
+
+            RemoveTransacoesPorIdsTask(dao, object: RemoveTransacoesPorIdsTask.OnPostExecuteListener{
+                override fun posThread(transacoes: List<Transacao>) {
+                    listaTransacoesAdapter.removeTransferencias(transacoes,transacao)
+                }
+            }, idReceita, idDespesa).execute()
+
+        }else{
+            RemoveTransacaoTask(dao, transacao, object : RemoveTransacaoTask.OnPostExecuteListener {
+                override fun posThread(transacoes: List<Transacao>) {
+                    listaTransacoesAdapter.remove(transacoes)
+                    configuraTextFieldsDeSaldos()
+                }
+            }).execute()
+        }
     }
 
     private fun threadDeConfiguracaoDaRecycleView() {

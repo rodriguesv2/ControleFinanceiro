@@ -71,6 +71,24 @@ class ListaTransacoesAdapter(
         notifyItemRemoved(posicao)
     }
 
+    fun removeTransferencias(transacoes: List<Transacao>, transacaoPressionada: Transacao){
+        this.transacoes = transacoes.toMutableList()
+
+        val posicaoFinal: Int
+        val posicaoInicial: Int
+
+        if (transacaoPressionada.tipo == Tipo.RECEITA){
+            posicaoFinal = posicao + 1
+            posicaoInicial = posicao
+        } else {
+            posicaoFinal = posicao
+            posicaoInicial = posicao - 1
+        }
+
+        notifyItemRemoved(posicaoFinal)
+        notifyItemRemoved(posicaoInicial)
+    }
+
     class TransacoesViewHolder(val context: Context, itemView: View) : RecyclerView.ViewHolder(itemView), View.OnCreateContextMenuListener{
 
         private val containerTitulo = itemView.item_transacao_container_titulo

@@ -2,10 +2,10 @@ package br.com.rubensrodrigues.controlefinanceiro.ui.dialog
 
 import android.app.DatePickerDialog
 import android.content.Context
-import com.google.android.material.textfield.TextInputEditText
 import android.widget.DatePicker
 import br.com.rubensrodrigues.controlefinanceiro.extensions.formatoBrasileiro
 import br.com.rubensrodrigues.controlefinanceiro.extensions.toCalendar
+import com.google.android.material.textfield.TextInputEditText
 import java.util.*
 
 object DateDialog {
