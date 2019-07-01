@@ -1,6 +1,7 @@
 package br.com.rubensrodrigues.controlefinanceiro.persistence.dao
 
 import androidx.room.*
+import br.com.rubensrodrigues.controlefinanceiro.model.Tipo
 import br.com.rubensrodrigues.controlefinanceiro.model.TipoSaldo
 import br.com.rubensrodrigues.controlefinanceiro.model.Transacao
 import java.math.BigDecimal
@@ -25,6 +26,9 @@ interface TransacaoDAO {
 
     @Query("SELECT * FROM Transacao ORDER BY data DESC, id DESC")
     fun todos() : List<Transacao>
+
+    @Query("SELECT * FROM Transacao WHERE tipo = :tipo ORDER BY data DESC, id DESC")
+    fun todosPor(tipo: Tipo): List<Transacao>
 
     @Query("SELECT * FROM Transacao WHERE id = :id")
     fun pegaTransacao(id: Long) : Transacao

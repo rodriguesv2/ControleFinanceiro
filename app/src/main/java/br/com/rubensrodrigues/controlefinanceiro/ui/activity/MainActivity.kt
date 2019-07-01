@@ -27,7 +27,7 @@ class MainActivity : AppCompatActivity() {
     private val viewGroup by lazy {window.decorView as ViewGroup}
 
     private val infoValorImportante by lazy {banner_info_importante_valor}
-    private val infoValorSuperpluo by lazy {banner_info_superfluo_valor}
+    private val infoValorSuperfluo by lazy {banner_info_superfluo_valor}
     private val fabReceita by lazy {main_fab_receita}
     private val fabDespesa by lazy {main_fab_despesa}
     private val fabTransferencia by lazy {main_fab_transferencia}
@@ -170,20 +170,26 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun logicaParaIrFormularioDespesa() {
-        val totalSuperfluo = infoValorSuperpluo.text.converterReaisParaBigDecimal()
-        val totalImportante = infoValorImportante.text.converterReaisParaBigDecimal()
+        TotaisPorTipoTask(dao, object: TotaisPorTipoTask.OnPostExecuteListener{
+            override fun posThread(valores: HashMap<String, BigDecimal>) {
+                val totalSuperfluo = valores["superfluo"]
+                val totalImportante = valores["importante"]
 
-        if (ehSaldoMenorIgualAZero(totalSuperfluo) &&
-            ehSaldoMenorIgualAZero(totalImportante)
-        ) {
-            alertParaSemAmbosSaldos()
-        } else if (ehSaldoMenorIgualAZero(totalSuperfluo)) {
-            preparaIntentEVaiParaFormularioDespesa("importante")
-        } else if (ehSaldoMenorIgualAZero(totalImportante)) {
-            preparaIntentEVaiParaFormularioDespesa("superfluo")
-        } else {
-            vaiParaFormutarioDespesa(getIntentParaFomulario())
-        }
+                if(totalSuperfluo != null && totalImportante != null){
+                    if (ehSaldoMenorIgualAZero(totalSuperfluo) &&
+                        ehSaldoMenorIgualAZero(totalImportante)
+                    ) {
+                        alertParaSemAmbosSaldos()
+                    } else if (ehSaldoMenorIgualAZero(totalSuperfluo)) {
+                        preparaIntentEVaiParaFormularioDespesa("importante")
+                    } else if (ehSaldoMenorIgualAZero(totalImportante)) {
+                        preparaIntentEVaiParaFormularioDespesa("superfluo")
+                    } else {
+                        vaiParaFormutarioDespesa(getIntentParaFomulario())
+                    }
+                }
+            }
+        }).execute()
     }
 
     private fun alertParaSemAmbosSaldos() {
@@ -221,7 +227,7 @@ class MainActivity : AppCompatActivity() {
         TotaisPorTipoTask(dao, object: TotaisPorTipoTask.OnPostExecuteListener{
             override fun posThread(valores: HashMap<String, BigDecimal>) {
                 infoValorImportante.text = valores["importante"]!!.formatoBrasileiroMonetario()
-                infoValorSuperpluo.text = valores["superfluo"]!!.formatoBrasileiroMonetario()
+                infoValorSuperfluo.text = valores["superfluo"]!!.formatoBrasileiroMonetario()
             }
         }).execute()
     }

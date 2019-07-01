@@ -15,6 +15,30 @@
             <include layout="@layout/banner_saldos"/>
     </com.google.android.material.appbar.AppBarLayout>
 
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <com.google.android.material.tabs.TabLayout
+                android:id="@+id/main_tabs_tablayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="?attr/colorPrimary"
+                app:tabGravity="fill"
+                app:tabMode="fixed"
+                app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"/>
+
+        <androidx.viewpager.widget.ViewPager
+                android:id="@+id/main_tabs_viewpager"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+        </androidx.viewpager.widget.ViewPager>
+
+    </LinearLayout>
+
     <com.github.clans.fab.FloatingActionMenu
             android:id="@+id/main_fab_menu"
             android:layout_width="wrap_content"
@@ -62,29 +86,5 @@
                 android:src="@drawable/fab_arrow_down"/>
 
     </com.github.clans.fab.FloatingActionMenu>
-
-    <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior">
-
-        <com.google.android.material.tabs.TabLayout
-                android:id="@+id/main_tabs_tablayout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="?attr/colorPrimary"
-                app:tabGravity="fill"
-                app:tabMode="fixed"
-                app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"/>
-
-        <androidx.viewpager.widget.ViewPager
-                android:id="@+id/main_tabs_viewoager"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-        </androidx.viewpager.widget.ViewPager>
-
-    </LinearLayout>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -16,9 +16,15 @@ import br.com.rubensrodrigues.controlefinanceiro.model.Tipo
 import br.com.rubensrodrigues.controlefinanceiro.model.Transacao
 import br.com.rubensrodrigues.controlefinanceiro.persistence.asynktask.*
 import br.com.rubensrodrigues.controlefinanceiro.persistence.util.DBUtil
+import br.com.rubensrodrigues.controlefinanceiro.ui.activity.fragment.ListaTodosFragment
 import br.com.rubensrodrigues.controlefinanceiro.ui.dialog.TransferenciaDialog
 import br.com.rubensrodrigues.controlefinanceiro.ui.recyclerview.adapter.ListaTransacoesAdapter
-import kotlinx.android.synthetic.main.activity_main.*
+import br.com.rubensrodrigues.controlefinanceiro.ui.viewpager.adapter.TabsAdapter
+import kotlinx.android.synthetic.main.activity_main.main_fab_despesa
+import kotlinx.android.synthetic.main.activity_main.main_fab_menu
+import kotlinx.android.synthetic.main.activity_main.main_fab_receita
+import kotlinx.android.synthetic.main.activity_main.main_fab_transferencia
+import kotlinx.android.synthetic.main.activity_main_tabs.*
 import kotlinx.android.synthetic.main.banner_saldos.*
 import java.math.BigDecimal
 
@@ -43,23 +49,61 @@ class MainActivityTabs : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        setContentView(R.layout.activity_main_tabs)
 
-        threadDeConfiguracaoDaRecycleView()
+        configuraTabLayout()
         configuraCliqueFabs()
+    }
+
+    private fun configuraTabLayout() {
+        BuscaTodosPorTabTask(dao, object : BuscaTodosPorTabTask.OnPostExecuteListener{
+            override fun posThread(listaTodos: MutableList<Transacao>,
+                                   listaDespesa: MutableList<Transacao>,
+                                   listaReceita: MutableList<Transacao>) {
+
+                val tabsAdapter = TabsAdapter(supportFragmentManager)
+
+                tabsAdapter.add(ListaTodosFragment(listaTodos!!), "Todos")
+                tabsAdapter.add(ListaTodosFragment(listaDespesa!!), "Despesa")
+                tabsAdapter.add(ListaTodosFragment(listaReceita!!), "Receita")
+
+                val viewPager = main_tabs_viewpager
+                viewPager.adapter = tabsAdapter
+
+                val tabLayout = main_tabs_tablayout
+                tabLayout.setupWithViewPager(viewPager)
+            }
+        }).execute()
+    }
+
+    private fun configuraCliqueItemListaTransacoes() {
+        listaTransacoesAdapter.setOnItemClickListener(object : ListaTransacoesAdapter.ListaTransacoesAdapterListener {
+            override fun simplesCliqueItem(transacao: Transacao) {
+                if (transacao.categoria != "Transferência"){
+                    val vaiParaFormulario = getIntentParaFomulario()
+                    vaiParaFormulario.putExtra("transacao", transacao)
+                    startActivityForResult(vaiParaFormulario, CODIGO_REQUEST_ALTERAR)
+                } else {
+                    Toast
+                        .makeText(this@MainActivityTabs, "Não é possível editar transferência", Toast.LENGTH_SHORT)
+                        .show()
+                }
+
+            }
+        })
     }
 
     override fun onContextItemSelected(item: MenuItem?): Boolean {
         val itemId = item!!.itemId
 
         if(itemId == R.id.recyclerview_menu_remover) {
-            dialogoConfimaExclusao()
+            dialogConfimaExclusao()
         }
 
         return super.onContextItemSelected(item)
     }
 
-    private fun dialogoConfimaExclusao() {
+    private fun dialogConfimaExclusao() {
         AlertDialog.Builder(this)
             .setTitle("Remover")
             .setMessage("Deseja remover transação?")
@@ -105,15 +149,13 @@ class MainActivityTabs : AppCompatActivity() {
         }, idReceita, idDespesa).execute()
     }
 
-    private fun threadDeConfiguracaoDaRecycleView() {
-        BuscaTodosTask(dao, object : BuscaTodosTask.OnPostExecuteListener {
-            override fun posThread(listaTransacoes: List<Transacao>) {
-                configuraRecyclerView(listaTransacoes)
-            }
-        }).execute()
+    private fun configuraCliqueFabs() {
+        cliqueFabReceita()
+        cliqueFabDespesa()
+        cliqueFabTransferencia()
     }
 
-    private fun configuraCliqueFabs() {
+    private fun cliqueFabReceita() {
         fabReceita.setOnClickListener(object : View.OnClickListener {
             override fun onClick(v: View?) {
                 fabMenu.close(true)
@@ -121,14 +163,35 @@ class MainActivityTabs : AppCompatActivity() {
                 startActivityForResult(intent, CODIGO_REQUEST_INSERIR_RECEITA)
             }
         })
+    }
 
+    private fun cliqueFabDespesa() {
         fabDespesa.setOnClickListener(object : View.OnClickListener {
             override fun onClick(v: View?) {
                 logicaParaIrFormularioDespesa()
             }
         })
+    }
 
-        fabTransferencia.setOnClickListener(object: View.OnClickListener{
+    private fun logicaParaIrFormularioDespesa() {
+        val totalSuperfluo = infoValorSuperpluo.text.converterReaisParaBigDecimal()
+        val totalImportante = infoValorImportante.text.converterReaisParaBigDecimal()
+
+        if (ehSaldoMenorIgualAZero(totalSuperfluo) &&
+            ehSaldoMenorIgualAZero(totalImportante)
+        ) {
+            alertParaSemAmbosSaldos()
+        } else if (ehSaldoMenorIgualAZero(totalSuperfluo)) {
+            preparaIntentEVaiParaFormularioDespesa("importante")
+        } else if (ehSaldoMenorIgualAZero(totalImportante)) {
+            preparaIntentEVaiParaFormularioDespesa("superfluo")
+        } else {
+            vaiParaFormutarioDespesa(getIntentParaFomulario())
+        }
+    }
+
+    private fun cliqueFabTransferencia() {
+        fabTransferencia.setOnClickListener(object : View.OnClickListener {
             override fun onClick(v: View?) {
                 mostraFormularioEAtualizaLista()
             }
@@ -169,23 +232,6 @@ class MainActivityTabs : AppCompatActivity() {
         }, transacaoDespesa, transacaoReceita).execute()
     }
 
-    private fun logicaParaIrFormularioDespesa() {
-        val totalSuperfluo = infoValorSuperpluo.text.converterReaisParaBigDecimal()
-        val totalImportante = infoValorImportante.text.converterReaisParaBigDecimal()
-
-        if (ehSaldoMenorIgualAZero(totalSuperfluo) &&
-            ehSaldoMenorIgualAZero(totalImportante)
-        ) {
-            alertParaSemAmbosSaldos()
-        } else if (ehSaldoMenorIgualAZero(totalSuperfluo)) {
-            preparaIntentEVaiParaFormularioDespesa("importante")
-        } else if (ehSaldoMenorIgualAZero(totalImportante)) {
-            preparaIntentEVaiParaFormularioDespesa("superfluo")
-        } else {
-            vaiParaFormutarioDespesa(getIntentParaFomulario())
-        }
-    }
-
     private fun alertParaSemAmbosSaldos() {
         AlertDialog.Builder(this@MainActivityTabs)
             .setTitle("Saldos insuficientes")
@@ -224,29 +270,6 @@ class MainActivityTabs : AppCompatActivity() {
                 infoValorSuperpluo.text = valores["superfluo"]!!.formatoBrasileiroMonetario()
             }
         }).execute()
-    }
-
-    private fun configuraRecyclerView(listaTransacoes: List<Transacao>) {
-        listaTransacoesAdapter = ListaTransacoesAdapter(this, listaTransacoes.toMutableList())
-        main_lista.adapter = listaTransacoesAdapter
-        configuraCliqueItemListaTransacoes()
-    }
-
-    private fun configuraCliqueItemListaTransacoes() {
-        listaTransacoesAdapter.setOnItemClickListener(object : ListaTransacoesAdapter.ListaTransacoesAdapterListener {
-            override fun simplesCliqueItem(transacao: Transacao) {
-                if (transacao.categoria != "Transferência"){
-                    val vaiParaFormulario = getIntentParaFomulario()
-                    vaiParaFormulario.putExtra("transacao", transacao)
-                    startActivityForResult(vaiParaFormulario, CODIGO_REQUEST_ALTERAR)
-                } else {
-                    Toast
-                        .makeText(this@MainActivityTabs, "Não é possível editar transferência", Toast.LENGTH_SHORT)
-                        .show()
-                }
-
-            }
-        })
     }
 
     private fun getIntentParaFomulario() = Intent(this@MainActivityTabs, FormularioTrasacaoActivity::class.java)
