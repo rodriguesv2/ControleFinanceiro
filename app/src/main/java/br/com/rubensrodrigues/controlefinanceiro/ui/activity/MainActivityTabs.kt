@@ -342,9 +342,14 @@ class MainActivityTabs : AppCompatActivity() {
 
     private fun alteraTransacaoNoBanco(data: Intent?) {
         val transacao = data!!.getSerializableExtra("transacao") as Transacao
-        AlteraTransacaoTask(dao, transacao, object : AlteraTransacaoTask.OnPostExecuteListener {
-            override fun posThread(transacoes: List<Transacao>) {
-                listaTransacoesAdapter.atualizaLista(transacoes)
+
+        AlteraTransacaoTabTask(dao, transacao, object : AlteraTransacaoTabTask.OnPostExecuteListener{
+            override fun posThread(
+                listaTodos: MutableList<Transacao>,
+                listaDespesa: MutableList<Transacao>,
+                listaReceita: MutableList<Transacao>
+            ) {
+                atualizaListaDeTodasTabs(listaTodos, listaDespesa, listaReceita)
             }
         }).execute()
     }
