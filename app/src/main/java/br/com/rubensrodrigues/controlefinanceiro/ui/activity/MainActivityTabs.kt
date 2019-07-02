@@ -323,18 +323,37 @@ class MainActivityTabs : AppCompatActivity() {
     private fun insereReceitasNoBanco(data: Intent?) {
         val mapTransacoes = data!!.getSerializableExtra("transacoes") as MutableMap<String, Transacao>
 
-        AdicionaTransacoesPorTipoTabsTask(dao, mapTransacoes["superfluo"], mapTransacoes["importante"],
-            object : AdicionaTransacoesPorTipoTabsTask.OnPostExecuteListener{
+        AdicionaTransacoesPorTipoTabTask(dao, mapTransacoes["superfluo"], mapTransacoes["importante"],
+            object : AdicionaTransacoesPorTipoTabTask.OnPostExecuteListener{
                 override fun posThread(
                     listaTodos: MutableList<Transacao>,
                     listaDespesa: MutableList<Transacao>,
                     listaReceita: MutableList<Transacao>
                 ) {
-                    listaTodosFrag.atualizarLista(listaTodos)
-                    listaDespesaFrag.atualizarLista(listaDespesa)
-                    listaReceitaFrag.atualizarLista(listaReceita)
+                    atualizaListaDeTodasTabs(listaTodos, listaDespesa, listaReceita)
                 }
             }).execute()
+    }
+
+    private fun atualizaListaDeTodasTabs(
+        listaTodos: MutableList<Transacao>,
+        listaDespesa: MutableList<Transacao>,
+        listaReceita: MutableList<Transacao>
+    ) {
+        if (listaTodosFrag.isVisible)
+            listaTodosFrag.atualizarLista(listaTodos)
+        else
+            listaTodosFrag.listaTransacoes = listaTodos
+
+        if (listaDespesaFrag.isVisible)
+            listaDespesaFrag.atualizarLista(listaDespesa)
+        else
+            listaDespesaFrag.listaTransacoes = listaDespesa
+
+        if (listaReceitaFrag.isVisible)
+            listaReceitaFrag.atualizarLista(listaReceita)
+        else
+            listaReceitaFrag.listaTransacoes = listaReceita
     }
 
     private fun validaTransacaoFormularioDespesa(
@@ -347,9 +366,13 @@ class MainActivityTabs : AppCompatActivity() {
     private fun insereDespesaNoBanco(data: Intent?) {
         val transacao = data!!.getSerializableExtra("transacao") as Transacao
 
-        AdicionaTransacaoTask(dao, transacao, object : AdicionaTransacaoTask.OnPostExecuteListener {
-            override fun posThread(transacoes: List<Transacao>) {
-                listaTransacoesAdapter.atualizaLista(transacoes)
+        AdicionaTransacaoTabTask(dao, transacao, object : AdicionaTransacaoTabTask.OnPostExecuteListener{
+            override fun posThread(
+                listaTodos: MutableList<Transacao>,
+                listaDespesa: MutableList<Transacao>,
+                listaReceita: MutableList<Transacao>
+            ) {
+                atualizaListaDeTodasTabs(listaTodos, listaDespesa, listaReceita)
             }
         }).execute()
     }

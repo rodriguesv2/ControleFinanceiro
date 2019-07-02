@@ -25,4 +25,6 @@ class TabsAdapter(fm: FragmentManager) : FragmentPagerAdapter(fm) {
     override fun getPageTitle(position: Int): CharSequence? {
         return listTitulo[position]
     }
+
+
 }

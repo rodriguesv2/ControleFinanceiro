@@ -10,9 +10,9 @@ import br.com.rubensrodrigues.controlefinanceiro.model.Transacao
 import br.com.rubensrodrigues.controlefinanceiro.ui.recyclerview.adapter.ListaTransacoesAdapter
 import kotlinx.android.synthetic.main.fragment_lista.view.*
 
-class ListaTransacoesFragment(private val listaTransacoes: MutableList<Transacao>) : Fragment() {
+class ListaTransacoesFragment(var listaTransacoes: MutableList<Transacao>) : Fragment() {
 
-    private val listaTransacoesAdapter by lazy {ListaTransacoesAdapter(context!!, listaTransacoes)}
+    private val listaTransacoesAdapter:ListaTransacoesAdapter? by lazy { pegaListaTransacoesAdapter() }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -27,18 +27,34 @@ class ListaTransacoesFragment(private val listaTransacoes: MutableList<Transacao
     }
 
     private fun configuraRecyclerView() {
-        view!!.fragment_lista_recyclerview.adapter = listaTransacoesAdapter
+        if (listaTransacoesAdapter != null) {
+            view!!.fragment_lista_recyclerview.adapter = listaTransacoesAdapter
 
-        listaTransacoesAdapter.setOnItemClickListener(object : ListaTransacoesAdapter.ListaTransacoesAdapterListener{
-            override fun simplesCliqueItem(transacao: Transacao) {
+            listaTransacoesAdapter?.setOnItemClickListener(object :
+                ListaTransacoesAdapter.ListaTransacoesAdapterListener {
+                override fun simplesCliqueItem(transacao: Transacao) {
 
-            }
-        })
-        //configuraCliqueItemListaTransacoes()
+                }
+            })
+            //configuraCliqueItemListaTransacoes()
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        listaTransacoesAdapter!!.atualizaLista(listaTransacoes)
     }
 
     fun atualizarLista(transacoes: List<Transacao>){
-        listaTransacoesAdapter.atualizaLista(transacoes)
+        if (listaTransacoesAdapter != null)
+            listaTransacoesAdapter?.atualizaLista(transacoes)
+    }
+
+    private fun pegaListaTransacoesAdapter(): ListaTransacoesAdapter?{
+        return if (context != null)
+            ListaTransacoesAdapter(context!!, listaTransacoes)
+        else
+            null
     }
 
 }
