@@ -10,9 +10,9 @@ import br.com.rubensrodrigues.controlefinanceiro.model.Transacao
 import br.com.rubensrodrigues.controlefinanceiro.ui.recyclerview.adapter.ListaTransacoesAdapter
 import kotlinx.android.synthetic.main.fragment_lista.view.*
 
-class ListaTodosFragment(private val listaTransacoes: MutableList<Transacao>) : Fragment() {
+class ListaTransacoesFragment(private val listaTransacoes: MutableList<Transacao>) : Fragment() {
 
-    private lateinit var listaTransacoesAdapter: ListaTransacoesAdapter
+    private val listaTransacoesAdapter by lazy {ListaTransacoesAdapter(context!!, listaTransacoes)}
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -27,7 +27,6 @@ class ListaTodosFragment(private val listaTransacoes: MutableList<Transacao>) : 
     }
 
     private fun configuraRecyclerView() {
-        listaTransacoesAdapter = ListaTransacoesAdapter(context!!, listaTransacoes)
         view!!.fragment_lista_recyclerview.adapter = listaTransacoesAdapter
 
         listaTransacoesAdapter.setOnItemClickListener(object : ListaTransacoesAdapter.ListaTransacoesAdapterListener{
@@ -36,6 +35,10 @@ class ListaTodosFragment(private val listaTransacoes: MutableList<Transacao>) : 
             }
         })
         //configuraCliqueItemListaTransacoes()
+    }
+
+    fun atualizarLista(transacoes: List<Transacao>){
+        listaTransacoesAdapter.atualizaLista(transacoes)
     }
 
 }

@@ -16,7 +16,7 @@ import br.com.rubensrodrigues.controlefinanceiro.model.Tipo
 import br.com.rubensrodrigues.controlefinanceiro.model.Transacao
 import br.com.rubensrodrigues.controlefinanceiro.persistence.asynktask.*
 import br.com.rubensrodrigues.controlefinanceiro.persistence.util.DBUtil
-import br.com.rubensrodrigues.controlefinanceiro.ui.activity.fragment.ListaTodosFragment
+import br.com.rubensrodrigues.controlefinanceiro.ui.activity.fragment.ListaTransacoesFragment
 import br.com.rubensrodrigues.controlefinanceiro.ui.dialog.TransferenciaDialog
 import br.com.rubensrodrigues.controlefinanceiro.ui.recyclerview.adapter.ListaTransacoesAdapter
 import br.com.rubensrodrigues.controlefinanceiro.ui.viewpager.adapter.TabsAdapter
@@ -47,6 +47,10 @@ class MainActivityTabs : AppCompatActivity() {
 
     private lateinit var listaTransacoesAdapter: ListaTransacoesAdapter
 
+    private lateinit var listaTodosFrag : ListaTransacoesFragment
+    private lateinit var listaDespesaFrag : ListaTransacoesFragment
+    private lateinit var listaReceitaFrag : ListaTransacoesFragment
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main_tabs)
@@ -61,11 +65,15 @@ class MainActivityTabs : AppCompatActivity() {
                                    listaDespesa: MutableList<Transacao>,
                                    listaReceita: MutableList<Transacao>) {
 
+                listaTodosFrag = ListaTransacoesFragment(listaTodos)
+                listaDespesaFrag = ListaTransacoesFragment(listaDespesa)
+                listaReceitaFrag = ListaTransacoesFragment(listaReceita)
+
                 val tabsAdapter = TabsAdapter(supportFragmentManager)
 
-                tabsAdapter.add(ListaTodosFragment(listaTodos!!), "Todos")
-                tabsAdapter.add(ListaTodosFragment(listaDespesa!!), "Despesa")
-                tabsAdapter.add(ListaTodosFragment(listaReceita!!), "Receita")
+                tabsAdapter.add(listaTodosFrag, "Todos")
+                tabsAdapter.add(listaDespesaFrag, "Despesa")
+                tabsAdapter.add(listaReceitaFrag, "Receita")
 
                 val viewPager = main_tabs_viewpager
                 viewPager.adapter = tabsAdapter
@@ -315,10 +323,16 @@ class MainActivityTabs : AppCompatActivity() {
     private fun insereReceitasNoBanco(data: Intent?) {
         val mapTransacoes = data!!.getSerializableExtra("transacoes") as MutableMap<String, Transacao>
 
-        AdicionaTransacoesPorTipoTask(dao, mapTransacoes["superfluo"], mapTransacoes["importante"],
-            object : AdicionaTransacoesPorTipoTask.OnPostExecuteListener {
-                override fun porThread(transacoes: List<Transacao>) {
-                    listaTransacoesAdapter.atualizaLista(transacoes)
+        AdicionaTransacoesPorTipoTabsTask(dao, mapTransacoes["superfluo"], mapTransacoes["importante"],
+            object : AdicionaTransacoesPorTipoTabsTask.OnPostExecuteListener{
+                override fun posThread(
+                    listaTodos: MutableList<Transacao>,
+                    listaDespesa: MutableList<Transacao>,
+                    listaReceita: MutableList<Transacao>
+                ) {
+                    listaTodosFrag.atualizarLista(listaTodos)
+                    listaDespesaFrag.atualizarLista(listaDespesa)
+                    listaReceitaFrag.atualizarLista(listaReceita)
                 }
             }).execute()
     }

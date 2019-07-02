@@ -6,12 +6,22 @@ import br.com.rubensrodrigues.controlefinanceiro.model.Transacao
 import br.com.rubensrodrigues.controlefinanceiro.persistence.asynktask.constantes.ConstantesTask
 import br.com.rubensrodrigues.controlefinanceiro.persistence.dao.TransacaoDAO
 
-class BuscaTodosPorTabTask(
-    private val dao: TransacaoDAO,
-    private val listener: OnPostExecuteListener
-) : AsyncTask<Unit, Unit, HashMap<Int, MutableList<Transacao>>>() {
+class AdicionaTransacoesPorTipoTabsTask(private val dao: TransacaoDAO,
+                                        private val transacaoSuperfluo: Transacao?,
+                                        private val transacaoImportante: Transacao?,
+                                        private val listener: OnPostExecuteListener
+) : AsyncTask<Unit, Unit, HashMap<Int, MutableList<Transacao>>>(){
 
     override fun doInBackground(vararg params: Unit?): HashMap<Int, MutableList<Transacao>> {
+        if (transacaoSuperfluo != null && transacaoImportante != null){
+            dao.insere(transacaoSuperfluo)
+            dao.insere(transacaoImportante)
+        } else if (transacaoSuperfluo != null){
+            dao.insere(transacaoSuperfluo)
+        } else if (transacaoImportante != null){
+            dao.insere(transacaoImportante)
+        }
+
         return buscaDespesaReceitaAndTodos(dao)
     }
 
