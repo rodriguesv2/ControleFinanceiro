@@ -70,11 +70,6 @@ class ListaTransacoesAdapter(
         notifyItemRemoved(posicao)
     }
 
-    fun RemoveProvisorio(transacao: Transacao){
-        val indexOf = transacoes.indexOf(transacao)
-        Toast.makeText(context, "Posição Item: $indexOf", Toast.LENGTH_LONG).show()
-    }
-
     fun removeTransferencias(transacoes: List<Transacao>, transacaoPressionada: Transacao){
         this.transacoes = transacoes.toMutableList()
 

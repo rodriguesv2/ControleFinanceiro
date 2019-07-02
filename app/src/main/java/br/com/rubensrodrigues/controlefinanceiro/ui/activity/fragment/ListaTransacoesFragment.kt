@@ -68,4 +68,9 @@ class ListaTransacoesFragment(var listaTransacoes: MutableList<Transacao>) : Fra
         listaTransacoes = transacoes
         listaTransacoesAdapter!!.remove(transacoes)
     }
+
+    fun removerTransferenciaAnimacaoSuave(transacoes: MutableList<Transacao>, transacaoPressionada: Transacao){
+        listaTransacoes = transacoes
+        listaTransacoesAdapter!!.removeTransferencias(transacoes, transacaoPressionada)
+    }
 }

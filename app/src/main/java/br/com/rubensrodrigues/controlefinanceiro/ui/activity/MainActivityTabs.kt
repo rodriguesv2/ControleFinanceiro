@@ -197,24 +197,49 @@ class MainActivityTabs : AppCompatActivity() {
     ) {
         when (pagina) {
             TODOS -> {
-                listaTodosFrag.removerItemAnimacaoSuave(listaTodos)
-                atualizaListaDespesa(listaDespesa)
-                atualizaListaReceita(listaReceita)
+                removeSuaveListaTodos(listaTodos, listaDespesa, listaReceita)
             }
             DESPESA -> {
-                listaDespesaFrag.removerItemAnimacaoSuave(listaDespesa)
-                atualizaListaTodos(listaTodos)
-                atualizaListaReceita(listaReceita)
+                removeSuaveListaDespesa(listaDespesa, listaTodos, listaReceita)
             }
             RECEITA -> {
-                listaReceitaFrag.removerItemAnimacaoSuave(listaReceita)
-                atualizaListaTodos(listaTodos)
-                atualizaListaDespesa(listaDespesa)
+                removeSuaveListaReceita(listaReceita, listaTodos, listaDespesa)
             }
         }
     }
 
+    private fun removeSuaveListaDespesa(
+        listaDespesa: MutableList<Transacao>,
+        listaTodos: MutableList<Transacao>,
+        listaReceita: MutableList<Transacao>
+    ) {
+        listaDespesaFrag.removerItemAnimacaoSuave(listaDespesa)
+        atualizaListaTodos(listaTodos)
+        atualizaListaReceita(listaReceita)
+    }
+
+    private fun removeSuaveListaReceita(
+        listaReceita: MutableList<Transacao>,
+        listaTodos: MutableList<Transacao>,
+        listaDespesa: MutableList<Transacao>
+    ) {
+        listaReceitaFrag.removerItemAnimacaoSuave(listaReceita)
+        atualizaListaTodos(listaTodos)
+        atualizaListaDespesa(listaDespesa)
+    }
+
+    private fun removeSuaveListaTodos(
+        listaTodos: MutableList<Transacao>,
+        listaDespesa: MutableList<Transacao>,
+        listaReceita: MutableList<Transacao>
+    ) {
+        listaTodosFrag.removerItemAnimacaoSuave(listaTodos)
+        atualizaListaDespesa(listaDespesa)
+        atualizaListaReceita(listaReceita)
+    }
+
     private fun remocaoQuandoTransferencia(transacao: Transacao) {
+        val pagina = main_tabs_tablayout.selectedTabPosition
         val idReceita: Long
         val idDespesa: Long
 
@@ -226,9 +251,25 @@ class MainActivityTabs : AppCompatActivity() {
             idDespesa = transacao.id
         }
 
-        RemoveTransacoesPorIdsTask(dao, object : RemoveTransacoesPorIdsTask.OnPostExecuteListener {
-            override fun posThread(transacoes: List<Transacao>) {
-                listaTransacoesAdapter.removeTransferencias(transacoes, transacao)
+        RemoveTransacoesPorIdsTabTask(dao, object : OnPostExecuteTodasListasListener{
+            override fun posThread(
+                listaTodos: MutableList<Transacao>,
+                listaDespesa: MutableList<Transacao>,
+                listaReceita: MutableList<Transacao>
+            ) {
+                when(pagina){
+                    TODOS -> {
+                        listaTodosFrag.removerTransferenciaAnimacaoSuave(listaTodos, transacao)
+                        atualizaListaDespesa(listaDespesa)
+                        atualizaListaReceita(listaReceita)
+                    }
+                    DESPESA -> {
+                        removeSuaveListaDespesa(listaDespesa, listaTodos, listaReceita)
+                    }
+                    RECEITA -> {
+                        removeSuaveListaReceita(listaReceita, listaTodos, listaDespesa)
+                    }
+                }
             }
         }, idReceita, idDespesa).execute()
     }
