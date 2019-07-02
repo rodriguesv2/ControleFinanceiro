@@ -2,8 +2,10 @@ package br.com.rubensrodrigues.controlefinanceiro.ui.activity.fragment
 
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import br.com.rubensrodrigues.controlefinanceiro.R
 import br.com.rubensrodrigues.controlefinanceiro.model.Transacao
@@ -14,6 +16,7 @@ class ListaTransacoesFragment(var listaTransacoes: MutableList<Transacao>) : Fra
 
     private val listaTransacoesAdapter:ListaTransacoesAdapter? by lazy { pegaListaTransacoesAdapter() }
     var cliqueItem: (transacao: Transacao) -> Unit = {}
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -57,5 +60,16 @@ class ListaTransacoesFragment(var listaTransacoes: MutableList<Transacao>) : Fra
             null
     }
 
+    fun getTransacaoParaRemover(): Transacao{
+        return listaTransacoesAdapter!!.transacaoParaRemover
+    }
 
+    fun getPosicaoItemParaRemover(): Int{
+        return listaTransacoesAdapter!!.posicao
+    }
+
+    fun removerItemAnimacaoSuave(transacoes: MutableList<Transacao>){
+        listaTransacoes = transacoes
+        listaTransacoesAdapter!!.remove(transacoes)
+    }
 }

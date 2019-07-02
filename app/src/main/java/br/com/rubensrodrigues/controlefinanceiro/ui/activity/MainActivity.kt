@@ -10,7 +10,6 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import br.com.rubensrodrigues.controlefinanceiro.R
-import br.com.rubensrodrigues.controlefinanceiro.extensions.converterReaisParaBigDecimal
 import br.com.rubensrodrigues.controlefinanceiro.extensions.formatoBrasileiroMonetario
 import br.com.rubensrodrigues.controlefinanceiro.model.Tipo
 import br.com.rubensrodrigues.controlefinanceiro.model.Transacao
@@ -71,7 +70,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun logicaBotaoPositivoDialogoRemocao() {
-        val transacao = listaTransacoesAdapter.transacao
+        val transacao = listaTransacoesAdapter.transacaoParaRemover
 
         if(transacao.categoria == "Transferência"){
             remocaoQuandoTransferencia(transacao)
@@ -243,7 +242,7 @@ class MainActivity : AppCompatActivity() {
             override fun simplesCliqueItem(transacao: Transacao) {
                 if (transacao.categoria != "Transferência"){
                     val vaiParaFormulario = getIntentParaFomulario()
-                    vaiParaFormulario.putExtra("transacao", transacao)
+                    vaiParaFormulario.putExtra("transacaoParaRemover", transacao)
                     startActivityForResult(vaiParaFormulario, CODIGO_REQUEST_ALTERAR)
                 } else {
                     Toast
@@ -277,10 +276,10 @@ class MainActivity : AppCompatActivity() {
         requestCode: Int,
         resultCode: Int,
         data: Intent?
-    ) = requestCode == CODIGO_REQUEST_ALTERAR && resultCode == Activity.RESULT_OK && data!!.hasExtra("transacao")
+    ) = requestCode == CODIGO_REQUEST_ALTERAR && resultCode == Activity.RESULT_OK && data!!.hasExtra("transacaoParaRemover")
 
     private fun alteraTransacaoNoBanco(data: Intent?) {
-        val transacao = data!!.getSerializableExtra("transacao") as Transacao
+        val transacao = data!!.getSerializableExtra("transacaoParaRemover") as Transacao
         AlteraTransacaoTask(dao, transacao, object : AlteraTransacaoTask.OnPostExecuteListener {
             override fun posThread(transacoes: List<Transacao>) {
                 listaTransacoesAdapter.atualizaLista(transacoes)
@@ -311,10 +310,10 @@ class MainActivity : AppCompatActivity() {
         resultCode: Int,
         data: Intent?
     ) =
-        requestCode == CODIGO_REQUEST_INSERIR_DESPESA && resultCode == Activity.RESULT_OK && data!!.hasExtra("transacao")
+        requestCode == CODIGO_REQUEST_INSERIR_DESPESA && resultCode == Activity.RESULT_OK && data!!.hasExtra("transacaoParaRemover")
 
     private fun insereDespesaNoBanco(data: Intent?) {
-        val transacao = data!!.getSerializableExtra("transacao") as Transacao
+        val transacao = data!!.getSerializableExtra("transacaoParaRemover") as Transacao
 
         AdicionaTransacaoTask(dao, transacao, object : AdicionaTransacaoTask.OnPostExecuteListener {
             override fun posThread(transacoes: List<Transacao>) {

@@ -37,7 +37,7 @@ class FormularioTrasacaoActivity : AppCompatActivity() {
     private val infoSaldoInsuficiente by lazy {formulario_transacao_sem_saldo}
     private val botaoSalvar by lazy {formulario_transacao_botao}
 
-    private val CHAVE_TRANSACAO = "transacao"
+    private val CHAVE_TRANSACAO = "transacaoParaRemover"
     private val CHAVE_APENAS = "apenas"
 
     private val dao by lazy {DBUtil.getInstance(this).getTransacaoDao()}

@@ -26,5 +26,4 @@ class TabsAdapter(fm: FragmentManager) : FragmentPagerAdapter(fm) {
         return listTitulo[position]
     }
 
-
 }

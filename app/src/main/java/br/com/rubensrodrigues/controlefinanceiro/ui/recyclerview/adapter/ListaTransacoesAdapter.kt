@@ -5,6 +5,7 @@ import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import android.view.*
+import android.widget.Toast
 import br.com.rubensrodrigues.controlefinanceiro.R
 import br.com.rubensrodrigues.controlefinanceiro.extensions.formatoBrasileiro
 import br.com.rubensrodrigues.controlefinanceiro.extensions.formatoBrasileiroMonetario
@@ -12,7 +13,6 @@ import br.com.rubensrodrigues.controlefinanceiro.extensions.vinteCaracteres
 import br.com.rubensrodrigues.controlefinanceiro.model.Tipo
 import br.com.rubensrodrigues.controlefinanceiro.model.TipoSaldo
 import br.com.rubensrodrigues.controlefinanceiro.model.Transacao
-import br.com.rubensrodrigues.controlefinanceiro.persistence.util.DBUtil
 import kotlinx.android.synthetic.main.item_transacao.view.*
 
 class ListaTransacoesAdapter(
@@ -20,7 +20,7 @@ class ListaTransacoesAdapter(
     private var transacoes: MutableList<Transacao>
 ) : RecyclerView.Adapter<ListaTransacoesAdapter.TransacoesViewHolder>() {
 
-    lateinit var transacao : Transacao
+    lateinit var transacaoParaRemover : Transacao
     var posicao = -1
     private lateinit var listener: ListaTransacoesAdapterListener
 
@@ -49,7 +49,7 @@ class ListaTransacoesAdapter(
     ) {
         viewHolder.itemView.setOnLongClickListener(object : View.OnLongClickListener {
             override fun onLongClick(v: View?): Boolean {
-                this@ListaTransacoesAdapter.transacao = transacao
+                this@ListaTransacoesAdapter.transacaoParaRemover = transacao
                 this@ListaTransacoesAdapter.posicao = viewHolder.adapterPosition
                 return false
             }
@@ -68,6 +68,11 @@ class ListaTransacoesAdapter(
     fun remove(transacoes: List<Transacao>) {
         this.transacoes = transacoes.toMutableList()
         notifyItemRemoved(posicao)
+    }
+
+    fun RemoveProvisorio(transacao: Transacao){
+        val indexOf = transacoes.indexOf(transacao)
+        Toast.makeText(context, "Posição Item: $indexOf", Toast.LENGTH_LONG).show()
     }
 
     fun removeTransferencias(transacoes: List<Transacao>, transacaoPressionada: Transacao){
