@@ -13,6 +13,7 @@ import kotlinx.android.synthetic.main.fragment_lista.view.*
 class ListaTransacoesFragment(var listaTransacoes: MutableList<Transacao>) : Fragment() {
 
     private val listaTransacoesAdapter:ListaTransacoesAdapter? by lazy { pegaListaTransacoesAdapter() }
+    var cliqueItem: (transacao: Transacao) -> Unit = {}
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -33,10 +34,9 @@ class ListaTransacoesFragment(var listaTransacoes: MutableList<Transacao>) : Fra
             listaTransacoesAdapter?.setOnItemClickListener(object :
                 ListaTransacoesAdapter.ListaTransacoesAdapterListener {
                 override fun simplesCliqueItem(transacao: Transacao) {
-
+                    cliqueItem(transacao)
                 }
             })
-            //configuraCliqueItemListaTransacoes()
         }
     }
 
@@ -45,9 +45,9 @@ class ListaTransacoesFragment(var listaTransacoes: MutableList<Transacao>) : Fra
         listaTransacoesAdapter!!.atualizaLista(listaTransacoes)
     }
 
-    fun atualizarLista(transacoes: List<Transacao>){
+    fun atualizarLista(){
         if (listaTransacoesAdapter != null)
-            listaTransacoesAdapter?.atualizaLista(transacoes)
+            listaTransacoesAdapter?.atualizaLista(listaTransacoes)
     }
 
     private fun pegaListaTransacoesAdapter(): ListaTransacoesAdapter?{
@@ -56,5 +56,6 @@ class ListaTransacoesFragment(var listaTransacoes: MutableList<Transacao>) : Fra
         else
             null
     }
+
 
 }

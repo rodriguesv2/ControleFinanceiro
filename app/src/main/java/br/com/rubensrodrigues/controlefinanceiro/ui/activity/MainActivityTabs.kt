@@ -65,23 +65,59 @@ class MainActivityTabs : AppCompatActivity() {
                                    listaDespesa: MutableList<Transacao>,
                                    listaReceita: MutableList<Transacao>) {
 
-                listaTodosFrag = ListaTransacoesFragment(listaTodos)
-                listaDespesaFrag = ListaTransacoesFragment(listaDespesa)
-                listaReceitaFrag = ListaTransacoesFragment(listaReceita)
-
-                val tabsAdapter = TabsAdapter(supportFragmentManager)
-
-                tabsAdapter.add(listaTodosFrag, "Todos")
-                tabsAdapter.add(listaDespesaFrag, "Despesa")
-                tabsAdapter.add(listaReceitaFrag, "Receita")
-
-                val viewPager = main_tabs_viewpager
-                viewPager.adapter = tabsAdapter
-
-                val tabLayout = main_tabs_tablayout
-                tabLayout.setupWithViewPager(viewPager)
+                bindViewPagerComTabLayout(listaTodos, listaDespesa, listaReceita)
             }
         }).execute()
+    }
+
+    private fun bindViewPagerComTabLayout(
+        listaTodos: MutableList<Transacao>,
+        listaDespesa: MutableList<Transacao>,
+        listaReceita: MutableList<Transacao>
+    ) {
+        listaTodosFrag = ListaTransacoesFragment(listaTodos)
+        listaDespesaFrag = ListaTransacoesFragment(listaDespesa)
+        listaReceitaFrag = ListaTransacoesFragment(listaReceita)
+
+        val tabsAdapter = TabsAdapter(supportFragmentManager)
+
+        tabsAdapter.add(listaTodosFrag, "Todos")
+        tabsAdapter.add(listaDespesaFrag, "Despesa")
+        tabsAdapter.add(listaReceitaFrag, "Receita")
+
+        val viewPager = main_tabs_viewpager
+        viewPager.adapter = tabsAdapter
+
+        val tabLayout = main_tabs_tablayout
+        tabLayout.setupWithViewPager(viewPager)
+
+        cliqueItemLista()
+    }
+
+    private fun cliqueItemLista() {
+        listaTodosFrag.cliqueItem = {
+            cliqueItemListaGenerico(it)
+        }
+
+        listaDespesaFrag.cliqueItem = {
+            cliqueItemListaGenerico(it)
+        }
+
+        listaReceitaFrag.cliqueItem = {
+            cliqueItemListaGenerico(it)
+        }
+    }
+
+    private fun cliqueItemListaGenerico(transacao: Transacao) {
+        if (transacao.categoria != "Transferência") {
+            val vaiParaFormulario = getIntentParaFomulario()
+            vaiParaFormulario.putExtra("transacao", transacao)
+            startActivityForResult(vaiParaFormulario, CODIGO_REQUEST_ALTERAR)
+        } else {
+            Toast
+                .makeText(this@MainActivityTabs, "Não é possível editar transferência", Toast.LENGTH_SHORT)
+                .show()
+        }
     }
 
     private fun configuraCliqueItemListaTransacoes() {
@@ -340,20 +376,18 @@ class MainActivityTabs : AppCompatActivity() {
         listaDespesa: MutableList<Transacao>,
         listaReceita: MutableList<Transacao>
     ) {
+        listaTodosFrag.listaTransacoes = listaTodos
+        listaDespesaFrag.listaTransacoes = listaDespesa
+        listaReceitaFrag.listaTransacoes = listaReceita
+
         if (listaTodosFrag.isVisible)
-            listaTodosFrag.atualizarLista(listaTodos)
-        else
-            listaTodosFrag.listaTransacoes = listaTodos
+            listaTodosFrag.atualizarLista()
 
         if (listaDespesaFrag.isVisible)
-            listaDespesaFrag.atualizarLista(listaDespesa)
-        else
-            listaDespesaFrag.listaTransacoes = listaDespesa
+            listaDespesaFrag.atualizarLista()
 
         if (listaReceitaFrag.isVisible)
-            listaReceitaFrag.atualizarLista(listaReceita)
-        else
-            listaReceitaFrag.listaTransacoes = listaReceita
+            listaReceitaFrag.atualizarLista()
     }
 
     private fun validaTransacaoFormularioDespesa(
