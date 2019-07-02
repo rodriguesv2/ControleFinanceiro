@@ -104,19 +104,19 @@ class MainActivityTabs : AppCompatActivity() {
 
     private fun cliqueItemLista() {
         listaTodosFrag.cliqueItem = {
-            cliqueItemListaGenerico(it)
+            vaiParaFormularioAlteraTransacao(it)
         }
 
         listaDespesaFrag.cliqueItem = {
-            cliqueItemListaGenerico(it)
+            vaiParaFormularioAlteraTransacao(it)
         }
 
         listaReceitaFrag.cliqueItem = {
-            cliqueItemListaGenerico(it)
+            vaiParaFormularioAlteraTransacao(it)
         }
     }
 
-    private fun cliqueItemListaGenerico(transacao: Transacao) {
+    private fun vaiParaFormularioAlteraTransacao(transacao: Transacao) {
         if (transacao.categoria != "Transferência") {
             val vaiParaFormulario = getIntentParaFomulario()
             vaiParaFormulario.putExtra("transacaoParaRemover", transacao)
@@ -128,28 +128,32 @@ class MainActivityTabs : AppCompatActivity() {
         }
     }
 
-    override fun onContextItemSelected(item: MenuItem?): Boolean {
-        val itemId = item!!.itemId
 
-        if(itemId == R.id.recyclerview_menu_remover) {
-            val pagina = main_tabs_tablayout.selectedTabPosition
-            when(pagina){
-                TODOS -> {
-                    val transacao = listaTodosFrag.getTransacaoParaRemover()
-                    dialogConfimaExclusao(transacao, pagina)
-                }
-                DESPESA -> {
-                    val transacao = listaDespesaFrag.getTransacaoParaRemover()
-                    dialogConfimaExclusao(transacao, pagina)
-                }
-                RECEITA -> {
-                    val transacao = listaReceitaFrag.getTransacaoParaRemover()
-                    dialogConfimaExclusao(transacao, pagina)
-                }
-            }
+
+    override fun onContextItemSelected(item: MenuItem?): Boolean {
+        if(item!!.itemId == R.id.recyclerview_menu_remover) {
+            removeTransacaoSelecionada()
         }
 
         return super.onContextItemSelected(item)
+    }
+
+    private fun removeTransacaoSelecionada() {
+        val pagina = main_tabs_tablayout.selectedTabPosition
+        when (pagina) {
+            TODOS -> {
+                val transacao = listaTodosFrag.getTransacaoParaRemover()
+                dialogConfimaExclusao(transacao, pagina)
+            }
+            DESPESA -> {
+                val transacao = listaDespesaFrag.getTransacaoParaRemover()
+                dialogConfimaExclusao(transacao, pagina)
+            }
+            RECEITA -> {
+                val transacao = listaReceitaFrag.getTransacaoParaRemover()
+                dialogConfimaExclusao(transacao, pagina)
+            }
+        }
     }
 
     private fun dialogConfimaExclusao(transacao: Transacao, pagina: Int) {
@@ -178,26 +182,35 @@ class MainActivityTabs : AppCompatActivity() {
                     listaDespesa: MutableList<Transacao>,
                     listaReceita: MutableList<Transacao>
                 ) {
-                    when(pagina){
-                        TODOS -> {
-                            listaTodosFrag.removerItemAnimacaoSuave(listaTodos)
-                            atualizaListaDespesa(listaDespesa)
-                            atualizaListaReceita(listaReceita)
-                        }
-                        DESPESA -> {
-                            listaDespesaFrag.removerItemAnimacaoSuave(listaDespesa)
-                            atualizaListaTodos(listaTodos)
-                            atualizaListaReceita(listaReceita)
-                        }
-                        RECEITA -> {
-                            listaReceitaFrag.removerItemAnimacaoSuave(listaReceita)
-                            atualizaListaTodos(listaTodos)
-                            atualizaListaDespesa(listaDespesa)
-                        }
-                    }
+                    atualizaListasAoRemover(pagina, listaTodos, listaDespesa, listaReceita)
                     configuraTextFieldsDeSaldos()
                 }
             }).execute()
+        }
+    }
+
+    private fun atualizaListasAoRemover(
+        pagina: Int,
+        listaTodos: MutableList<Transacao>,
+        listaDespesa: MutableList<Transacao>,
+        listaReceita: MutableList<Transacao>
+    ) {
+        when (pagina) {
+            TODOS -> {
+                listaTodosFrag.removerItemAnimacaoSuave(listaTodos)
+                atualizaListaDespesa(listaDespesa)
+                atualizaListaReceita(listaReceita)
+            }
+            DESPESA -> {
+                listaDespesaFrag.removerItemAnimacaoSuave(listaDespesa)
+                atualizaListaTodos(listaTodos)
+                atualizaListaReceita(listaReceita)
+            }
+            RECEITA -> {
+                listaReceitaFrag.removerItemAnimacaoSuave(listaReceita)
+                atualizaListaTodos(listaTodos)
+                atualizaListaDespesa(listaDespesa)
+            }
         }
     }
 
@@ -264,12 +277,12 @@ class MainActivityTabs : AppCompatActivity() {
     private fun cliqueFabTransferencia() {
         fabTransferencia.setOnClickListener(object : View.OnClickListener {
             override fun onClick(v: View?) {
-                mostraFormularioEAtualizaLista()
+                mostraDialogFormularioEAtualizaLista()
             }
         })
     }
 
-    private fun mostraFormularioEAtualizaLista() {
+    private fun mostraDialogFormularioEAtualizaLista() {
         TotaisPorTipoTask(dao, object : TotaisPorTipoTask.OnPostExecuteListener {
             override fun posThread(valores: HashMap<String, BigDecimal>) {
                 val ehSuperfluoInsuficiente = valores["superfluo"]!!.compareTo(BigDecimal.ZERO) <= 0
@@ -295,9 +308,13 @@ class MainActivityTabs : AppCompatActivity() {
         transacaoDespesa: Transacao,
         transacaoReceita: Transacao
     ) {
-        AdicionaTransacoesTask(dao, object : AdicionaTransacoesTask.OnPostExecuteListener {
-            override fun porThread(transacoes: List<Transacao>) {
-                listaTransacoesAdapter.atualizaLista(transacoes)
+        AdicionaTransacoesTabTask(dao, object: OnPostExecuteTodasListasListener{
+            override fun posThread(
+                listaTodos: MutableList<Transacao>,
+                listaDespesa: MutableList<Transacao>,
+                listaReceita: MutableList<Transacao>
+            ) {
+                atualizaListaDeTodasTabs(listaTodos, listaDespesa, listaReceita)
                 configuraTextFieldsDeSaldos()
             }
         }, transacaoDespesa, transacaoReceita).execute()

@@ -64,10 +64,6 @@ class ListaTransacoesFragment(var listaTransacoes: MutableList<Transacao>) : Fra
         return listaTransacoesAdapter!!.transacaoParaRemover
     }
 
-    fun getPosicaoItemParaRemover(): Int{
-        return listaTransacoesAdapter!!.posicao
-    }
-
     fun removerItemAnimacaoSuave(transacoes: MutableList<Transacao>){
         listaTransacoes = transacoes
         listaTransacoesAdapter!!.remove(transacoes)
