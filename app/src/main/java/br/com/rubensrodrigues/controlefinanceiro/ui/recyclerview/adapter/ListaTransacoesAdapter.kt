@@ -1,11 +1,10 @@
 package br.com.rubensrodrigues.controlefinanceiro.ui.recyclerview.adapter
 
 import android.content.Context
+import android.view.*
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
-import android.view.*
-import android.widget.Toast
 import br.com.rubensrodrigues.controlefinanceiro.R
 import br.com.rubensrodrigues.controlefinanceiro.extensions.formatoBrasileiro
 import br.com.rubensrodrigues.controlefinanceiro.extensions.formatoBrasileiroMonetario
