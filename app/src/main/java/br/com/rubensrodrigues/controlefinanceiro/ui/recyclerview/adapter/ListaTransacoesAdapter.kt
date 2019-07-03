@@ -157,10 +157,10 @@ class ListaTransacoesAdapter(
 
             if (transacao.tipo == Tipo.DESPESA) {
                 mudaCorCard(vermelho)
-                imagemSeta.setImageResource(R.drawable.seta_despesa)
+                imagemSeta.setImageResource(R.drawable.seta_despesa_novo)
             } else {
                 mudaCorCard(verde)
-                imagemSeta.setImageResource(R.drawable.seta_receita)
+                imagemSeta.setImageResource(R.drawable.seta_receita_novo)
             }
         }
 

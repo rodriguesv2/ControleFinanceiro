@@ -11,7 +11,7 @@
     <ImageView
             android:layout_width="190dp"
             android:layout_height="198dp"
-            android:src="@drawable/logo_finpoup__c_pia_"
+            android:src="@drawable/logo_novo"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

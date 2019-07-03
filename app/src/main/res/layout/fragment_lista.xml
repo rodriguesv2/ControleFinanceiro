@@ -12,7 +12,7 @@
             android:id="@+id/fragment_lista_recyclerview"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@drawable/wallpaper_material_design"
+            android:background="@drawable/wallpaper_gradient"
             android:scrollbarAlwaysDrawVerticalTrack="true"
             android:overScrollMode="always"
             tools:listitem="@layout/item_transacao"
