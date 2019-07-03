@@ -1,45 +1,47 @@
 package br.com.rubensrodrigues.controlefinanceiro.ui.dropdown
 
+import android.app.Activity
 import android.content.Context
 import com.google.android.material.textfield.TextInputEditText
 import android.view.View
+import android.view.inputmethod.InputMethodManager
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.ListPopupWindow
+import br.com.rubensrodrigues.controlefinanceiro.ui.util.SistemaUtil
 
 object EditTextDropDown{
 
-    fun injetaDropdown(context: Context,
+    fun injetaDropdown(activity: Activity,
                        campoDeTexto: TextInputEditText,
                        lista: Array<String>,
                        posicaoInicial: Int = 0) {
 
         campoDeTexto.setText(lista[posicaoInicial])
-        configuraDropDown(context, campoDeTexto, lista)
+        configuraDropDown(activity, campoDeTexto, lista)
     }
 
-    private fun configuraDropDown(context: Context,
-                                  campoDeTexto: TextInputEditText,
-                                  lista: Array<String>) {
-        val popupLista = ListPopupWindow(context)
+    private fun configuraDropDown(activity: Activity, campoDeTexto: TextInputEditText, lista: Array<String>) {
+        val popupLista = ListPopupWindow(activity)
 
-        configuraAdapterEAncora(context, popupLista, lista, campoDeTexto)
-        abrirListaPopUp(popupLista, campoDeTexto)
+        configuraAdapterEAncora(activity, popupLista, lista, campoDeTexto)
+        abrirListaPopUp(activity, popupLista, campoDeTexto)
         selecionaItemDaLista(popupLista, campoDeTexto, lista)
     }
 
-    private fun configuraAdapterEAncora(context: Context,
+    private fun configuraAdapterEAncora(activity: Activity,
                                         popupLista: ListPopupWindow,
                                         lista: Array<String>,
                                         campoDeTexto: TextInputEditText
     ) {
-        popupLista.setAdapter(ArrayAdapter(context, android.R.layout.simple_list_item_1, lista))
+        popupLista.setAdapter(ArrayAdapter(activity, android.R.layout.simple_list_item_1, lista))
         popupLista.anchorView = campoDeTexto
         popupLista.isModal = false
     }
 
-    private fun abrirListaPopUp(popupLista: ListPopupWindow, campoDeTexto: TextInputEditText) {
+    private fun abrirListaPopUp(activity: Activity, popupLista: ListPopupWindow, campoDeTexto: TextInputEditText) {
         campoDeTexto.setOnClickListener {
+            SistemaUtil.fechaTecladoVirtual(activity)
             popupLista.show()
         }
     }
@@ -50,6 +52,8 @@ object EditTextDropDown{
 
         popupLista.setOnItemClickListener(object : AdapterView.OnItemClickListener {
             override fun onItemClick(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+
+
                 campoDeTexto.setText(lista[position])
                 popupLista.dismiss()
             }

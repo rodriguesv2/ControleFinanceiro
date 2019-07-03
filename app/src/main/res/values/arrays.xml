@@ -20,7 +20,18 @@
         <item>Saúde</item>
         <item>Supermercado</item>
         <item>Transporte</item>
-        <item>DOC/TED</item>
         <item>Outro…</item>
+    </string-array>
+    <string-array name="forma_pagamento">
+        <item>Indefinido</item>
+        <item>Boleto</item>
+        <item>Cheque</item>
+        <item>Credito</item>
+        <item>Dinheiro</item>
+        <item>Debito</item>
+        <item>Debito Automatico</item>
+        <item>DOC/TED</item>
+        <item>VA</item>
+        <item>VR</item>
     </string-array>
 </resources>

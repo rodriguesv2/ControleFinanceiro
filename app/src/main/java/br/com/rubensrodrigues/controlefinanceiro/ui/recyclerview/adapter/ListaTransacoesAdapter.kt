@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import br.com.rubensrodrigues.controlefinanceiro.R
 import br.com.rubensrodrigues.controlefinanceiro.extensions.formatoBrasileiro
 import br.com.rubensrodrigues.controlefinanceiro.extensions.formatoBrasileiroMonetario
-import br.com.rubensrodrigues.controlefinanceiro.extensions.vinteCaracteres
+import br.com.rubensrodrigues.controlefinanceiro.extensions.quantidadeCaracteres
 import br.com.rubensrodrigues.controlefinanceiro.model.Tipo
 import br.com.rubensrodrigues.controlefinanceiro.model.TipoSaldo
 import br.com.rubensrodrigues.controlefinanceiro.model.Transacao
@@ -96,6 +96,7 @@ class ListaTransacoesAdapter(
         private val valor = itemView.item_transacao_valor
         private val cardView = itemView.item_transacao_cardview
         private val data = itemView.item_transacao_data
+        private val formaPagamento = itemView.item_transacao_forma_pagamento
 
         private val HORIZONTAL_BIAS_DIREITA = 1f
         private val HORIZONTAL_BIAS_ESQUERDA = 0f
@@ -142,13 +143,19 @@ class ListaTransacoesAdapter(
         }
 
         private fun setaInfos(transacao: Transacao) {
-            titulo.text = transacao.titulo.vinteCaracteres()
+            titulo.text = transacao.titulo.quantidadeCaracteres(20)
             categoria.text = transacao.categoria
             data.text = transacao.data.formatoBrasileiro()
             valor.text = transacao.valor.formatoBrasileiroMonetario()
 
-            mudaDecoracaoPorTipo(transacao)
+            if (transacao.tipo == Tipo.DESPESA){
+                formaPagamento.text = transacao.formaPagamento.quantidadeCaracteres(11)
+                formaPagamento.visibility = View.VISIBLE
+            }else {
+                formaPagamento.visibility = View.GONE
+            }
 
+            mudaDecoracaoPorTipo(transacao)
         }
 
         private fun mudaDecoracaoPorTipo(transacao: Transacao) {

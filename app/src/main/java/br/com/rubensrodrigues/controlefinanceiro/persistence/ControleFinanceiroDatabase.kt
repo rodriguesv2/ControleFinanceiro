@@ -10,7 +10,7 @@ import br.com.rubensrodrigues.controlefinanceiro.persistence.converter.Conversor
 import br.com.rubensrodrigues.controlefinanceiro.persistence.converter.ConversorTipo
 import br.com.rubensrodrigues.controlefinanceiro.persistence.converter.ConversorTipoSaldo
 
-@Database(entities = [Transacao::class], version = 1, exportSchema = false)
+@Database(entities = [Transacao::class], version = 2, exportSchema = false)
 @TypeConverters(ConversorCalendar::class, ConversorTipo::class, ConversorTipoSaldo::class, ConversorBigDecimal::class)
 abstract class ControleFinanceiroDatabase : RoomDatabase(){
 

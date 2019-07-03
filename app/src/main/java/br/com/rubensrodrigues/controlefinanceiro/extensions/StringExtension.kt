@@ -31,9 +31,9 @@ fun String.toBigDecimalOrNullDeVirgulaParaPonto() : BigDecimal?{
     return novaString.toBigDecimalOrNull()
 }
 
-fun String.vinteCaracteres() : String{
-    if(this.length > 20){
-        return "${this.substring(0, 20)}..."
+fun String.quantidadeCaracteres(quantidade: Int): String{
+    if(this.length > quantidade){
+        return "${this.substring(0, quantidade)}…"
     }
     return this
 }

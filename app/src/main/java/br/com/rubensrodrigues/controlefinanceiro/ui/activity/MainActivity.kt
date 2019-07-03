@@ -394,7 +394,7 @@ class MainActivity : AppCompatActivity() {
         }).execute()
     }
 
-    private fun getIntentParaFomulario() = Intent(this@MainActivity, FormularioTrasacaoActivity::class.java)
+    private fun getIntentParaFomulario() = Intent(this@MainActivity, FormularioTransacaoActivity::class.java)
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)

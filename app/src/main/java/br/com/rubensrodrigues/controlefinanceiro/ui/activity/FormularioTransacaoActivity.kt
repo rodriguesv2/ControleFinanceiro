@@ -25,10 +25,12 @@ import kotlinx.android.synthetic.main.activity_formulario_transacao.*
 import java.math.BigDecimal
 import java.util.*
 
-class FormularioTrasacaoActivity : AppCompatActivity() {
+class FormularioTransacaoActivity : AppCompatActivity() {
 
     private val campoTitulo by lazy {formulario_transacao_titulo_edittext}
     private val campoCategoria by lazy {formulario_transacao_categoria_edittext}
+    private val campoFormaPagamento by lazy{formulario_transacao_forma_pagamento_edittext}
+    private val containerFormaPagamento by lazy {formulario_transacao_forma_pagamento}
     private val campoData by lazy {formulario_Transacao_data_edittext}
     private val campoValor by lazy {formulario_transacao_valor_edittext}
     private val seletorSaldo by lazy {formulario_transacao_seletor_saldo}
@@ -55,11 +57,26 @@ class FormularioTrasacaoActivity : AppCompatActivity() {
 
         setaPadraoParaSaldo()
         configuraDropdownCategoria()
+        configuraCampoFormaPagamentoSeDespesa()
         populaCamposSeEdicao()
         aplicaRegraDeEdicaoDeTextoCampoValor()
         configuraCampoData()
         configuraCliqueBotaoSalvar()
     }
+
+    private fun configuraCampoFormaPagamentoSeDespesa() {
+        if (ehEdicao()) {
+            if (getTransacaoEdicao().tipo == Tipo.RECEITA) {
+                containerFormaPagamento.visibility = View.GONE
+            } else {
+                configuraDropdownFormaPagamento()
+            }
+        } else {
+            configuraDropdownFormaPagamento()
+        }
+    }
+
+    private fun ehCampoFormaPagamentoGone() = containerFormaPagamento.visibility == View.GONE
 
     private fun setaPadraoParaSaldo() {
         seletorSaldoSuperfluo.isChecked = true
@@ -111,6 +128,9 @@ class FormularioTrasacaoActivity : AppCompatActivity() {
         } else {
             seletorSaldoImportante.isChecked = true
         }
+
+        if (!ehCampoFormaPagamentoGone())
+            campoFormaPagamento.setText(transacao.formaPagamento)
     }
 
     private fun escolheTituloAppBarQuandoEdicao(transacao: Transacao) {
@@ -128,27 +148,55 @@ class FormularioTrasacaoActivity : AppCompatActivity() {
                     val categoria = campoCategoria.text.toString()
                     val data = campoData.text.toString().toCalendar()
                     val valor = campoValor.text.toString().converterReaisParaBigDecimal()
-                    val tipoSaldo =
-                        if (seletorSaldo.checkedRadioButtonId == R.id.formulario_transacao_radio_superfluo) {
-                            TipoSaldo.SUPERFLUO
-                        } else {
-                            TipoSaldo.IMPORTANTE
-                        }
+                    val tipoSaldo = getTipoSaldo()
+                    val formaPagamento = getFormaPagamento()
 
                     val transacao =
-                        if (!ehEdicao()) {
-                            novaTransacao(valor, titulo, categoria, tipoSaldo, data)
-                        } else {
-                            transacaoAlterada(valor, titulo, categoria, tipoSaldo, data)
-                        }
+                        criaTransacaoParaSalvar(valor, titulo, categoria, tipoSaldo, data, formaPagamento)
 
                     validaSaldoAntesDeSalvar(transacao)
-
                 }
             }
         })
     }
 
+    private fun criaTransacaoParaSalvar(
+        valor: BigDecimal,
+        titulo: String,
+        categoria: String,
+        tipoSaldo: TipoSaldo,
+        data: Calendar,
+        formaPagamento: String
+    ): Transacao {
+        return if (!ehEdicao()) {
+            novaTransacao(valor, titulo, categoria, tipoSaldo, data, formaPagamento)
+        } else {
+            if (ehCampoFormaPagamentoGone())
+                transacaoAlterada(valor, titulo, categoria, tipoSaldo, data)
+            else
+                transacaoAlterada(valor, titulo, categoria, tipoSaldo, data, formaPagamento)
+        }
+    }
+
+    private fun getFormaPagamento(): String {
+        return if (!ehCampoFormaPagamentoGone()) {
+            campoFormaPagamento.text.toString()
+        } else {
+            "Nulo"
+        }
+    }
+
+    private fun getTipoSaldo(): TipoSaldo {
+        return if (seletorSaldo.checkedRadioButtonId == R.id.formulario_transacao_radio_superfluo) {
+            TipoSaldo.SUPERFLUO
+        } else {
+            TipoSaldo.IMPORTANTE
+        }
+    }
+
+    //Quando edição e despesa, impede que o usuário mude o tipo de saldo para o saldo que esteja negativo, mas se
+    //a edição estiver sendo feita a partir de uma despesa onde o saldo já é negativo, permite salvar ou mudar para
+    //saldo saldo positivo
     private fun validaSaldoAntesDeSalvar(transacao: Transacao) {
         if (ehEdicao()) {
             if (transacao.tipo == Tipo.DESPESA)
@@ -182,7 +230,7 @@ class FormularioTrasacaoActivity : AppCompatActivity() {
     }
 
     private fun alertSaldoInsuficiente(nomeSaldo: String) {
-        AlertDialog.Builder(this@FormularioTrasacaoActivity)
+        AlertDialog.Builder(this@FormularioTransacaoActivity)
             .setTitle("Saldo $nomeSaldo Insuficiente")
             .setMessage("Não é permitido mudar o tipo de saldo da despesa." +
                     " \nSaldo destino insuficiente. Por favor, adicione receita")
@@ -200,7 +248,8 @@ class FormularioTrasacaoActivity : AppCompatActivity() {
         tituloNovo: String,
         categoriaNova: String,
         tipoSaldoNovo: TipoSaldo,
-        dataNova: Calendar
+        dataNova: Calendar,
+        formaPagamentoNovo: String = "Nulo"
     ): Transacao {
         val transacao = getTransacaoEdicao()
         with(transacao) {
@@ -209,6 +258,7 @@ class FormularioTrasacaoActivity : AppCompatActivity() {
             categoria = categoriaNova
             tipoSaldo = tipoSaldoNovo
             data = dataNova
+            formaPagamento = formaPagamentoNovo
         }
         return transacao
     }
@@ -218,8 +268,9 @@ class FormularioTrasacaoActivity : AppCompatActivity() {
         tituloNovo: String,
         categoriaNova: String,
         tipoSaldoNovo: TipoSaldo,
-        dataNova: Calendar
-    ) = Transacao(valorNovo, Tipo.DESPESA, tituloNovo, categoriaNova, tipoSaldoNovo, dataNova)
+        dataNova: Calendar,
+        formaPagamentoNovo: String
+    ) = Transacao(valorNovo, Tipo.DESPESA, tituloNovo, categoriaNova, tipoSaldoNovo, dataNova, formaPagamentoNovo)
 
     private fun preparaTransacoesResult(transacao: Transacao) {
         val resultadoInsercao = Intent()
@@ -247,4 +298,14 @@ class FormularioTrasacaoActivity : AppCompatActivity() {
         }
         return lista
     }
+
+    private fun configuraDropdownFormaPagamento(){
+        EditTextDropDown
+            .injetaDropdown(
+                this,
+                campoFormaPagamento,
+                resources.getStringArray(R.array.forma_pagamento)
+            )
+    }
+
 }

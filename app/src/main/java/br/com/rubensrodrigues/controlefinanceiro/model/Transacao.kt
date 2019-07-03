@@ -14,6 +14,7 @@ class Transacao(
     var categoria: String,
     var tipoSaldo: TipoSaldo,
     var data: Calendar,
+    var formaPagamento: String = "Nulo",
     @PrimaryKey(autoGenerate = true)
     var id: Long = 0
 ) : Serializable
