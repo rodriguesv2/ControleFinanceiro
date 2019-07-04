@@ -11,7 +11,10 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import br.com.rubensrodrigues.controlefinanceiro.R
-import br.com.rubensrodrigues.controlefinanceiro.extensions.*
+import br.com.rubensrodrigues.controlefinanceiro.extensions.converterReaisParaBigDecimal
+import br.com.rubensrodrigues.controlefinanceiro.extensions.formatoBrasileiroMonetario
+import br.com.rubensrodrigues.controlefinanceiro.extensions.getDataFinalPeriodo
+import br.com.rubensrodrigues.controlefinanceiro.extensions.getDataInicialPeriodo
 import br.com.rubensrodrigues.controlefinanceiro.model.Tipo
 import br.com.rubensrodrigues.controlefinanceiro.model.Transacao
 import br.com.rubensrodrigues.controlefinanceiro.persistence.asynktask.*
@@ -28,29 +31,29 @@ import java.util.*
 
 class MainActivity : AppCompatActivity() {
 
-    private val viewGroup by lazy {window.decorView as ViewGroup}
+    private val viewGroup by lazy { window.decorView as ViewGroup }
 
-    private val infoValorImportanteGeral by lazy {banner_info_importante_valor_geral}
-    private val infoValorSuperfluoGeral by lazy {banner_info_superfluo_valor_geral}
-    private val infoValorImportantePeriodo by lazy {banner_info_importante_valor_periodo}
-    private val infoValorSuperfluoPeriodo by lazy {banner_info_superfluo_valor_periodo}
-    private val infoLabelTotaisPeriodo by lazy {banner_info_totais_periodo}
-    private val fabReceita by lazy {main_fab_receita}
-    private val fabDespesa by lazy {main_fab_despesa}
-    private val fabTransferencia by lazy {main_fab_transferencia}
-    private val fabMenu by lazy {main_fab_menu}
+    private val infoValorImportanteGeral by lazy { banner_info_importante_valor_geral }
+    private val infoValorSuperfluoGeral by lazy { banner_info_superfluo_valor_geral }
+    private val infoValorImportantePeriodo by lazy { banner_info_importante_valor_periodo }
+    private val infoValorSuperfluoPeriodo by lazy { banner_info_superfluo_valor_periodo }
+    private val infoLabelTotaisPeriodo by lazy { banner_info_totais_periodo }
+    private val fabReceita by lazy { main_fab_receita }
+    private val fabDespesa by lazy { main_fab_despesa }
+    private val fabTransferencia by lazy { main_fab_transferencia }
+    private val fabMenu by lazy { main_fab_menu }
 
     private val CODIGO_REQUEST_INSERIR_RECEITA = 1
     private val CODIGO_REQUEST_INSERIR_DESPESA = 2
     private val CODIGO_REQUEST_ALTERAR = 3
 
-    private val dao by lazy {DBUtil.getInstance(this).getTransacaoDao()}
+    private val dao by lazy { DBUtil.getInstance(this).getTransacaoDao() }
 
-    private lateinit var listaTodosFrag : ListaTransacoesFragment
-    private lateinit var listaDespesaFrag : ListaTransacoesFragment
-    private lateinit var listaReceitaFrag : ListaTransacoesFragment
+    private lateinit var listaTodosFrag: ListaTransacoesFragment
+    private lateinit var listaDespesaFrag: ListaTransacoesFragment
+    private lateinit var listaReceitaFrag: ListaTransacoesFragment
 
-    companion object{
+    companion object {
         const val TODOS = 0
         const val DESPESA = 1
         const val RECEITA = 2
@@ -86,15 +89,10 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun configuraTabLayout() {
-        val quantidadePeriodo = PeriodoListasPreferences
-            .getValorPorChave(this, PeriodoListasPreferences.CHAVE_QUANTIDADE_ULTIMOS_PERIODO)
-        val tipoPeriodo = PeriodoListasPreferences
-            .getValorPorChave(this, PeriodoListasPreferences.CHAVE_TIPO_PERIODO)
-
         val dataInicial = Calendar.getInstance().getDataInicialPeriodo(this)
         val dataFinal = Calendar.getInstance().getDataFinalPeriodo(this)
 
-        BuscaTodosPorTask(dao, dataInicial, dataFinal, object: OnPostExecuteTodasListasListener{
+        BuscaTodosPorTask(dao, dataInicial, dataFinal, object : OnPostExecuteTodasListasListener {
             override fun posThread(
                 listaTodos: MutableList<Transacao>,
                 listaDespesa: MutableList<Transacao>,
@@ -157,15 +155,17 @@ class MainActivity : AppCompatActivity() {
 
 
     override fun onContextItemSelected(item: MenuItem?): Boolean {
-        when(item!!.itemId) {
-            R.id.recyclerview_menu_remover -> {removeTransacaoSelecionada()}
+        when (item!!.itemId) {
+            R.id.recyclerview_menu_remover -> {
+                removeTransacaoSelecionada()
+            }
         }
 
         return super.onContextItemSelected(item)
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        when(item!!.itemId) {
+        when (item!!.itemId) {
             R.id.periodo_menu_este_mes -> {
                 mudaPeriodoDasListas(0, PeriodoListasPreferences.MES_ATUAL)
             }
@@ -254,13 +254,13 @@ class MainActivity : AppCompatActivity() {
         transacao: Transacao,
         pagina: Int
     ) {
-        if(transacao.categoria == "Transferência"){
+        if (transacao.categoria == "Transferência") {
             remocaoQuandoTransferencia(transacao)
-        }else{
+        } else {
             val dataInicial = Calendar.getInstance().getDataInicialPeriodo(this)
             val dataFinal = Calendar.getInstance().getDataFinalPeriodo(this)
 
-            RemoveTransacaoTask(dao, dataInicial, dataFinal, transacao, object: OnPostExecuteTodasListasListener{
+            RemoveTransacaoTask(dao, dataInicial, dataFinal, transacao, object : OnPostExecuteTodasListasListener {
                 override fun posThread(
                     listaTodos: MutableList<Transacao>,
                     listaDespesa: MutableList<Transacao>,
@@ -338,13 +338,13 @@ class MainActivity : AppCompatActivity() {
         val dataInicial = Calendar.getInstance().getDataInicialPeriodo(this)
         val dataFinal = Calendar.getInstance().getDataFinalPeriodo(this)
 
-        RemoveTransacoesPorIdsTabTask(dao, dataInicial, dataFinal, object : OnPostExecuteTodasListasListener{
+        RemoveTransacoesPorIdsTabTask(dao, dataInicial, dataFinal, object : OnPostExecuteTodasListasListener {
             override fun posThread(
                 listaTodos: MutableList<Transacao>,
                 listaDespesa: MutableList<Transacao>,
                 listaReceita: MutableList<Transacao>
             ) {
-                when(pagina){
+                when (pagina) {
                     TODOS -> {
                         listaTodosFrag.removerTransferenciaAnimacaoSuave(listaTodos, transacao)
                         atualizaListaDespesa(listaDespesa)
@@ -406,12 +406,12 @@ class MainActivity : AppCompatActivity() {
     private fun cliqueFabTransferencia() {
         fabTransferencia.setOnClickListener(object : View.OnClickListener {
             override fun onClick(v: View?) {
-                mostraDialogFormularioEAtualizaLista()
+                mostraDialogFormularioAndAtualizaLista()
             }
         })
     }
 
-    private fun mostraDialogFormularioEAtualizaLista() {
+    private fun mostraDialogFormularioAndAtualizaLista() {
         TotaisPorTipoTask(dao, object : TotaisPorTipoTask.OnPostExecuteListener {
             override fun posThread(valores: HashMap<String, BigDecimal>) {
                 val ehSuperfluoInsuficiente = valores["superfluo"]!!.compareTo(BigDecimal.ZERO) <= 0
@@ -440,7 +440,7 @@ class MainActivity : AppCompatActivity() {
         val dataInicial = Calendar.getInstance().getDataInicialPeriodo(this)
         val dataFinal = Calendar.getInstance().getDataFinalPeriodo(this)
 
-        AdicionaTransacoesTask(dao, dataInicial, dataFinal, object: OnPostExecuteTodasListasListener{
+        AdicionaTransacoesTask(dao, dataInicial, dataFinal, object : OnPostExecuteTodasListasListener {
             override fun posThread(
                 listaTodos: MutableList<Transacao>,
                 listaDespesa: MutableList<Transacao>,
@@ -561,11 +561,11 @@ class MainActivity : AppCompatActivity() {
             insereReceitasNoBanco(data)
         }
 
-        if(validaTransacaoFormularioDespesa(requestCode, resultCode, data)){
+        if (validaTransacaoFormularioDespesa(requestCode, resultCode, data)) {
             insereDespesaNoBanco(data)
         }
 
-        if(validaTransacaoFormularioAlterar(requestCode, resultCode, data)){
+        if (validaTransacaoFormularioAlterar(requestCode, resultCode, data)) {
             alteraTransacaoNoBanco(data)
         }
     }
@@ -574,7 +574,8 @@ class MainActivity : AppCompatActivity() {
         requestCode: Int,
         resultCode: Int,
         data: Intent?
-    ) = requestCode == CODIGO_REQUEST_ALTERAR && resultCode == Activity.RESULT_OK && data!!.hasExtra("transacaoParaRemover")
+    ) =
+        requestCode == CODIGO_REQUEST_ALTERAR && resultCode == Activity.RESULT_OK && data!!.hasExtra("transacaoParaRemover")
 
     private fun alteraTransacaoNoBanco(data: Intent?) {
         val transacao = data!!.getSerializableExtra("transacaoParaRemover") as Transacao
@@ -607,8 +608,12 @@ class MainActivity : AppCompatActivity() {
         val dataInicial = Calendar.getInstance().getDataInicialPeriodo(this)
         val dataFinal = Calendar.getInstance().getDataFinalPeriodo(this)
 
-        AdicionaTransacoesPorTipoTask(dao, dataInicial, dataFinal, mapTransacoes["superfluo"], mapTransacoes["importante"],
-            object : AdicionaTransacoesPorTipoTask.OnPostExecuteListener{
+        AdicionaTransacoesPorTipoTask(dao,
+            dataInicial,
+            dataFinal,
+            mapTransacoes["superfluo"],
+            mapTransacoes["importante"],
+            object : AdicionaTransacoesPorTipoTask.OnPostExecuteListener {
                 override fun posThread(
                     listaTodos: MutableList<Transacao>,
                     listaDespesa: MutableList<Transacao>,

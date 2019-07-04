@@ -1,14 +1,12 @@
 package br.com.rubensrodrigues.controlefinanceiro.ui.dropdown
 
 import android.app.Activity
-import android.content.Context
-import com.google.android.material.textfield.TextInputEditText
 import android.view.View
-import android.view.inputmethod.InputMethodManager
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.ListPopupWindow
 import br.com.rubensrodrigues.controlefinanceiro.ui.util.SistemaUtil
+import com.google.android.material.textfield.TextInputEditText
 
 object EditTextDropDown{
 

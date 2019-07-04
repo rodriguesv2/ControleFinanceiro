@@ -1,14 +1,12 @@
 package br.com.rubensrodrigues.controlefinanceiro.persistence.asynktask
 
 import android.os.AsyncTask
-import br.com.rubensrodrigues.controlefinanceiro.extensions.buscaDespesaReceitaAndTodos
 import br.com.rubensrodrigues.controlefinanceiro.extensions.buscaDespesaReceitaAndTodosPorData
 import br.com.rubensrodrigues.controlefinanceiro.model.Transacao
 import br.com.rubensrodrigues.controlefinanceiro.persistence.asynktask.constantes.ConstantesTask
 import br.com.rubensrodrigues.controlefinanceiro.persistence.asynktask.listener.OnPostExecuteTodasListasListener
 import br.com.rubensrodrigues.controlefinanceiro.persistence.dao.TransacaoDAO
 import java.util.*
-import kotlin.collections.HashMap
 
 class BuscaTodosPorTask(
     private val dao: TransacaoDAO,
