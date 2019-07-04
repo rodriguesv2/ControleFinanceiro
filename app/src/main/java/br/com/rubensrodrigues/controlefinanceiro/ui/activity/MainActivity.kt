@@ -11,7 +11,9 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import br.com.rubensrodrigues.controlefinanceiro.R
-import br.com.rubensrodrigues.controlefinanceiro.extensions.*
+import br.com.rubensrodrigues.controlefinanceiro.extensions.converterReaisParaBigDecimal
+import br.com.rubensrodrigues.controlefinanceiro.extensions.dataPorPeriodo
+import br.com.rubensrodrigues.controlefinanceiro.extensions.formatoBrasileiroMonetario
 import br.com.rubensrodrigues.controlefinanceiro.model.Tipo
 import br.com.rubensrodrigues.controlefinanceiro.model.Transacao
 import br.com.rubensrodrigues.controlefinanceiro.persistence.asynktask.*
@@ -25,7 +27,6 @@ import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.banner_saldos.*
 import java.math.BigDecimal
 import java.util.*
-import kotlin.collections.HashMap
 
 class MainActivity : AppCompatActivity() {
 
@@ -35,6 +36,7 @@ class MainActivity : AppCompatActivity() {
     private val infoValorSuperfluoGeral by lazy {banner_info_superfluo_valor_geral}
     private val infoValorImportantePeriodo by lazy {banner_info_importante_valor_periodo}
     private val infoValorSuperfluoPeriodo by lazy {banner_info_superfluo_valor_periodo}
+    private val infoLabelTotaisPeriodo by lazy {banner_info_totais_periodo}
     private val fabReceita by lazy {main_fab_receita}
     private val fabDespesa by lazy {main_fab_despesa}
     private val fabTransferencia by lazy {main_fab_transferencia}
@@ -66,6 +68,16 @@ class MainActivity : AppCompatActivity() {
         configuraCliqueFabs()
     }
 
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.periodo_menu, menu)
+        return super.onCreateOptionsMenu(menu)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        configuraTextFieldsDeSaldos()
+    }
+
     private fun setaValoresDePeriodoCasoNuncaSalvos() {
         if (!PeriodoListasPreferences.seChavesExistem(this)) {
             PeriodoListasPreferences.salvaValores(
@@ -73,11 +85,6 @@ class MainActivity : AppCompatActivity() {
                 PeriodoListasPreferences.DAY_OF_MONTH
             )
         }
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.periodo_menu, menu)
-        return super.onCreateOptionsMenu(menu)
     }
 
     private fun configuraTabLayout() {
@@ -177,7 +184,7 @@ class MainActivity : AppCompatActivity() {
                 mudaPeriodoDasListas(1, PeriodoListasPreferences.YEAR)
             }
             R.id.periodo_menu_tudo -> {
-                mudaPeriodoDasListas(40, PeriodoListasPreferences.YEAR)
+                mudaPeriodoDasListas(100, PeriodoListasPreferences.TUDO)
             }
         }
 
@@ -198,9 +205,12 @@ class MainActivity : AppCompatActivity() {
                 listaReceita: MutableList<Transacao>
             ) {
                 atualizaListaDeTodasTabs(listaTodos, listaDespesa, listaReceita)
+                saldosPorPeriodo()
             }
         }).execute()
     }
+
+
 
     private fun removeTransacaoSelecionada() {
         val pagina = main_tabs_tablayout.selectedTabPosition
@@ -238,7 +248,6 @@ class MainActivity : AppCompatActivity() {
     ) {
         if(transacao.categoria == "Transferência"){
             remocaoQuandoTransferencia(transacao)
-
         }else{
             RemoveTransacaoTabTask(dao, transacao, object: OnPostExecuteTodasListasListener{
                 override fun posThread(
@@ -334,6 +343,7 @@ class MainActivity : AppCompatActivity() {
                         removeSuaveListaReceita(listaReceita, listaTodos, listaDespesa)
                     }
                 }
+                configuraTextFieldsDeSaldos()
             }
         }, idReceita, idDespesa).execute()
     }
@@ -450,20 +460,68 @@ class MainActivity : AppCompatActivity() {
     private fun ehSaldoMenorIgualAZero(saldo: BigDecimal) =
         saldo.compareTo(BigDecimal.ZERO) <= 0
 
-    override fun onResume() {
-        super.onResume()
-
-        configuraTextFieldsDeSaldos()
+    private fun configuraTextFieldsDeSaldos() {
+        saldosGerais()
+        saldosPorPeriodo()
     }
 
-    private fun configuraTextFieldsDeSaldos() {
-        TotaisPorTipoTask(dao, object: TotaisPorTipoTask.OnPostExecuteListener{
+    private fun saldosGerais() {
+        TotaisPorTipoTask(dao, object : TotaisPorTipoTask.OnPostExecuteListener {
             override fun posThread(valores: HashMap<String, BigDecimal>) {
                 infoValorImportanteGeral.text = valores["importante"]!!.formatoBrasileiroMonetario()
                 infoValorSuperfluoGeral.text = valores["superfluo"]!!.formatoBrasileiroMonetario()
             }
         }).execute()
     }
+
+    private fun saldosPorPeriodo() {
+        val tipoPeriodo =
+            PeriodoListasPreferences.getValorPorChave(this, PeriodoListasPreferences.CHAVE_TIPO_PERIODO)
+        val quantidadePeriodo =
+            PeriodoListasPreferences.getValorPorChave(this, PeriodoListasPreferences.CHAVE_QUANTIDADE_PERIODO)
+
+        val dataInicial = Calendar.getInstance().dataPorPeriodo(tipoPeriodo, quantidadePeriodo)
+        val dataFinal = Calendar.getInstance()
+
+        TotaisPorTipoPorPeriodoTask(
+            dao,
+            dataInicial,
+            dataFinal,
+            object : TotaisPorTipoPorPeriodoTask.OnPostExecuteListener {
+                override fun posThread(valores: HashMap<String, BigDecimal>) {
+                    infoValorImportantePeriodo.text = valores["importante"]!!.formatoBrasileiroMonetario()
+                    infoValorSuperfluoPeriodo.text = valores["superfluo"]!!.formatoBrasileiroMonetario()
+                    infoLabelTotaisPeriodo.text = customizaTextoLabelPeriodo(tipoPeriodo, quantidadePeriodo)
+                }
+            }).execute()
+    }
+
+    private fun customizaTextoLabelPeriodo(tipoPeriodo: Int, quantidadePeriodo: Int): String {
+        return when (tipoPeriodo) {
+            PeriodoListasPreferences.DAY_OF_MONTH -> {
+                if (quantidadePeriodo == 1)
+                    "1 dia"
+                else
+                    "$quantidadePeriodo dias"
+            }
+            PeriodoListasPreferences.MONTH -> {
+                if (quantidadePeriodo == 1)
+                    "1 mes"
+                else
+                    "$quantidadePeriodo meses"
+            }
+            PeriodoListasPreferences.YEAR -> {
+                if (quantidadePeriodo == 1)
+                    "1 ano"
+                else
+                    "$quantidadePeriodo anos"
+            }
+            else -> {
+                "Geral"
+            }
+        }
+    }
+
 
     private fun getIntentParaFomulario() = Intent(this@MainActivity, FormularioTransacaoActivity::class.java)
 

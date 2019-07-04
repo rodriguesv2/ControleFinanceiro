@@ -46,7 +46,7 @@ fun Calendar.dataPorPeriodo(tipoPeriodo: Int, quantidadePeriodo: Int): Calendar{
         Calendar.MONTH -> {this.dataPorMesesAtras(quantidadePeriodo)}
         Calendar.YEAR -> {this.dataPorAnosAtras(quantidadePeriodo)}
         else -> {
-            this
+            this.dataPorAnosAtras(100)
         }
     }
 }

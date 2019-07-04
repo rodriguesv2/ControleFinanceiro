@@ -42,9 +42,17 @@ interface TransacaoDAO {
 
     @Query("SELECT " +
             "IFNULL(" +
-            "(SELECT SUM(valor) FROM Transacao WHERE tipoSaldo = :tipoSaldo and tipo = 'RECEITA'),0)" +
+            "(SELECT SUM(valor) FROM Transacao WHERE tipoSaldo = :tipoSaldo AND tipo = 'RECEITA'),0)" +
             "-" +
             "IFNULL(" +
-            "(SELECT SUM(valor) FROM Transacao WHERE tipoSaldo = :tipoSaldo and tipo = 'DESPESA'),0)")
+            "(SELECT SUM(valor) FROM Transacao WHERE tipoSaldo = :tipoSaldo AND tipo = 'DESPESA'),0)")
     fun totalPor(tipoSaldo: TipoSaldo) : BigDecimal
+
+    @Query("SELECT " +
+            "IFNULL(" +
+            "(SELECT SUM(valor) FROM Transacao WHERE tipoSaldo = :tipoSaldo AND tipo = 'RECEITA' AND data BETWEEN :dataInicial AND :dataFinal),0)" +
+            "-" +
+            "IFNULL(" +
+            "(SELECT SUM(valor) FROM Transacao WHERE tipoSaldo = :tipoSaldo AND tipo = 'DESPESA' AND data BETWEEN :dataInicial AND :dataFinal),0)")
+    fun totalPorPeriodo(tipoSaldo: TipoSaldo, dataInicial: Calendar, dataFinal: Calendar) : BigDecimal
 }

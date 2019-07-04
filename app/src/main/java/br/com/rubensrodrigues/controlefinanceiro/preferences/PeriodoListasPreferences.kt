@@ -12,6 +12,7 @@ object PeriodoListasPreferences {
     const val DAY_OF_MONTH = Calendar.DAY_OF_MONTH
     const val MONTH = Calendar.MONTH
     const val YEAR = Calendar.YEAR
+    const val TUDO = -1000
 
     fun salvaValores(context: Context, quantidadePeriodo: Int, tipoPeriodo: Int){
         setaValorAndChave(getPreferences(context),quantidadePeriodo, CHAVE_QUANTIDADE_PERIODO)
