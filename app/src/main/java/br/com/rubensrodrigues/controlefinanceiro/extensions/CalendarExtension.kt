@@ -1,5 +1,7 @@
 package br.com.rubensrodrigues.controlefinanceiro.extensions
 
+import android.content.Context
+import br.com.rubensrodrigues.controlefinanceiro.preferences.PeriodoListasPreferences
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -40,16 +42,103 @@ fun Calendar.dataPorAnosAtras(anos: Int): Calendar{
     return this.dataHorarioZerado()
 }
 
-fun Calendar.dataPorPeriodo(tipoPeriodo: Int, quantidadePeriodo: Int): Calendar{
+fun Calendar.dataPorPeriodo(tipoPeriodo: Int, quantidadeUltimosPeriodo: Int): Calendar{
     return when(tipoPeriodo){
-        Calendar.DAY_OF_MONTH -> {this.dataPorDiasAtras(quantidadePeriodo)}
-        Calendar.MONTH -> {this.dataPorMesesAtras(quantidadePeriodo)}
-        Calendar.YEAR -> {this.dataPorAnosAtras(quantidadePeriodo)}
+        Calendar.DAY_OF_MONTH -> {this.dataPorDiasAtras(quantidadeUltimosPeriodo)}
+        Calendar.MONTH -> {this.dataPorMesesAtras(quantidadeUltimosPeriodo)}
+        Calendar.YEAR -> {this.dataPorAnosAtras(quantidadeUltimosPeriodo)}
         else -> {
             this.dataPorAnosAtras(100)
         }
     }
 }
+
+fun Calendar.primeiroDiaMes(mes: Int, ano: Int): Calendar{
+    this.set(Calendar.MONTH, mes)
+    this.set(Calendar.YEAR, ano)
+    this.set(Calendar.DAY_OF_MONTH, this.getActualMinimum(Calendar.DAY_OF_MONTH))
+
+    return this.dataHorarioZerado()
+}
+
+fun Calendar.ultimoDiaMes(mes: Int, ano: Int): Calendar{
+    this.set(Calendar.MONTH, mes)
+    this.set(Calendar.YEAR, ano)
+    this.set(Calendar.DAY_OF_MONTH, this.getActualMaximum(Calendar.DAY_OF_MONTH))
+
+    return this
+}
+
+fun Calendar.primeiroDataRange(tipoPeriodo: Int): Calendar{
+    return when(tipoPeriodo){
+        PeriodoListasPreferences.MES_ATUAL -> {
+            this.primeiroDiaMes(this.get(Calendar.MONTH), this.get(Calendar.YEAR))
+        }
+        PeriodoListasPreferences.MES_ANTERIOR -> {
+            this.add(Calendar.MONTH, -1)
+            this.primeiroDiaMes(this.get(Calendar.MONTH), this.get(Calendar.YEAR))
+        }
+        PeriodoListasPreferences.ANO_ATUAL -> {
+            this.primeiroDiaMes(0, this.get(Calendar.YEAR))
+        }
+        PeriodoListasPreferences.ANO_ANTERIOR -> {
+            this.add(Calendar.YEAR, -1)
+            this.primeiroDiaMes(0, this.get(Calendar.YEAR))
+        }
+        else -> {
+            this.dataPorAnosAtras(100)
+        }
+    }
+}
+
+fun Calendar.ultimoDataRange(tipoPeriodo: Int): Calendar{
+    return when(tipoPeriodo){
+        PeriodoListasPreferences.MES_ATUAL -> {
+            this.ultimoDiaMes(this.get(Calendar.MONTH), this.get(Calendar.YEAR))
+        }
+        PeriodoListasPreferences.MES_ANTERIOR -> {
+            this.add(Calendar.MONTH, -1)
+            this.ultimoDiaMes(this.get(Calendar.MONTH), this.get(Calendar.YEAR))
+        }
+        PeriodoListasPreferences.ANO_ATUAL -> {
+            this.ultimoDiaMes(11, this.get(Calendar.YEAR))
+        }
+        PeriodoListasPreferences.ANO_ANTERIOR -> {
+            this.add(Calendar.YEAR, -1)
+            this.ultimoDiaMes(11, this.get(Calendar.YEAR))
+        }
+        else -> {
+            this.dataPorAnosAtras(100)
+        }
+    }
+}
+
+fun Calendar.getDataInicialPeriodo(context: Context): Calendar {
+    val quantidadeUltimosPeriodo = PeriodoListasPreferences
+        .getValorPorChave(context, PeriodoListasPreferences.CHAVE_QUANTIDADE_ULTIMOS_PERIODO)
+    val tipoPeriodo = PeriodoListasPreferences
+        .getValorPorChave(context, PeriodoListasPreferences.CHAVE_TIPO_PERIODO)
+
+    return if (quantidadeUltimosPeriodo != 0) {
+        Calendar.getInstance().dataPorPeriodo(tipoPeriodo, quantidadeUltimosPeriodo)
+    } else {
+        Calendar.getInstance().primeiroDataRange(tipoPeriodo)
+    }
+}
+
+fun Calendar.getDataFinalPeriodo(context: Context): Calendar {
+    val quantidadeUltimosPeriodo = PeriodoListasPreferences
+        .getValorPorChave(context, PeriodoListasPreferences.CHAVE_QUANTIDADE_ULTIMOS_PERIODO)
+    val tipoPeriodo = PeriodoListasPreferences
+        .getValorPorChave(context, PeriodoListasPreferences.CHAVE_TIPO_PERIODO)
+
+    return if (quantidadeUltimosPeriodo != 0) {
+        Calendar.getInstance()
+    } else {
+        Calendar.getInstance().ultimoDataRange(tipoPeriodo)
+    }
+}
+
 
 
 

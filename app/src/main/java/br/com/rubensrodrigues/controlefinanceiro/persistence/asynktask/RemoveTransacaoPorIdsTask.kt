@@ -10,14 +10,18 @@ import br.com.rubensrodrigues.controlefinanceiro.persistence.dao.TransacaoDAO
 import java.util.*
 import kotlin.collections.HashMap
 
-class BuscaTodosPorTabPorPeriodoTask(
-    private val dao: TransacaoDAO,
-    private val dataInicial: Calendar,
-    private val dataFinal: Calendar,
-    private val listener: OnPostExecuteTodasListasListener
+class RemoveTransacoesPorIdsTabTask(private val dao: TransacaoDAO,
+                                    private val dataInicial: Calendar,
+                                    private val dataFinal: Calendar,
+                                    private val listener: OnPostExecuteTodasListasListener,
+                                    vararg val ids: Long
 ) : AsyncTask<Unit, Unit, HashMap<Int, MutableList<Transacao>>>() {
 
     override fun doInBackground(vararg params: Unit?): HashMap<Int, MutableList<Transacao>> {
+        ids.forEach {
+            dao.removePor(it)
+        }
+
         return buscaDespesaReceitaAndTodosPorData(dao, dataInicial, dataFinal)
     }
 
@@ -28,4 +32,5 @@ class BuscaTodosPorTabPorPeriodoTask(
             result[ConstantesTask.DESPESA]!!,
             result[ConstantesTask.RECEITA]!!)
     }
+
 }

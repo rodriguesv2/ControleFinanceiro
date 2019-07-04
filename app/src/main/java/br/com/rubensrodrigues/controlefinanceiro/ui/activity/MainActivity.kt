@@ -11,9 +11,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import br.com.rubensrodrigues.controlefinanceiro.R
-import br.com.rubensrodrigues.controlefinanceiro.extensions.converterReaisParaBigDecimal
-import br.com.rubensrodrigues.controlefinanceiro.extensions.dataPorPeriodo
-import br.com.rubensrodrigues.controlefinanceiro.extensions.formatoBrasileiroMonetario
+import br.com.rubensrodrigues.controlefinanceiro.extensions.*
 import br.com.rubensrodrigues.controlefinanceiro.model.Tipo
 import br.com.rubensrodrigues.controlefinanceiro.model.Transacao
 import br.com.rubensrodrigues.controlefinanceiro.persistence.asynktask.*
@@ -89,14 +87,14 @@ class MainActivity : AppCompatActivity() {
 
     private fun configuraTabLayout() {
         val quantidadePeriodo = PeriodoListasPreferences
-            .getValorPorChave(this, PeriodoListasPreferences.CHAVE_QUANTIDADE_PERIODO)
+            .getValorPorChave(this, PeriodoListasPreferences.CHAVE_QUANTIDADE_ULTIMOS_PERIODO)
         val tipoPeriodo = PeriodoListasPreferences
             .getValorPorChave(this, PeriodoListasPreferences.CHAVE_TIPO_PERIODO)
 
-        val dataInicial = Calendar.getInstance().dataPorPeriodo(tipoPeriodo, quantidadePeriodo)
-        val dataFinal = Calendar.getInstance()
+        val dataInicial = Calendar.getInstance().getDataInicialPeriodo(this)
+        val dataFinal = Calendar.getInstance().getDataFinalPeriodo(this)
 
-        BuscaTodosPorTabPorPeriodoTask(dao, dataInicial, dataFinal, object: OnPostExecuteTodasListasListener{
+        BuscaTodosPorTask(dao, dataInicial, dataFinal, object: OnPostExecuteTodasListasListener{
             override fun posThread(
                 listaTodos: MutableList<Transacao>,
                 listaDespesa: MutableList<Transacao>,
@@ -168,19 +166,31 @@ class MainActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         when(item!!.itemId) {
-            R.id.periodo_menu_7_dias -> {
+            R.id.periodo_menu_este_mes -> {
+                mudaPeriodoDasListas(0, PeriodoListasPreferences.MES_ATUAL)
+            }
+            R.id.periodo_menu_mes_anterior -> {
+                mudaPeriodoDasListas(0, PeriodoListasPreferences.MES_ANTERIOR)
+            }
+            R.id.periodo_menu_este_ano -> {
+                mudaPeriodoDasListas(0, PeriodoListasPreferences.ANO_ATUAL)
+            }
+            R.id.periodo_menu_ano_passado -> {
+                mudaPeriodoDasListas(0, PeriodoListasPreferences.ANO_ANTERIOR)
+            }
+            R.id.periodo_menu_ultimos_7_dias -> {
                 mudaPeriodoDasListas(7, PeriodoListasPreferences.DAY_OF_MONTH)
             }
-            R.id.periodo_menu_30_dias -> {
+            R.id.periodo_menu_ultimos_30_dias -> {
                 mudaPeriodoDasListas(30, PeriodoListasPreferences.DAY_OF_MONTH)
             }
-            R.id.periodo_menu_3_meses -> {
+            R.id.periodo_menu_ultimos_3_meses -> {
                 mudaPeriodoDasListas(3, PeriodoListasPreferences.MONTH)
             }
-            R.id.periodo_menu_6_meses -> {
+            R.id.periodo_menu_ultimos_6_meses -> {
                 mudaPeriodoDasListas(6, PeriodoListasPreferences.MONTH)
             }
-            R.id.periodo_menu_1_ano -> {
+            R.id.periodo_menu_ultimos_1_ano -> {
                 mudaPeriodoDasListas(1, PeriodoListasPreferences.YEAR)
             }
             R.id.periodo_menu_tudo -> {
@@ -191,14 +201,14 @@ class MainActivity : AppCompatActivity() {
         return super.onOptionsItemSelected(item)
     }
 
-    private fun mudaPeriodoDasListas(quantidadePeriodo: Int, tipoPeriodo: Int) {
+    private fun mudaPeriodoDasListas(quantidadeUltimosPeriodo: Int, tipoPeriodo: Int) {
         PeriodoListasPreferences
-            .salvaValores(this, quantidadePeriodo, tipoPeriodo)
+            .salvaValores(this, quantidadeUltimosPeriodo, tipoPeriodo)
 
-        val dataInicial = Calendar.getInstance().dataPorPeriodo(tipoPeriodo, quantidadePeriodo)
-        val dataFinal = Calendar.getInstance()
+        val dataInicial = Calendar.getInstance().getDataInicialPeriodo(this)
+        val dataFinal = Calendar.getInstance().getDataFinalPeriodo(this)
 
-        BuscaTodosPorTabPorPeriodoTask(dao, dataInicial, dataFinal, object : OnPostExecuteTodasListasListener {
+        BuscaTodosPorTask(dao, dataInicial, dataFinal, object : OnPostExecuteTodasListasListener {
             override fun posThread(
                 listaTodos: MutableList<Transacao>,
                 listaDespesa: MutableList<Transacao>,
@@ -210,6 +220,21 @@ class MainActivity : AppCompatActivity() {
         }).execute()
     }
 
+    private fun getDataInicialPeriodo(quantidadeUltimosPeriodo: Int, tipoPeriodo: Int): Calendar {
+        return if (quantidadeUltimosPeriodo != 0) {
+            Calendar.getInstance().dataPorPeriodo(tipoPeriodo, quantidadeUltimosPeriodo)
+        } else {
+            Calendar.getInstance().primeiroDataRange(tipoPeriodo)
+        }
+    }
+
+    private fun getDataFinalPeriodo(quantidadeUltimosPeriodo: Int, tipoPeriodo: Int): Calendar {
+        return if (quantidadeUltimosPeriodo != 0) {
+            Calendar.getInstance()
+        } else {
+            Calendar.getInstance().ultimoDataRange(tipoPeriodo)
+        }
+    }
 
 
     private fun removeTransacaoSelecionada() {
@@ -249,7 +274,10 @@ class MainActivity : AppCompatActivity() {
         if(transacao.categoria == "Transferência"){
             remocaoQuandoTransferencia(transacao)
         }else{
-            RemoveTransacaoTabTask(dao, transacao, object: OnPostExecuteTodasListasListener{
+            val dataInicial = Calendar.getInstance().getDataInicialPeriodo(this)
+            val dataFinal = Calendar.getInstance().getDataFinalPeriodo(this)
+
+            RemoveTransacaoTask(dao, dataInicial, dataFinal, transacao, object: OnPostExecuteTodasListasListener{
                 override fun posThread(
                     listaTodos: MutableList<Transacao>,
                     listaDespesa: MutableList<Transacao>,
@@ -324,7 +352,10 @@ class MainActivity : AppCompatActivity() {
             idDespesa = transacao.id
         }
 
-        RemoveTransacoesPorIdsTabTask(dao, object : OnPostExecuteTodasListasListener{
+        val dataInicial = Calendar.getInstance().getDataInicialPeriodo(this)
+        val dataFinal = Calendar.getInstance().getDataFinalPeriodo(this)
+
+        RemoveTransacoesPorIdsTabTask(dao, dataInicial, dataFinal, object : OnPostExecuteTodasListasListener{
             override fun posThread(
                 listaTodos: MutableList<Transacao>,
                 listaDespesa: MutableList<Transacao>,
@@ -423,7 +454,10 @@ class MainActivity : AppCompatActivity() {
         transacaoDespesa: Transacao,
         transacaoReceita: Transacao
     ) {
-        AdicionaTransacoesTabTask(dao, object: OnPostExecuteTodasListasListener{
+        val dataInicial = Calendar.getInstance().getDataInicialPeriodo(this)
+        val dataFinal = Calendar.getInstance().getDataFinalPeriodo(this)
+
+        AdicionaTransacoesTask(dao, dataInicial, dataFinal, object: OnPostExecuteTodasListasListener{
             override fun posThread(
                 listaTodos: MutableList<Transacao>,
                 listaDespesa: MutableList<Transacao>,
@@ -475,13 +509,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun saldosPorPeriodo() {
-        val tipoPeriodo =
-            PeriodoListasPreferences.getValorPorChave(this, PeriodoListasPreferences.CHAVE_TIPO_PERIODO)
-        val quantidadePeriodo =
-            PeriodoListasPreferences.getValorPorChave(this, PeriodoListasPreferences.CHAVE_QUANTIDADE_PERIODO)
-
-        val dataInicial = Calendar.getInstance().dataPorPeriodo(tipoPeriodo, quantidadePeriodo)
-        val dataFinal = Calendar.getInstance()
+        val dataInicial = Calendar.getInstance().getDataInicialPeriodo(this)
+        val dataFinal = Calendar.getInstance().getDataFinalPeriodo(this)
 
         TotaisPorTipoPorPeriodoTask(
             dao,
@@ -491,30 +520,47 @@ class MainActivity : AppCompatActivity() {
                 override fun posThread(valores: HashMap<String, BigDecimal>) {
                     infoValorImportantePeriodo.text = valores["importante"]!!.formatoBrasileiroMonetario()
                     infoValorSuperfluoPeriodo.text = valores["superfluo"]!!.formatoBrasileiroMonetario()
-                    infoLabelTotaisPeriodo.text = customizaTextoLabelPeriodo(tipoPeriodo, quantidadePeriodo)
+                    infoLabelTotaisPeriodo.text = customizaTextoLabelPeriodo()
                 }
             }).execute()
     }
 
-    private fun customizaTextoLabelPeriodo(tipoPeriodo: Int, quantidadePeriodo: Int): String {
+    private fun customizaTextoLabelPeriodo(): String {
+        val tipoPeriodo =
+            PeriodoListasPreferences.getValorPorChave(this, PeriodoListasPreferences.CHAVE_TIPO_PERIODO)
+        val quantidadeUltimosPeriodo =
+            PeriodoListasPreferences.getValorPorChave(this, PeriodoListasPreferences.CHAVE_QUANTIDADE_ULTIMOS_PERIODO)
+
         return when (tipoPeriodo) {
             PeriodoListasPreferences.DAY_OF_MONTH -> {
-                if (quantidadePeriodo == 1)
+                if (quantidadeUltimosPeriodo == 1)
                     "1 dia"
                 else
-                    "$quantidadePeriodo dias"
+                    "$quantidadeUltimosPeriodo dias"
             }
             PeriodoListasPreferences.MONTH -> {
-                if (quantidadePeriodo == 1)
+                if (quantidadeUltimosPeriodo == 1)
                     "1 mes"
                 else
-                    "$quantidadePeriodo meses"
+                    "$quantidadeUltimosPeriodo meses"
             }
             PeriodoListasPreferences.YEAR -> {
-                if (quantidadePeriodo == 1)
+                if (quantidadeUltimosPeriodo == 1)
                     "1 ano"
                 else
-                    "$quantidadePeriodo anos"
+                    "$quantidadeUltimosPeriodo anos"
+            }
+            PeriodoListasPreferences.MES_ATUAL -> {
+                "Este mês"
+            }
+            PeriodoListasPreferences.MES_ANTERIOR -> {
+                "Mês anterior"
+            }
+            PeriodoListasPreferences.ANO_ATUAL -> {
+                "Este ano"
+            }
+            PeriodoListasPreferences.ANO_ANTERIOR -> {
+                "Ano anterior"
             }
             else -> {
                 "Geral"
@@ -550,15 +596,19 @@ class MainActivity : AppCompatActivity() {
     private fun alteraTransacaoNoBanco(data: Intent?) {
         val transacao = data!!.getSerializableExtra("transacaoParaRemover") as Transacao
 
-        AlteraTransacaoTabTask(dao, transacao, object : AlteraTransacaoTabTask.OnPostExecuteListener{
-            override fun posThread(
-                listaTodos: MutableList<Transacao>,
-                listaDespesa: MutableList<Transacao>,
-                listaReceita: MutableList<Transacao>
-            ) {
-                atualizaListaDeTodasTabs(listaTodos, listaDespesa, listaReceita)
-            }
-        }).execute()
+        val dataInicial = Calendar.getInstance().getDataInicialPeriodo(this)
+        val dataFinal = Calendar.getInstance().getDataFinalPeriodo(this)
+
+        AlteraTransacaoTask(dao, dataInicial, dataFinal, transacao,
+            object : AlteraTransacaoTask.OnPostExecuteListener {
+                override fun posThread(
+                    listaTodos: MutableList<Transacao>,
+                    listaDespesa: MutableList<Transacao>,
+                    listaReceita: MutableList<Transacao>
+                ) {
+                    atualizaListaDeTodasTabs(listaTodos, listaDespesa, listaReceita)
+                }
+            }).execute()
     }
 
     private fun validaTransacaoVindaDoFormularioReceita(
@@ -571,8 +621,11 @@ class MainActivity : AppCompatActivity() {
     private fun insereReceitasNoBanco(data: Intent?) {
         val mapTransacoes = data!!.getSerializableExtra("transacoes") as MutableMap<String, Transacao>
 
-        AdicionaTransacoesPorTipoTabTask(dao, mapTransacoes["superfluo"], mapTransacoes["importante"],
-            object : AdicionaTransacoesPorTipoTabTask.OnPostExecuteListener{
+        val dataInicial = Calendar.getInstance().getDataInicialPeriodo(this)
+        val dataFinal = Calendar.getInstance().getDataFinalPeriodo(this)
+
+        AdicionaTransacoesPorTipoTask(dao, dataInicial, dataFinal, mapTransacoes["superfluo"], mapTransacoes["importante"],
+            object : AdicionaTransacoesPorTipoTask.OnPostExecuteListener{
                 override fun posThread(
                     listaTodos: MutableList<Transacao>,
                     listaDespesa: MutableList<Transacao>,
@@ -593,15 +646,19 @@ class MainActivity : AppCompatActivity() {
     private fun insereDespesaNoBanco(data: Intent?) {
         val transacao = data!!.getSerializableExtra("transacaoParaRemover") as Transacao
 
-        AdicionaTransacaoTabTask(dao, transacao, object : AdicionaTransacaoTabTask.OnPostExecuteListener{
-            override fun posThread(
-                listaTodos: MutableList<Transacao>,
-                listaDespesa: MutableList<Transacao>,
-                listaReceita: MutableList<Transacao>
-            ) {
-                atualizaListaDeTodasTabs(listaTodos, listaDespesa, listaReceita)
-            }
-        }).execute()
+        val dataInicial = Calendar.getInstance().getDataInicialPeriodo(this)
+        val dataFinal = Calendar.getInstance().getDataFinalPeriodo(this)
+
+        AdicionaTransacaoTask(dao, dataInicial, dataFinal, transacao,
+            object : AdicionaTransacaoTask.OnPostExecuteListener {
+                override fun posThread(
+                    listaTodos: MutableList<Transacao>,
+                    listaDespesa: MutableList<Transacao>,
+                    listaReceita: MutableList<Transacao>
+                ) {
+                    atualizaListaDeTodasTabs(listaTodos, listaDespesa, listaReceita)
+                }
+            }).execute()
     }
 
     private fun atualizaListaDeTodasTabs(

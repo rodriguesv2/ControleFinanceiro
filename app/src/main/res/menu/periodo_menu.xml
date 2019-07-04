@@ -7,24 +7,43 @@
             app:showAsAction="always"
             android:icon="@drawable/calendario">
         <menu>
+
             <item
-                    android:id="@+id/periodo_menu_7_dias"
-                    android:title="Últimos 7 dias"/>
+                    android:id="@+id/periodo_menu_este_mes"
+                    android:title="Este mês"/>
             <item
-                    android:id="@+id/periodo_menu_30_dias"
-                    android:title="Últimos 30 dias"/>
+                    android:id="@+id/periodo_menu_mes_anterior"
+                    android:title="Mês anterior"/>
             <item
-                    android:id="@+id/periodo_menu_3_meses"
-                    android:title="Últimos 3 meses"/>
+                    android:id="@+id/periodo_menu_este_ano"
+                    android:title="Este ano"/>
             <item
-                    android:id="@+id/periodo_menu_6_meses"
-                    android:title="Últimos 6 meses"/>
-            <item
-                    android:id="@+id/periodo_menu_1_ano"
-                    android:title="Último ano"/>
+                    android:id="@+id/periodo_menu_ano_passado"
+                    android:title="Ano passado"/>
+
+            <item android:title="Últimos">
+                <menu>
+                    <item
+                            android:id="@+id/periodo_menu_ultimos_7_dias"
+                            android:title="7 dias"/>
+                    <item
+                            android:id="@+id/periodo_menu_ultimos_30_dias"
+                            android:title="30 dias"/>
+                    <item
+                            android:id="@+id/periodo_menu_ultimos_3_meses"
+                            android:title="3 meses"/>
+                    <item
+                            android:id="@+id/periodo_menu_ultimos_6_meses"
+                            android:title="6 meses"/>
+                    <item
+                            android:id="@+id/periodo_menu_ultimos_1_ano"
+                            android:title="ano"/>
+                </menu>
+            </item>
+
             <item
                     android:id="@+id/periodo_menu_tudo"
-                    android:title="Todo o periodo"/>
+                    android:title="Tudo"/>
         </menu>
     </item>
 </menu>
