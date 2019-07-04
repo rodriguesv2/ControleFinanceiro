@@ -17,6 +17,7 @@ import br.com.rubensrodrigues.controlefinanceiro.model.Transacao
 import br.com.rubensrodrigues.controlefinanceiro.persistence.asynktask.*
 import br.com.rubensrodrigues.controlefinanceiro.persistence.asynktask.listener.OnPostExecuteTodasListasListener
 import br.com.rubensrodrigues.controlefinanceiro.persistence.util.DBUtil
+import br.com.rubensrodrigues.controlefinanceiro.preferences.PeriodoListaPreferences
 import br.com.rubensrodrigues.controlefinanceiro.ui.activity.fragment.ListaTransacoesFragment
 import br.com.rubensrodrigues.controlefinanceiro.ui.dialog.TransferenciaDialog
 import br.com.rubensrodrigues.controlefinanceiro.ui.viewpager.adapter.TabsAdapter
@@ -58,8 +59,18 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        setaValoresDePeriodoCasoNuncaSalvos()
         configuraTabLayout()
         configuraCliqueFabs()
+    }
+
+    private fun setaValoresDePeriodoCasoNuncaSalvos() {
+        if (!PeriodoListaPreferences.seChavesExistem(this)) {
+            PeriodoListaPreferences.salvaValores(
+                this, 30,
+                PeriodoListaPreferences.DAY_OF_MONTH
+            )
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -68,7 +79,12 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun configuraTabLayout() {
-        val dataInicial = Calendar.getInstance().dataPorDiasAtras(30)
+        val quantidadePeriodo = PeriodoListaPreferences
+            .getValorPorChave(this, PeriodoListaPreferences.CHAVE_QUANTIDADE_PERIODO)
+        val tipoPeriodo = PeriodoListaPreferences
+            .getValorPorChave(this, PeriodoListaPreferences.CHAVE_TIPO_PERIODO)
+
+        val dataInicial = Calendar.getInstance().dataPorPeriodo(tipoPeriodo, quantidadePeriodo)
         val dataFinal = Calendar.getInstance()
 
         BuscaTodosPorTabPorPeriodoTask(dao, dataInicial, dataFinal, object: OnPostExecuteTodasListasListener{
@@ -144,24 +160,44 @@ class MainActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         when(item!!.itemId) {
             R.id.periodo_menu_7_dias -> {
-
+                mudaPeriodoDasListas(7, PeriodoListaPreferences.DAY_OF_MONTH)
             }
             R.id.periodo_menu_30_dias -> {
-
+                mudaPeriodoDasListas(30, PeriodoListaPreferences.DAY_OF_MONTH)
             }
             R.id.periodo_menu_3_meses -> {
-
+                mudaPeriodoDasListas(3, PeriodoListaPreferences.MONTH)
             }
             R.id.periodo_menu_6_meses -> {
-
+                mudaPeriodoDasListas(6, PeriodoListaPreferences.MONTH)
             }
             R.id.periodo_menu_1_ano -> {
-
+                mudaPeriodoDasListas(1, PeriodoListaPreferences.YEAR)
             }
-            R.id.periodo_menu_tudo -> {}
+            R.id.periodo_menu_tudo -> {
+                mudaPeriodoDasListas(40, PeriodoListaPreferences.YEAR)
+            }
         }
 
         return super.onOptionsItemSelected(item)
+    }
+
+    private fun mudaPeriodoDasListas(quantidadePeriodo: Int, tipoPeriodo: Int) {
+        PeriodoListaPreferences
+            .salvaValores(this, quantidadePeriodo, tipoPeriodo)
+
+        val dataInicial = Calendar.getInstance().dataPorPeriodo(tipoPeriodo, quantidadePeriodo)
+        val dataFinal = Calendar.getInstance()
+
+        BuscaTodosPorTabPorPeriodoTask(dao, dataInicial, dataFinal, object : OnPostExecuteTodasListasListener {
+            override fun posThread(
+                listaTodos: MutableList<Transacao>,
+                listaDespesa: MutableList<Transacao>,
+                listaReceita: MutableList<Transacao>
+            ) {
+                atualizaListaDeTodasTabs(listaTodos, listaDespesa, listaReceita)
+            }
+        }).execute()
     }
 
     private fun removeTransacaoSelecionada() {

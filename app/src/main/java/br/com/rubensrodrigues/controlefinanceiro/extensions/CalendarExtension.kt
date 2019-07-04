@@ -40,5 +40,16 @@ fun Calendar.dataPorAnosAtras(anos: Int): Calendar{
     return this.dataHorarioZerado()
 }
 
+fun Calendar.dataPorPeriodo(tipoPeriodo: Int, quantidadePeriodo: Int): Calendar{
+    return when(tipoPeriodo){
+        Calendar.DAY_OF_MONTH -> {this.dataPorDiasAtras(quantidadePeriodo)}
+        Calendar.MONTH -> {this.dataPorMesesAtras(quantidadePeriodo)}
+        Calendar.YEAR -> {this.dataPorAnosAtras(quantidadePeriodo)}
+        else -> {
+            this
+        }
+    }
+}
+
 
 
