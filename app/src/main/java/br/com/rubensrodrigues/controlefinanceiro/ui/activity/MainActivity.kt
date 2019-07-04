@@ -220,23 +220,6 @@ class MainActivity : AppCompatActivity() {
         }).execute()
     }
 
-    private fun getDataInicialPeriodo(quantidadeUltimosPeriodo: Int, tipoPeriodo: Int): Calendar {
-        return if (quantidadeUltimosPeriodo != 0) {
-            Calendar.getInstance().dataPorPeriodo(tipoPeriodo, quantidadeUltimosPeriodo)
-        } else {
-            Calendar.getInstance().primeiroDataRange(tipoPeriodo)
-        }
-    }
-
-    private fun getDataFinalPeriodo(quantidadeUltimosPeriodo: Int, tipoPeriodo: Int): Calendar {
-        return if (quantidadeUltimosPeriodo != 0) {
-            Calendar.getInstance()
-        } else {
-            Calendar.getInstance().ultimoDataRange(tipoPeriodo)
-        }
-    }
-
-
     private fun removeTransacaoSelecionada() {
         val pagina = main_tabs_tablayout.selectedTabPosition
         when (pagina) {
@@ -554,13 +537,13 @@ class MainActivity : AppCompatActivity() {
                 "Este mês"
             }
             PeriodoListasPreferences.MES_ANTERIOR -> {
-                "Mês anterior"
+                "Mês passado"
             }
             PeriodoListasPreferences.ANO_ATUAL -> {
                 "Este ano"
             }
             PeriodoListasPreferences.ANO_ANTERIOR -> {
-                "Ano anterior"
+                "Ano passado"
             }
             else -> {
                 "Geral"

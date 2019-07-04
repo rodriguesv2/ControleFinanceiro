@@ -3,7 +3,7 @@
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-            android:title="Periodo"
+            android:title="Período"
             app:showAsAction="always"
             android:icon="@drawable/calendario">
         <menu>
@@ -13,7 +13,7 @@
                     android:title="Este mês"/>
             <item
                     android:id="@+id/periodo_menu_mes_anterior"
-                    android:title="Mês anterior"/>
+                    android:title="Mês passado"/>
             <item
                     android:id="@+id/periodo_menu_este_ano"
                     android:title="Este ano"/>
@@ -37,7 +37,7 @@
                             android:title="6 meses"/>
                     <item
                             android:id="@+id/periodo_menu_ultimos_1_ano"
-                            android:title="ano"/>
+                            android:title="Ano"/>
                 </menu>
             </item>
 
