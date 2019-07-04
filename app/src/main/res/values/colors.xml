@@ -13,5 +13,6 @@
     <color name="fab_ripple_receita">#039BE5</color>
     <color name="fab_pressed_despesa">#EF5350</color>
     <color name="fab_ripple_despesa">#E57373</color>
-    <color name="divisor">#c7c7c7</color>
+    <color name="divisor">#CFD8DC</color>
+    <color name="card_item">#FFFDE7</color>
 </resources>

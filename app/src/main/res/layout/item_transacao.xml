@@ -27,12 +27,13 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:background="@color/card_item">
 
             <View
                     android:id="@+id/item_transacao_container_titulo"
                     android:layout_width="wrap_content"
-                    android:layout_height="40dp"
+                    android:layout_height="30dp"
                     android:background="@color/receita"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -47,21 +48,21 @@
 
             <ImageView
                     android:id="@+id/item_transacao_seta"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
                     android:src="@drawable/seta_receita_novo"
                     app:layout_constraintTop_toTopOf="@id/item_transacao_container_titulo"
                     app:layout_constraintEnd_toEndOf="@id/item_transacao_container_titulo"
                     app:layout_constraintBottom_toBottomOf="@id/item_transacao_container_titulo"
-            />
+                    android:contentDescription="Seta que indica sentido da transação"/>
 
             <TextView
                     android:id="@+id/item_transacao_titulo"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_margin="8dp"
+                    android:layout_margin="5dp"
                     android:textColor="@android:color/white"
-                    android:textSize="18sp"
+                    android:textSize="17sp"
                     android:textStyle="bold"
                     app:layout_constraintStart_toStartOf="@id/item_transacao_container_titulo"
                     app:layout_constraintTop_toTopOf="@id/item_transacao_container_titulo"
@@ -72,8 +73,8 @@
                     android:id="@+id/item_transacao_categoria"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
-                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="2dp"
+                    android:layout_marginStart="5dp"
                     android:textStyle="bold"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/item_transacao_separador"
@@ -96,8 +97,8 @@
                     android:id="@+id/item_transacao_data"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
-                    android:layout_marginEnd="8dp"
+                    android:layout_marginTop="2dp"
+                    android:layout_marginEnd="5dp"
                     android:textStyle="bold"
                     tools:text="20/09/1990"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -108,14 +109,13 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
-                    android:layout_marginEnd="8dp"
                     android:layout_marginStart="12dp"
                     android:textSize="20sp"
                     android:textColor="#7CB342"
                     android:textAlignment="textEnd"
                     tools:text="Indefinido"
                     app:layout_constraintHorizontal_bias="1"
-                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintEnd_toEndOf="@+id/item_transacao_data"
                     app:layout_constraintTop_toBottomOf="@+id/item_transacao_data"
                     app:layout_constraintStart_toEndOf="@+id/item_transacao_valor"/>
 
