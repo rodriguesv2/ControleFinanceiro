@@ -4,7 +4,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import java.util.*
 
-object PeriodoListaPreferences {
+object PeriodoListasPreferences {
 
     const val CHAVE_QUANTIDADE_PERIODO = "quantidade_periodo"
     const val CHAVE_TIPO_PERIODO = "tipo_periodo"

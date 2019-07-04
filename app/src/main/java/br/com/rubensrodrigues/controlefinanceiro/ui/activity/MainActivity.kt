@@ -17,7 +17,7 @@ import br.com.rubensrodrigues.controlefinanceiro.model.Transacao
 import br.com.rubensrodrigues.controlefinanceiro.persistence.asynktask.*
 import br.com.rubensrodrigues.controlefinanceiro.persistence.asynktask.listener.OnPostExecuteTodasListasListener
 import br.com.rubensrodrigues.controlefinanceiro.persistence.util.DBUtil
-import br.com.rubensrodrigues.controlefinanceiro.preferences.PeriodoListaPreferences
+import br.com.rubensrodrigues.controlefinanceiro.preferences.PeriodoListasPreferences
 import br.com.rubensrodrigues.controlefinanceiro.ui.activity.fragment.ListaTransacoesFragment
 import br.com.rubensrodrigues.controlefinanceiro.ui.dialog.TransferenciaDialog
 import br.com.rubensrodrigues.controlefinanceiro.ui.viewpager.adapter.TabsAdapter
@@ -31,8 +31,10 @@ class MainActivity : AppCompatActivity() {
 
     private val viewGroup by lazy {window.decorView as ViewGroup}
 
-    private val infoValorImportante by lazy {banner_info_importante_valor}
-    private val infoValorSuperpluo by lazy {banner_info_superfluo_valor}
+    private val infoValorImportanteGeral by lazy {banner_info_importante_valor_geral}
+    private val infoValorSuperfluoGeral by lazy {banner_info_superfluo_valor_geral}
+    private val infoValorImportantePeriodo by lazy {banner_info_importante_valor_periodo}
+    private val infoValorSuperfluoPeriodo by lazy {banner_info_superfluo_valor_periodo}
     private val fabReceita by lazy {main_fab_receita}
     private val fabDespesa by lazy {main_fab_despesa}
     private val fabTransferencia by lazy {main_fab_transferencia}
@@ -65,10 +67,10 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setaValoresDePeriodoCasoNuncaSalvos() {
-        if (!PeriodoListaPreferences.seChavesExistem(this)) {
-            PeriodoListaPreferences.salvaValores(
+        if (!PeriodoListasPreferences.seChavesExistem(this)) {
+            PeriodoListasPreferences.salvaValores(
                 this, 30,
-                PeriodoListaPreferences.DAY_OF_MONTH
+                PeriodoListasPreferences.DAY_OF_MONTH
             )
         }
     }
@@ -79,10 +81,10 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun configuraTabLayout() {
-        val quantidadePeriodo = PeriodoListaPreferences
-            .getValorPorChave(this, PeriodoListaPreferences.CHAVE_QUANTIDADE_PERIODO)
-        val tipoPeriodo = PeriodoListaPreferences
-            .getValorPorChave(this, PeriodoListaPreferences.CHAVE_TIPO_PERIODO)
+        val quantidadePeriodo = PeriodoListasPreferences
+            .getValorPorChave(this, PeriodoListasPreferences.CHAVE_QUANTIDADE_PERIODO)
+        val tipoPeriodo = PeriodoListasPreferences
+            .getValorPorChave(this, PeriodoListasPreferences.CHAVE_TIPO_PERIODO)
 
         val dataInicial = Calendar.getInstance().dataPorPeriodo(tipoPeriodo, quantidadePeriodo)
         val dataFinal = Calendar.getInstance()
@@ -160,22 +162,22 @@ class MainActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         when(item!!.itemId) {
             R.id.periodo_menu_7_dias -> {
-                mudaPeriodoDasListas(7, PeriodoListaPreferences.DAY_OF_MONTH)
+                mudaPeriodoDasListas(7, PeriodoListasPreferences.DAY_OF_MONTH)
             }
             R.id.periodo_menu_30_dias -> {
-                mudaPeriodoDasListas(30, PeriodoListaPreferences.DAY_OF_MONTH)
+                mudaPeriodoDasListas(30, PeriodoListasPreferences.DAY_OF_MONTH)
             }
             R.id.periodo_menu_3_meses -> {
-                mudaPeriodoDasListas(3, PeriodoListaPreferences.MONTH)
+                mudaPeriodoDasListas(3, PeriodoListasPreferences.MONTH)
             }
             R.id.periodo_menu_6_meses -> {
-                mudaPeriodoDasListas(6, PeriodoListaPreferences.MONTH)
+                mudaPeriodoDasListas(6, PeriodoListasPreferences.MONTH)
             }
             R.id.periodo_menu_1_ano -> {
-                mudaPeriodoDasListas(1, PeriodoListaPreferences.YEAR)
+                mudaPeriodoDasListas(1, PeriodoListasPreferences.YEAR)
             }
             R.id.periodo_menu_tudo -> {
-                mudaPeriodoDasListas(40, PeriodoListaPreferences.YEAR)
+                mudaPeriodoDasListas(40, PeriodoListasPreferences.YEAR)
             }
         }
 
@@ -183,7 +185,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun mudaPeriodoDasListas(quantidadePeriodo: Int, tipoPeriodo: Int) {
-        PeriodoListaPreferences
+        PeriodoListasPreferences
             .salvaValores(this, quantidadePeriodo, tipoPeriodo)
 
         val dataInicial = Calendar.getInstance().dataPorPeriodo(tipoPeriodo, quantidadePeriodo)
@@ -361,8 +363,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun logicaParaIrFormularioDespesa() {
-        val totalSuperfluo = infoValorSuperpluo.text.converterReaisParaBigDecimal()
-        val totalImportante = infoValorImportante.text.converterReaisParaBigDecimal()
+        val totalSuperfluo = infoValorSuperfluoGeral.text.converterReaisParaBigDecimal()
+        val totalImportante = infoValorImportanteGeral.text.converterReaisParaBigDecimal()
 
         if (ehSaldoMenorIgualAZero(totalSuperfluo) &&
             ehSaldoMenorIgualAZero(totalImportante)
@@ -457,8 +459,8 @@ class MainActivity : AppCompatActivity() {
     private fun configuraTextFieldsDeSaldos() {
         TotaisPorTipoTask(dao, object: TotaisPorTipoTask.OnPostExecuteListener{
             override fun posThread(valores: HashMap<String, BigDecimal>) {
-                infoValorImportante.text = valores["importante"]!!.formatoBrasileiroMonetario()
-                infoValorSuperpluo.text = valores["superfluo"]!!.formatoBrasileiroMonetario()
+                infoValorImportanteGeral.text = valores["importante"]!!.formatoBrasileiroMonetario()
+                infoValorSuperfluoGeral.text = valores["superfluo"]!!.formatoBrasileiroMonetario()
             }
         }).execute()
     }
