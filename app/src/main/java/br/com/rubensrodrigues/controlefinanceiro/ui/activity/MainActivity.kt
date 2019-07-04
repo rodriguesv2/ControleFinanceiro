@@ -4,14 +4,14 @@ import android.app.Activity
 import android.app.AlertDialog
 import android.content.Intent
 import android.os.Bundle
+import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import br.com.rubensrodrigues.controlefinanceiro.R
-import br.com.rubensrodrigues.controlefinanceiro.extensions.converterReaisParaBigDecimal
-import br.com.rubensrodrigues.controlefinanceiro.extensions.formatoBrasileiroMonetario
+import br.com.rubensrodrigues.controlefinanceiro.extensions.*
 import br.com.rubensrodrigues.controlefinanceiro.model.Tipo
 import br.com.rubensrodrigues.controlefinanceiro.model.Transacao
 import br.com.rubensrodrigues.controlefinanceiro.persistence.asynktask.*
@@ -23,6 +23,8 @@ import br.com.rubensrodrigues.controlefinanceiro.ui.viewpager.adapter.TabsAdapte
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.banner_saldos.*
 import java.math.BigDecimal
+import java.util.*
+import kotlin.collections.HashMap
 
 class MainActivity : AppCompatActivity() {
 
@@ -60,12 +62,21 @@ class MainActivity : AppCompatActivity() {
         configuraCliqueFabs()
     }
 
-    private fun configuraTabLayout() {
-        BuscaTodosPorTabTask(dao, object : BuscaTodosPorTabTask.OnPostExecuteListener{
-            override fun posThread(listaTodos: MutableList<Transacao>,
-                                   listaDespesa: MutableList<Transacao>,
-                                   listaReceita: MutableList<Transacao>) {
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.periodo_menu, menu)
+        return super.onCreateOptionsMenu(menu)
+    }
 
+    private fun configuraTabLayout() {
+        val dataInicial = Calendar.getInstance().dataPorDiasAtras(30)
+        val dataFinal = Calendar.getInstance()
+
+        BuscaTodosPorTabPorPeriodoTask(dao, dataInicial, dataFinal, object: OnPostExecuteTodasListasListener{
+            override fun posThread(
+                listaTodos: MutableList<Transacao>,
+                listaDespesa: MutableList<Transacao>,
+                listaReceita: MutableList<Transacao>
+            ) {
                 bindViewPagerComTabLayout(listaTodos, listaDespesa, listaReceita)
             }
         }).execute()
@@ -122,13 +133,35 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-
     override fun onContextItemSelected(item: MenuItem?): Boolean {
-        if(item!!.itemId == R.id.recyclerview_menu_remover) {
-            removeTransacaoSelecionada()
+        when(item!!.itemId) {
+            R.id.recyclerview_menu_remover -> {removeTransacaoSelecionada()}
         }
 
         return super.onContextItemSelected(item)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        when(item!!.itemId) {
+            R.id.periodo_menu_7_dias -> {
+
+            }
+            R.id.periodo_menu_30_dias -> {
+
+            }
+            R.id.periodo_menu_3_meses -> {
+
+            }
+            R.id.periodo_menu_6_meses -> {
+
+            }
+            R.id.periodo_menu_1_ano -> {
+
+            }
+            R.id.periodo_menu_tudo -> {}
+        }
+
+        return super.onOptionsItemSelected(item)
     }
 
     private fun removeTransacaoSelecionada() {

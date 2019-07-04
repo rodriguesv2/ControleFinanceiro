@@ -149,8 +149,12 @@ class ListaTransacoesAdapter(
             valor.text = transacao.valor.formatoBrasileiroMonetario()
 
             if (transacao.tipo == Tipo.DESPESA){
-                formaPagamento.text = transacao.formaPagamento.quantidadeCaracteres(11)
-                formaPagamento.visibility = View.VISIBLE
+                if (transacao.categoria != "Transferência"){
+                    formaPagamento.visibility = View.VISIBLE
+                    formaPagamento.text = transacao.formaPagamento.quantidadeCaracteres(11)
+                }else{
+                    formaPagamento.visibility = View.GONE
+                }
             }else {
                 formaPagamento.visibility = View.GONE
             }

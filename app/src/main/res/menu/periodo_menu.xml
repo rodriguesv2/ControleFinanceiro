@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+            android:title="Periodo"
+            app:showAsAction="always"
+            android:icon="@drawable/calendario">
+        <menu>
+            <item
+                    android:id="@+id/periodo_menu_7_dias"
+                    android:title="Últimos 7 dias"/>
+            <item
+                    android:id="@+id/periodo_menu_30_dias"
+                    android:title="Últimos 30 dias"/>
+            <item
+                    android:id="@+id/periodo_menu_3_meses"
+                    android:title="Últimos 3 meses"/>
+            <item
+                    android:id="@+id/periodo_menu_6_meses"
+                    android:title="Últimos 6 meses"/>
+            <item
+                    android:id="@+id/periodo_menu_1_ano"
+                    android:title="Último ano"/>
+            <item
+                    android:id="@+id/periodo_menu_tudo"
+                    android:title="Todo o periodo"/>
+        </menu>
+    </item>
+</menu>

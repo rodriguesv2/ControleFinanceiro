@@ -5,6 +5,7 @@ import br.com.rubensrodrigues.controlefinanceiro.model.Tipo
 import br.com.rubensrodrigues.controlefinanceiro.model.TipoSaldo
 import br.com.rubensrodrigues.controlefinanceiro.model.Transacao
 import java.math.BigDecimal
+import java.util.*
 
 @Dao
 interface TransacaoDAO {
@@ -29,6 +30,12 @@ interface TransacaoDAO {
 
     @Query("SELECT * FROM Transacao WHERE tipo = :tipo ORDER BY data DESC, id DESC")
     fun todosPor(tipo: Tipo): List<Transacao>
+
+    @Query("SELECT * FROM Transacao WHERE data BETWEEN :dataInicial AND :dataFinal ORDER BY data DESC, id DESC")
+    fun todosPorData(dataInicial: Calendar, dataFinal: Calendar) : List<Transacao>
+
+    @Query("SELECT * FROM Transacao WHERE tipo = :tipo AND data BETWEEN :dataInicial AND :dataFinal ORDER BY data DESC, id DESC")
+    fun todosPorDataAndTipo(tipo: Tipo, dataInicial: Calendar, dataFinal: Calendar): List<Transacao>
 
     @Query("SELECT * FROM Transacao WHERE id = :id")
     fun pegaTransacao(id: Long) : Transacao
