@@ -24,14 +24,16 @@ class AlteraTransacaoTask(private val dao: TransacaoDAO,
         listener.posThread(
             result[ConstantesTask.TODOS]!!,
             result[ConstantesTask.DESPESA]!!,
-            result[ConstantesTask.RECEITA]!!)
+            result[ConstantesTask.RECEITA]!!,
+            result[ConstantesTask.FUTURO]!!)
     }
 
     interface OnPostExecuteListener {
         fun posThread(
             listaTodos: MutableList<Transacao>,
             listaDespesa: MutableList<Transacao>,
-            listaReceita: MutableList<Transacao>
+            listaReceita: MutableList<Transacao>,
+            listaFuturo: MutableList<Transacao>
         )
     }
 

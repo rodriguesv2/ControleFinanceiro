@@ -139,6 +139,17 @@ fun Calendar.getDataFinalPeriodo(context: Context): Calendar {
     }
 }
 
+fun Calendar.dataParaAPI(): String{
+    val ano = this.get(Calendar.YEAR)
+    val mes = this.get(Calendar.MONTH)+1
+    val dia = this.get(Calendar.DAY_OF_MONTH)
+
+    val mesComZero = if (mes < 10) "0$mes" else mes.toString()
+    val diaComZero = if (dia < 10) "0$dia" else dia.toString()
+
+    return "$ano$mesComZero$diaComZero"
+}
+
 
 
 

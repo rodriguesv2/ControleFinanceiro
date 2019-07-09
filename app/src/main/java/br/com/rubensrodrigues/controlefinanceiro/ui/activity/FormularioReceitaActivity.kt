@@ -28,6 +28,8 @@ class FormularioReceitaActivity : AppCompatActivity() {
 
     private val campoTitulo by lazy {formulario_receita_titulo_edittext}
     private val campoCategoria by lazy {formulario_receita_categoria_edittext}
+    private val campoValorEstrangeiro by lazy {formulario_receita_valor_estrangeiro_edittext}
+    private val campoMoeda by lazy {formulario_receita_moeda_edittext}
     private val campoValor by lazy {formulario_receita_valor_edittext}
     private val campoData by lazy {formulario_receita_data_edittext}
     private val barra by lazy {formulario_receita_proporcao_barra}
@@ -47,10 +49,21 @@ class FormularioReceitaActivity : AppCompatActivity() {
         DateUtil.setaDataAtualNoCampoData(campoData)
         DateDialog.configuraCliqueCampoData(this, campoData)
 
+        configuraDropdownMoeda()
+
         configuraCampoValor()
         desabilitaSeekBarSeCampoValorVazio()
 
         configuraCliqueBotaoSalvar()
+    }
+
+    private fun configuraDropdownMoeda() {
+        EditTextDropDown
+            .injetaDropdown(
+            this,
+            campoMoeda,
+            resources.getStringArray(R.array.moeda_estrangeira)
+        )
     }
 
     private fun injetaDropdownCampoCategoria() {

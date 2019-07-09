@@ -5,6 +5,7 @@ import android.app.AlertDialog
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import br.com.rubensrodrigues.controlefinanceiro.R
 import br.com.rubensrodrigues.controlefinanceiro.extensions.converterReaisParaBigDecimal
@@ -21,6 +22,7 @@ import br.com.rubensrodrigues.controlefinanceiro.ui.dropdown.EditTextDropDown
 import br.com.rubensrodrigues.controlefinanceiro.ui.util.CampoValorUtil
 import br.com.rubensrodrigues.controlefinanceiro.ui.util.DateUtil
 import br.com.rubensrodrigues.controlefinanceiro.ui.util.FormularioUtil
+import br.com.rubensrodrigues.controlefinanceiro.webservice.util.CotacaoUtil
 import kotlinx.android.synthetic.main.activity_formulario_transacao.*
 import java.math.BigDecimal
 import java.util.*
@@ -31,6 +33,8 @@ class FormularioTransacaoActivity : AppCompatActivity() {
     private val campoCategoria by lazy {formulario_transacao_categoria_edittext}
     private val campoFormaPagamento by lazy{formulario_transacao_forma_pagamento_edittext}
     private val containerFormaPagamento by lazy {formulario_transacao_forma_pagamento}
+    private val campoValorEstrangeira by lazy {formulario_transacao_valor_estrangeiro_edittext}
+    private val campoMoeda by lazy {formulario_transacao_moeda_edittext}
     private val campoData by lazy {formulario_Transacao_data_edittext}
     private val campoValor by lazy {formulario_transacao_valor_edittext}
     private val seletorSaldo by lazy {formulario_transacao_seletor_saldo}
@@ -55,13 +59,45 @@ class FormularioTransacaoActivity : AppCompatActivity() {
         if (ehEdicao())
             tipoSaldoOriginal = getTransacaoEdicao().tipoSaldo
 
+        val data = Calendar.getInstance()
+
+        CotacaoUtil.pegaCotacao("USD", data, object : CotacaoUtil.OnResponseListener {
+            override fun sucesso(valor: BigDecimal) {
+                Toast
+                    .makeText(
+                        this@FormularioTransacaoActivity,
+                        valor.toString(),
+                        Toast.LENGTH_SHORT
+                    ).show()
+            }
+
+            override fun falha(t: Throwable) {
+                Toast
+                    .makeText(
+                        this@FormularioTransacaoActivity,
+                        t.message,
+                        Toast.LENGTH_LONG
+                    ).show()
+            }
+        })
+
+
         setaPadraoParaSaldo()
         configuraDropdownCategoria()
         configuraCampoFormaPagamentoSeDespesa()
+        configuraDropdownMoeda()
         populaCamposSeEdicao()
         aplicaRegraDeEdicaoDeTextoCampoValor()
         configuraCampoData()
         configuraCliqueBotaoSalvar()
+    }
+
+    private fun configuraDropdownMoeda() {
+        EditTextDropDown.injetaDropdown(
+            this,
+            campoMoeda,
+            resources.getStringArray(R.array.moeda_estrangeira)
+        )
     }
 
     private fun configuraCampoFormaPagamentoSeDespesa() {

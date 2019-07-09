@@ -5,4 +5,5 @@ object ConstantesTask {
     const val TODOS = 1
     const val DESPESA = 2
     const val RECEITA = 3
+    const val FUTURO = 4
 }

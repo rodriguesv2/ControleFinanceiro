@@ -26,6 +26,7 @@ fun AsyncTask<Unit, Unit, HashMap<Int, MutableList<Transacao>>>.buscaDespesaRece
     return hashMapOf(
         ConstantesTask.TODOS to dao.todosPorData(dataInicialZerado, dataFinal).toMutableList(),
         ConstantesTask.DESPESA to dao.todosPorDataAndTipo(Tipo.DESPESA, dataInicialZerado, dataFinal).toMutableList(),
-        ConstantesTask.RECEITA to dao.todosPorDataAndTipo(Tipo.RECEITA, dataInicialZerado, dataFinal).toMutableList()
+        ConstantesTask.RECEITA to dao.todosPorDataAndTipo(Tipo.RECEITA, dataInicialZerado, dataFinal).toMutableList(),
+        ConstantesTask.FUTURO to dao.todosFuturo(Calendar.getInstance()).toMutableList()
     )
 }

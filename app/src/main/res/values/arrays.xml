@@ -34,4 +34,18 @@
         <item>VA</item>
         <item>VR</item>
     </string-array>
+    <string-array name="moeda_estrangeira">
+        <item>USD (Dólar Comercial)</item>
+        <item>USDT (Dólar Turismo)</item>
+        <item>CAD (Dólar Canadense)</item>
+        <item>AUD (Dólar Australiano)</item>
+        <item>EUR (Euro)</item>
+        <item>GBP (Libra Esterlina)</item>
+        <item>ARS (Peso Argentino)</item>
+        <item>JPY (Iene Japonês)</item>
+        <item>CHF (Franco Suíço)</item>
+        <item>CNY (Yuan Chinês)</item>
+        <item>YLS (Novo Shekel Israelense)</item>
+    </string-array>
+
 </resources>

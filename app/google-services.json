@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "645303705289",
+    "firebase_url": "https://controlefinanceiro-b226b.firebaseio.com",
+    "project_id": "controlefinanceiro-b226b",
+    "storage_bucket": "controlefinanceiro-b226b.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:645303705289:android:0622300eedd43992",
+        "android_client_info": {
+          "package_name": "br.com.rubensrodrigues.controlefinanceiro"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "645303705289-16o882jlqdv7brgdi5su2oe0v4p9qsja.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "br.com.rubensrodrigues.controlefinanceiro",
+            "certificate_hash": "560ab03bfc694577b807da24fec4329c9c4eea1b"
+          }
+        },
+        {
+          "client_id": "645303705289-p3tun0u3jfu1scoqoa0h0evh8m8aom67.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC0cdgSDkf_YGDha5V3E-3Yh17fQjvQN38"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "645303705289-p3tun0u3jfu1scoqoa0h0evh8m8aom67.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

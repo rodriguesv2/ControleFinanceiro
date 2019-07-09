@@ -6,6 +6,7 @@ interface OnPostExecuteTodasListasListener {
     fun posThread(
         listaTodos: MutableList<Transacao>,
         listaDespesa: MutableList<Transacao>,
-        listaReceita: MutableList<Transacao>
+        listaReceita: MutableList<Transacao>,
+        listaFuturo: MutableList<Transacao>
     )
 }

@@ -52,6 +52,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var listaTodosFrag: ListaTransacoesFragment
     private lateinit var listaDespesaFrag: ListaTransacoesFragment
     private lateinit var listaReceitaFrag: ListaTransacoesFragment
+    private lateinit var listaFuturoFrag: ListaTransacoesFragment
 
     companion object {
         const val TODOS = 0
@@ -96,9 +97,10 @@ class MainActivity : AppCompatActivity() {
             override fun posThread(
                 listaTodos: MutableList<Transacao>,
                 listaDespesa: MutableList<Transacao>,
-                listaReceita: MutableList<Transacao>
+                listaReceita: MutableList<Transacao>,
+                listaFuturo: MutableList<Transacao>
             ) {
-                bindViewPagerComTabLayout(listaTodos, listaDespesa, listaReceita)
+                bindViewPagerComTabLayout(listaTodos, listaDespesa, listaReceita, listaFuturo)
             }
         }).execute()
     }
@@ -106,17 +108,20 @@ class MainActivity : AppCompatActivity() {
     private fun bindViewPagerComTabLayout(
         listaTodos: MutableList<Transacao>,
         listaDespesa: MutableList<Transacao>,
-        listaReceita: MutableList<Transacao>
+        listaReceita: MutableList<Transacao>,
+        listaFuturo: MutableList<Transacao>
     ) {
         listaTodosFrag = ListaTransacoesFragment(listaTodos)
         listaDespesaFrag = ListaTransacoesFragment(listaDespesa)
         listaReceitaFrag = ListaTransacoesFragment(listaReceita)
+        listaFuturoFrag = ListaTransacoesFragment(listaFuturo)
 
         val tabsAdapter = TabsAdapter(supportFragmentManager)
 
         tabsAdapter.add(listaTodosFrag, "Todos")
         tabsAdapter.add(listaDespesaFrag, "Despesa")
         tabsAdapter.add(listaReceitaFrag, "Receita")
+        tabsAdapter.add(listaFuturoFrag, "Futuro")
 
         val viewPager = main_tabs_viewpager
         viewPager.adapter = tabsAdapter
@@ -212,7 +217,8 @@ class MainActivity : AppCompatActivity() {
             override fun posThread(
                 listaTodos: MutableList<Transacao>,
                 listaDespesa: MutableList<Transacao>,
-                listaReceita: MutableList<Transacao>
+                listaReceita: MutableList<Transacao>,
+                listaFuturo: MutableList<Transacao>
             ) {
                 atualizaListaDeTodasTabs(listaTodos, listaDespesa, listaReceita)
                 saldosPorPeriodo()
@@ -264,7 +270,8 @@ class MainActivity : AppCompatActivity() {
                 override fun posThread(
                     listaTodos: MutableList<Transacao>,
                     listaDespesa: MutableList<Transacao>,
-                    listaReceita: MutableList<Transacao>
+                    listaReceita: MutableList<Transacao>,
+                    listaFuturo: MutableList<Transacao>
                 ) {
                     atualizaListasAoRemover(pagina, listaTodos, listaDespesa, listaReceita)
                     configuraTextFieldsDeSaldos()
@@ -342,7 +349,8 @@ class MainActivity : AppCompatActivity() {
             override fun posThread(
                 listaTodos: MutableList<Transacao>,
                 listaDespesa: MutableList<Transacao>,
-                listaReceita: MutableList<Transacao>
+                listaReceita: MutableList<Transacao>,
+                listaFuturo: MutableList<Transacao>
             ) {
                 when (pagina) {
                     TODOS -> {
@@ -444,7 +452,8 @@ class MainActivity : AppCompatActivity() {
             override fun posThread(
                 listaTodos: MutableList<Transacao>,
                 listaDespesa: MutableList<Transacao>,
-                listaReceita: MutableList<Transacao>
+                listaReceita: MutableList<Transacao>,
+                listaFuturo: MutableList<Transacao>
             ) {
                 atualizaListaDeTodasTabs(listaTodos, listaDespesa, listaReceita)
                 configuraTextFieldsDeSaldos()
@@ -588,7 +597,8 @@ class MainActivity : AppCompatActivity() {
                 override fun posThread(
                     listaTodos: MutableList<Transacao>,
                     listaDespesa: MutableList<Transacao>,
-                    listaReceita: MutableList<Transacao>
+                    listaReceita: MutableList<Transacao>,
+                    listaFuturo: MutableList<Transacao>
                 ) {
                     atualizaListaDeTodasTabs(listaTodos, listaDespesa, listaReceita)
                 }
@@ -617,7 +627,8 @@ class MainActivity : AppCompatActivity() {
                 override fun posThread(
                     listaTodos: MutableList<Transacao>,
                     listaDespesa: MutableList<Transacao>,
-                    listaReceita: MutableList<Transacao>
+                    listaReceita: MutableList<Transacao>,
+                    listaFuturo: MutableList<Transacao>
                 ) {
                     atualizaListaDeTodasTabs(listaTodos, listaDespesa, listaReceita)
                 }
@@ -642,7 +653,8 @@ class MainActivity : AppCompatActivity() {
                 override fun posThread(
                     listaTodos: MutableList<Transacao>,
                     listaDespesa: MutableList<Transacao>,
-                    listaReceita: MutableList<Transacao>
+                    listaReceita: MutableList<Transacao>,
+                    listaFuturo: MutableList<Transacao>
                 ) {
                     atualizaListaDeTodasTabs(listaTodos, listaDespesa, listaReceita)
                 }

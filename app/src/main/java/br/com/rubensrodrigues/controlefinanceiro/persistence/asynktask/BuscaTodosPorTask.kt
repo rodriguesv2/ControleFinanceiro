@@ -25,6 +25,7 @@ class BuscaTodosPorTask(
         listener.posThread(
             result[ConstantesTask.TODOS]!!,
             result[ConstantesTask.DESPESA]!!,
-            result[ConstantesTask.RECEITA]!!)
+            result[ConstantesTask.RECEITA]!!,
+            result[ConstantesTask.FUTURO]!!)
     }
 }

@@ -81,13 +81,54 @@
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/formulario_receita_valor_estrangeiro"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="14dp"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                app:layout_constraintStart_toStartOf="@id/formulario_receita_data"
+                app:layout_constraintTop_toBottomOf="@id/formulario_receita_data"
+                app:layout_constraintEnd_toStartOf="@+id/formulario_receita_moeda">
+
+            <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/formulario_receita_valor_estrangeiro_edittext"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Moeda estrangeira"/>
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/formulario_receita_moeda"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                app:layout_constraintHorizontal_bias="1"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/formulario_receita_data"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/formulario_receita_valor_estrangeiro">
+
+            <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/formulario_receita_moeda_edittext"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:drawableEnd="@drawable/input_arrow_down"
+                    android:hint="Sigla"/>
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/formulario_receita_valor"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                app:layout_constraintTop_toBottomOf="@id/formulario_receita_data"
-                app:layout_constraintStart_toStartOf="@id/formulario_receita_data"
-                app:layout_constraintEnd_toEndOf="@id/formulario_receita_data"
+                app:layout_constraintTop_toBottomOf="@id/formulario_receita_valor_estrangeiro"
+                app:layout_constraintStart_toStartOf="@id/formulario_receita_valor_estrangeiro"
+                app:layout_constraintEnd_toEndOf="@id/formulario_receita_moeda"
                 app:layout_constraintVertical_bias="0"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         >
