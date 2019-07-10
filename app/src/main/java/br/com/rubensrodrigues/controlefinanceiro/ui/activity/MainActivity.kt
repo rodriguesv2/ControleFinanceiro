@@ -23,7 +23,7 @@ import br.com.rubensrodrigues.controlefinanceiro.persistence.util.DBUtil
 import br.com.rubensrodrigues.controlefinanceiro.preferences.PeriodoListasPreferences
 import br.com.rubensrodrigues.controlefinanceiro.ui.activity.fragment.ListaTransacoesFragment
 import br.com.rubensrodrigues.controlefinanceiro.ui.dialog.TransferenciaDialog
-import br.com.rubensrodrigues.controlefinanceiro.ui.viewpager.adapter.TabsAdapter
+import br.com.rubensrodrigues.controlefinanceiro.ui.viewpager.adapter.ViewPagerAdapter
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.banner_saldos.*
 import java.math.BigDecimal
@@ -116,15 +116,15 @@ class MainActivity : AppCompatActivity() {
         listaReceitaFrag = ListaTransacoesFragment(listaReceita)
         listaFuturoFrag = ListaTransacoesFragment(listaFuturo)
 
-        val tabsAdapter = TabsAdapter(supportFragmentManager)
+        val viewPagerAdapter = ViewPagerAdapter(supportFragmentManager)
 
-        tabsAdapter.add(listaTodosFrag, "Todos")
-        tabsAdapter.add(listaDespesaFrag, "Despesa")
-        tabsAdapter.add(listaReceitaFrag, "Receita")
-        tabsAdapter.add(listaFuturoFrag, "Futuro")
+        viewPagerAdapter.add(listaTodosFrag, "Todos")
+        viewPagerAdapter.add(listaDespesaFrag, "Despesa")
+        viewPagerAdapter.add(listaReceitaFrag, "Receita")
+        viewPagerAdapter.add(listaFuturoFrag, "Futuro")
 
         val viewPager = main_tabs_viewpager
-        viewPager.adapter = tabsAdapter
+        viewPager.adapter = viewPagerAdapter
 
         val tabLayout = main_tabs_tablayout
         tabLayout.setupWithViewPager(viewPager)
@@ -142,6 +142,10 @@ class MainActivity : AppCompatActivity() {
         }
 
         listaReceitaFrag.cliqueItem = {
+            vaiParaFormularioAlteraTransacao(it)
+        }
+
+        listaFuturoFrag.cliqueItem = {
             vaiParaFormularioAlteraTransacao(it)
         }
     }
@@ -220,7 +224,7 @@ class MainActivity : AppCompatActivity() {
                 listaReceita: MutableList<Transacao>,
                 listaFuturo: MutableList<Transacao>
             ) {
-                atualizaListaDeTodasTabs(listaTodos, listaDespesa, listaReceita)
+                atualizaListaDeTodasTabs(listaTodos, listaDespesa, listaReceita, listaFuturo)
                 saldosPorPeriodo()
             }
         }).execute()
@@ -239,6 +243,10 @@ class MainActivity : AppCompatActivity() {
             }
             RECEITA -> {
                 val transacao = listaReceitaFrag.getTransacaoParaRemover()
+                dialogConfimaExclusao(transacao, pagina)
+            }
+            FUTURO -> {
+                val transacao = listaFuturoFrag.getTransacaoParaRemover()
                 dialogConfimaExclusao(transacao, pagina)
             }
         }
@@ -273,7 +281,7 @@ class MainActivity : AppCompatActivity() {
                     listaReceita: MutableList<Transacao>,
                     listaFuturo: MutableList<Transacao>
                 ) {
-                    atualizaListasAoRemover(pagina, listaTodos, listaDespesa, listaReceita)
+                    atualizaListasAoRemover(pagina, listaTodos, listaDespesa, listaReceita, listaFuturo)
                     configuraTextFieldsDeSaldos()
                 }
             }).execute()
@@ -284,17 +292,21 @@ class MainActivity : AppCompatActivity() {
         pagina: Int,
         listaTodos: MutableList<Transacao>,
         listaDespesa: MutableList<Transacao>,
-        listaReceita: MutableList<Transacao>
+        listaReceita: MutableList<Transacao>,
+        listaFuturo: MutableList<Transacao>
     ) {
         when (pagina) {
             TODOS -> {
-                removeSuaveListaTodos(listaTodos, listaDespesa, listaReceita)
+                removeSuaveListaTodos(listaTodos, listaDespesa, listaReceita, listaFuturo)
             }
             DESPESA -> {
-                removeSuaveListaDespesa(listaDespesa, listaTodos, listaReceita)
+                removeSuaveListaDespesa(listaDespesa, listaTodos, listaReceita, listaFuturo)
             }
             RECEITA -> {
-                removeSuaveListaReceita(listaReceita, listaTodos, listaDespesa)
+                removeSuaveListaReceita(listaReceita, listaTodos, listaDespesa, listaFuturo)
+            }
+            FUTURO -> {
+                removeSuaveListaFuturo(listaReceita, listaTodos, listaDespesa, listaFuturo)
             }
         }
     }
@@ -302,29 +314,47 @@ class MainActivity : AppCompatActivity() {
     private fun removeSuaveListaDespesa(
         listaDespesa: MutableList<Transacao>,
         listaTodos: MutableList<Transacao>,
-        listaReceita: MutableList<Transacao>
+        listaReceita: MutableList<Transacao>,
+        listaFuturo: MutableList<Transacao>
     ) {
         listaDespesaFrag.removerItemAnimacaoSuave(listaDespesa)
         atualizaListaTodos(listaTodos)
         atualizaListaReceita(listaReceita)
+        atualizaListaFuturo(listaFuturo)
     }
 
     private fun removeSuaveListaReceita(
         listaReceita: MutableList<Transacao>,
         listaTodos: MutableList<Transacao>,
-        listaDespesa: MutableList<Transacao>
+        listaDespesa: MutableList<Transacao>,
+        listaFuturo: MutableList<Transacao>
     ) {
         listaReceitaFrag.removerItemAnimacaoSuave(listaReceita)
         atualizaListaTodos(listaTodos)
         atualizaListaDespesa(listaDespesa)
+        atualizaListaFuturo(listaFuturo)
     }
 
     private fun removeSuaveListaTodos(
         listaTodos: MutableList<Transacao>,
         listaDespesa: MutableList<Transacao>,
-        listaReceita: MutableList<Transacao>
+        listaReceita: MutableList<Transacao>,
+        listaFuturo: MutableList<Transacao>
     ) {
         listaTodosFrag.removerItemAnimacaoSuave(listaTodos)
+        atualizaListaDespesa(listaDespesa)
+        atualizaListaReceita(listaReceita)
+        atualizaListaFuturo(listaFuturo)
+    }
+
+    private fun removeSuaveListaFuturo(
+        listaReceita: MutableList<Transacao>,
+        listaTodos: MutableList<Transacao>,
+        listaDespesa: MutableList<Transacao>,
+        listaFuturo: MutableList<Transacao>
+    ) {
+        listaFuturoFrag.removerItemAnimacaoSuave(listaFuturo)
+        atualizaListaTodos(listaTodos)
         atualizaListaDespesa(listaDespesa)
         atualizaListaReceita(listaReceita)
     }
@@ -359,10 +389,10 @@ class MainActivity : AppCompatActivity() {
                         atualizaListaReceita(listaReceita)
                     }
                     DESPESA -> {
-                        removeSuaveListaDespesa(listaDespesa, listaTodos, listaReceita)
+                        removeSuaveListaDespesa(listaDespesa, listaTodos, listaReceita, listaFuturo)
                     }
                     RECEITA -> {
-                        removeSuaveListaReceita(listaReceita, listaTodos, listaDespesa)
+                        removeSuaveListaReceita(listaReceita, listaTodos, listaDespesa, listaFuturo)
                     }
                 }
                 configuraTextFieldsDeSaldos()
@@ -455,7 +485,7 @@ class MainActivity : AppCompatActivity() {
                 listaReceita: MutableList<Transacao>,
                 listaFuturo: MutableList<Transacao>
             ) {
-                atualizaListaDeTodasTabs(listaTodos, listaDespesa, listaReceita)
+                atualizaListaDeTodasTabs(listaTodos, listaDespesa, listaReceita, listaFuturo)
                 configuraTextFieldsDeSaldos()
             }
         }, transacaoDespesa, transacaoReceita).execute()
@@ -600,7 +630,7 @@ class MainActivity : AppCompatActivity() {
                     listaReceita: MutableList<Transacao>,
                     listaFuturo: MutableList<Transacao>
                 ) {
-                    atualizaListaDeTodasTabs(listaTodos, listaDespesa, listaReceita)
+                    atualizaListaDeTodasTabs(listaTodos, listaDespesa, listaReceita, listaFuturo)
                 }
             }).execute()
     }
@@ -630,7 +660,7 @@ class MainActivity : AppCompatActivity() {
                     listaReceita: MutableList<Transacao>,
                     listaFuturo: MutableList<Transacao>
                 ) {
-                    atualizaListaDeTodasTabs(listaTodos, listaDespesa, listaReceita)
+                    atualizaListaDeTodasTabs(listaTodos, listaDespesa, listaReceita, listaFuturo)
                 }
             }).execute()
     }
@@ -656,7 +686,7 @@ class MainActivity : AppCompatActivity() {
                     listaReceita: MutableList<Transacao>,
                     listaFuturo: MutableList<Transacao>
                 ) {
-                    atualizaListaDeTodasTabs(listaTodos, listaDespesa, listaReceita)
+                    atualizaListaDeTodasTabs(listaTodos, listaDespesa, listaReceita, listaFuturo)
                 }
             }).execute()
     }
@@ -664,11 +694,13 @@ class MainActivity : AppCompatActivity() {
     private fun atualizaListaDeTodasTabs(
         listaTodos: MutableList<Transacao>,
         listaDespesa: MutableList<Transacao>,
-        listaReceita: MutableList<Transacao>
+        listaReceita: MutableList<Transacao>,
+        listaFuturo: MutableList<Transacao>
     ) {
         atualizaListaTodos(listaTodos)
         atualizaListaDespesa(listaDespesa)
         atualizaListaReceita(listaReceita)
+        atualizaListaFuturo(listaFuturo)
     }
 
     private fun atualizaListaReceita(listaReceita: MutableList<Transacao>) {
@@ -687,5 +719,11 @@ class MainActivity : AppCompatActivity() {
         listaTodosFrag.listaTransacoes = listaTodos
         if (listaTodosFrag.isVisible)
             listaTodosFrag.atualizarLista()
+    }
+
+    private fun atualizaListaFuturo(listaFuturo: MutableList<Transacao>) {
+        listaFuturoFrag.listaTransacoes = listaFuturo
+        if (listaFuturoFrag.isVisible)
+            listaFuturoFrag.atualizarLista()
     }
 }

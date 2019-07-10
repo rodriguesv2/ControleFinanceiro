@@ -132,7 +132,10 @@ fun Calendar.getDataFinalPeriodo(context: Context): Calendar {
     val tipoPeriodo = PeriodoListasPreferences
         .getValorPorChave(context, PeriodoListasPreferences.CHAVE_TIPO_PERIODO)
 
-    return if (quantidadeUltimosPeriodo != 0) {
+    return if (quantidadeUltimosPeriodo != 0 ||
+        tipoPeriodo == PeriodoListasPreferences.MES_ATUAL ||
+        tipoPeriodo == PeriodoListasPreferences.ANO_ATUAL
+    ) {
         Calendar.getInstance()
     } else {
         Calendar.getInstance().ultimoDataRange(tipoPeriodo)

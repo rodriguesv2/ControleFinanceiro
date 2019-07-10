@@ -38,7 +38,7 @@ interface TransacaoDAO {
     fun todosPorDataAndTipo(tipo: Tipo, dataInicial: Calendar, dataFinal: Calendar): List<Transacao>
 
     @Query("SELECT * FROM Transacao WHERE data > :dataHoje ORDER BY data DESC, id DESC")
-    fun todosFuturo(dataHoje: Calendar): List<Transacao>
+    fun todosFuturo(dataHoje: Calendar = Calendar.getInstance()): List<Transacao>
 
     @Query("SELECT * FROM Transacao WHERE id = :id")
     fun pegaTransacao(id: Long) : Transacao
