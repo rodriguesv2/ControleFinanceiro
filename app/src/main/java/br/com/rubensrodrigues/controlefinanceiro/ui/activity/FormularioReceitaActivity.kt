@@ -3,11 +3,11 @@ package br.com.rubensrodrigues.controlefinanceiro.ui.activity
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
 import android.widget.SeekBar
+import androidx.appcompat.app.AppCompatActivity
 import br.com.rubensrodrigues.controlefinanceiro.R
 import br.com.rubensrodrigues.controlefinanceiro.extensions.converterReaisParaBigDecimal
 import br.com.rubensrodrigues.controlefinanceiro.extensions.duasCasasVirgula
@@ -19,6 +19,7 @@ import br.com.rubensrodrigues.controlefinanceiro.model.Transacao
 import br.com.rubensrodrigues.controlefinanceiro.ui.dialog.DateDialog
 import br.com.rubensrodrigues.controlefinanceiro.ui.dropdown.EditTextDropDown
 import br.com.rubensrodrigues.controlefinanceiro.ui.util.CampoValorUtil
+import br.com.rubensrodrigues.controlefinanceiro.ui.util.CotacaoFormularioUtil
 import br.com.rubensrodrigues.controlefinanceiro.ui.util.DateUtil
 import br.com.rubensrodrigues.controlefinanceiro.ui.util.FormularioUtil
 import kotlinx.android.synthetic.main.activity_formulario_receita.*
@@ -30,6 +31,7 @@ class FormularioReceitaActivity : AppCompatActivity() {
     private val campoCategoria by lazy {formulario_receita_categoria_edittext}
     private val campoValorEstrangeiro by lazy {formulario_receita_valor_estrangeiro_edittext}
     private val campoMoeda by lazy {formulario_receita_moeda_edittext}
+    private val infoMoedaEstrangeira by lazy {formulario_receita_moeda_valor_info}
     private val campoValor by lazy {formulario_receita_valor_edittext}
     private val campoData by lazy {formulario_receita_data_edittext}
     private val barra by lazy {formulario_receita_proporcao_barra}
@@ -37,6 +39,7 @@ class FormularioReceitaActivity : AppCompatActivity() {
     private val labelValorImportante by lazy {formulario_receita_importante_valor}
     private val botaoSalvar by lazy {formulario_receita_botao}
 
+    private var valorEstrangeiro = BigDecimal.ONE
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,24 +49,43 @@ class FormularioReceitaActivity : AppCompatActivity() {
 
         injetaDropdownCampoCategoria()
 
-        DateUtil.setaDataAtualNoCampoData(campoData)
-        DateDialog.configuraCliqueCampoData(this, campoData)
+        configuraCampoData()
 
         configuraDropdownMoeda()
 
         configuraCampoValor()
         desabilitaSeekBarSeCampoValorVazio()
 
+        buscarCotacaoAndSetaVariaveisAndLabel()
         configuraCliqueBotaoSalvar()
+    }
+
+    private fun configuraCampoData() {
+        DateUtil.setaDataAtualNoCampoData(campoData)
+        DateDialog.configuraCliqueCampoData(this, campoData){
+            buscarCotacaoAndSetaVariaveisAndLabel()
+        }
+    }
+
+    private fun buscarCotacaoAndSetaVariaveisAndLabel() {
+        CotacaoFormularioUtil.buscarCotacaoAndSetaVariaveisAndLabel(
+            this, campoMoeda, campoData, infoMoedaEstrangeira,
+            object : CotacaoFormularioUtil.OnResponseValorListener {
+                override fun posThread(valor: BigDecimal) {
+                    valorEstrangeiro = valor
+                }
+            })
     }
 
     private fun configuraDropdownMoeda() {
         EditTextDropDown
             .injetaDropdown(
-            this,
-            campoMoeda,
-            resources.getStringArray(R.array.moeda_estrangeira)
-        )
+                this,
+                campoMoeda,
+                resources.getStringArray(R.array.moeda_estrangeira)
+            ) {
+                buscarCotacaoAndSetaVariaveisAndLabel()
+            }
     }
 
     private fun injetaDropdownCampoCategoria() {
@@ -72,7 +94,7 @@ class FormularioReceitaActivity : AppCompatActivity() {
                 this,
                 campoCategoria,
                 resources.getStringArray(R.array.receita)
-            )
+            ){}
     }
 
     private fun configuraCliqueBotaoSalvar() {

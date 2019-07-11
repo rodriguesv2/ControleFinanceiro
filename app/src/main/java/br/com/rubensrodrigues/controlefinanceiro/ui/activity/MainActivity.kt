@@ -11,19 +11,18 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import br.com.rubensrodrigues.controlefinanceiro.R
-import br.com.rubensrodrigues.controlefinanceiro.extensions.converterReaisParaBigDecimal
-import br.com.rubensrodrigues.controlefinanceiro.extensions.formatoBrasileiroMonetario
-import br.com.rubensrodrigues.controlefinanceiro.extensions.getDataFinalPeriodo
-import br.com.rubensrodrigues.controlefinanceiro.extensions.getDataInicialPeriodo
+import br.com.rubensrodrigues.controlefinanceiro.extensions.*
 import br.com.rubensrodrigues.controlefinanceiro.model.Tipo
 import br.com.rubensrodrigues.controlefinanceiro.model.Transacao
 import br.com.rubensrodrigues.controlefinanceiro.persistence.asynktask.*
 import br.com.rubensrodrigues.controlefinanceiro.persistence.asynktask.listener.OnPostExecuteTodasListasListener
 import br.com.rubensrodrigues.controlefinanceiro.persistence.util.DBUtil
+import br.com.rubensrodrigues.controlefinanceiro.preferences.CotacaoPreferences
 import br.com.rubensrodrigues.controlefinanceiro.preferences.PeriodoListasPreferences
 import br.com.rubensrodrigues.controlefinanceiro.ui.activity.fragment.ListaTransacoesFragment
 import br.com.rubensrodrigues.controlefinanceiro.ui.dialog.TransferenciaDialog
 import br.com.rubensrodrigues.controlefinanceiro.ui.viewpager.adapter.ViewPagerAdapter
+import br.com.rubensrodrigues.controlefinanceiro.webservice.util.CotacaoUtil
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.banner_saldos.*
 import java.math.BigDecimal
@@ -66,8 +65,34 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         setaValoresDePeriodoCasoNuncaSalvos()
+        salvaCotacoesDoDia()
+
         configuraTabLayout()
         configuraCliqueFabs()
+    }
+
+    private fun salvaCotacoesDoDia() {
+        CotacaoUtil.getListaMoedas().forEach {
+
+            CotacaoUtil.pegaCotacao(it, Calendar.getInstance(), object: CotacaoUtil.OnResponseListener{
+                override fun sucesso(valor: BigDecimal) {
+                    CotacaoPreferences.salvaValores(
+                        this@MainActivity,
+                        valor.toFloat(),
+                        Calendar.getInstance().dataHorarioZerado().timeInMillis,
+                        it,
+                        it+"_DATA")
+                }
+
+                override fun falha(t: Throwable) {
+                    if (it == CotacaoUtil.USD)
+                        Toast.makeText(
+                            this@MainActivity,
+                            "Falha de conexão. Trabalhando offline",
+                            Toast.LENGTH_LONG).show()
+                }
+            })
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -549,9 +574,9 @@ class MainActivity : AppCompatActivity() {
 
     private fun customizaTextoLabelPeriodo(): String {
         val tipoPeriodo =
-            PeriodoListasPreferences.getValorPorChave(this, PeriodoListasPreferences.CHAVE_TIPO_PERIODO)
+            PeriodoListasPreferences.getValorPorChaveInt(this, PeriodoListasPreferences.CHAVE_TIPO_PERIODO)
         val quantidadeUltimosPeriodo =
-            PeriodoListasPreferences.getValorPorChave(this, PeriodoListasPreferences.CHAVE_QUANTIDADE_ULTIMOS_PERIODO)
+            PeriodoListasPreferences.getValorPorChaveInt(this, PeriodoListasPreferences.CHAVE_QUANTIDADE_ULTIMOS_PERIODO)
 
         return when (tipoPeriodo) {
             PeriodoListasPreferences.DAY_OF_MONTH -> {

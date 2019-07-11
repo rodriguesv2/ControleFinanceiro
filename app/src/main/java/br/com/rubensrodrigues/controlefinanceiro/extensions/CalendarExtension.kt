@@ -115,9 +115,9 @@ fun Calendar.ultimoDataRange(tipoPeriodo: Int): Calendar{
 
 fun Calendar.getDataInicialPeriodo(context: Context): Calendar {
     val quantidadeUltimosPeriodo = PeriodoListasPreferences
-        .getValorPorChave(context, PeriodoListasPreferences.CHAVE_QUANTIDADE_ULTIMOS_PERIODO)
+        .getValorPorChaveInt(context, PeriodoListasPreferences.CHAVE_QUANTIDADE_ULTIMOS_PERIODO)
     val tipoPeriodo = PeriodoListasPreferences
-        .getValorPorChave(context, PeriodoListasPreferences.CHAVE_TIPO_PERIODO)
+        .getValorPorChaveInt(context, PeriodoListasPreferences.CHAVE_TIPO_PERIODO)
 
     return if (quantidadeUltimosPeriodo != 0) {
         Calendar.getInstance().dataPorPeriodo(tipoPeriodo, quantidadeUltimosPeriodo)
@@ -128,9 +128,9 @@ fun Calendar.getDataInicialPeriodo(context: Context): Calendar {
 
 fun Calendar.getDataFinalPeriodo(context: Context): Calendar {
     val quantidadeUltimosPeriodo = PeriodoListasPreferences
-        .getValorPorChave(context, PeriodoListasPreferences.CHAVE_QUANTIDADE_ULTIMOS_PERIODO)
+        .getValorPorChaveInt(context, PeriodoListasPreferences.CHAVE_QUANTIDADE_ULTIMOS_PERIODO)
     val tipoPeriodo = PeriodoListasPreferences
-        .getValorPorChave(context, PeriodoListasPreferences.CHAVE_TIPO_PERIODO)
+        .getValorPorChaveInt(context, PeriodoListasPreferences.CHAVE_TIPO_PERIODO)
 
     return if (quantidadeUltimosPeriodo != 0 ||
         tipoPeriodo == PeriodoListasPreferences.MES_ATUAL ||

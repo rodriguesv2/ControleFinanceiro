@@ -20,8 +20,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="8dp"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-        >
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
             <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/formulario_receita_titulo_edittext"
@@ -29,8 +28,7 @@
                     android:layout_height="wrap_content"
                     android:maxLines="1"
                     android:inputType="text"
-                    android:hint="Titulo"
-            />
+                    android:hint="Titulo"/>
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
@@ -73,8 +71,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
-                android:layout_marginEnd="8dp"
-                android:layout_marginBottom="8dp">
+                android:layout_marginEnd="8dp">
 
             <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/formulario_receita_valor_estrangeiro"
@@ -90,7 +87,7 @@
                         android:id="@+id/formulario_receita_valor_estrangeiro_edittext"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="Moeda estrangeira"/>
+                        android:hint="Valor estrangeiro"/>
 
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -108,20 +105,26 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:drawableEnd="@drawable/input_arrow_down"
-                        android:hint="Sigla"/>
+                        android:hint="Sigla"
+                        android:focusable="false"/>
 
             </com.google.android.material.textfield.TextInputLayout>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-
+        <TextView
+                android:id="@+id/formulario_receita_moeda_valor_info"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:text="Carregando cotação..."
+        />
         <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/formulario_receita_valor"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginEnd="8dp"
-                android:layout_marginBottom="8dp"
+                android:layout_margin="8dp"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
             <com.google.android.material.textfield.TextInputEditText

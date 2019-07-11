@@ -8,4 +8,8 @@ import java.math.BigDecimal
 class Cotacao{
 
     lateinit var bid: BigDecimal
+
+    fun ehBidInicializado(): Boolean{
+        return ::bid.isInitialized
+    }
 }

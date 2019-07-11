@@ -1,7 +1,6 @@
 package br.com.rubensrodrigues.controlefinanceiro.ui.dropdown
 
 import android.app.Activity
-import android.text.Editable
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
@@ -14,18 +13,22 @@ object EditTextDropDown{
     fun injetaDropdown(activity: Activity,
                        campoDeTexto: TextInputEditText,
                        lista: Array<String>,
-                       posicaoInicial: Int = 0) {
+                       posicaoInicial: Int = 0,
+                       acaoPosEscolha: ()->Unit) {
 
-        campoDeTexto.setText(editaTextoSeMoeda(lista[posicaoInicial]))
-        configuraDropDown(activity, campoDeTexto, lista)
+        campoDeTexto.setText(lista[posicaoInicial])
+        configuraDropDown(activity, campoDeTexto, lista, acaoPosEscolha)
     }
 
-    private fun configuraDropDown(activity: Activity, campoDeTexto: TextInputEditText, lista: Array<String>) {
+    private fun configuraDropDown(activity: Activity,
+                                  campoDeTexto: TextInputEditText,
+                                  lista: Array<String>,
+                                  acaoPosEscolha: ()->Unit) {
         val popupLista = ListPopupWindow(activity)
 
         configuraAdapterEAncora(activity, popupLista, lista, campoDeTexto)
         abrirListaPopUp(activity, popupLista, campoDeTexto)
-        selecionaItemDaLista(popupLista, campoDeTexto, lista)
+        selecionaItemDaLista(popupLista, campoDeTexto, lista, acaoPosEscolha)
     }
 
     private fun configuraAdapterEAncora(activity: Activity,
@@ -45,45 +48,19 @@ object EditTextDropDown{
         }
     }
 
-    private fun selecionaItemDaLista(popupLista: ListPopupWindow,
-                                     campoDeTexto: TextInputEditText,
-                                     lista: Array<String>) {
+    private fun selecionaItemDaLista(
+        popupLista: ListPopupWindow,
+        campoDeTexto: TextInputEditText,
+        lista: Array<String>,
+        acaoPosEscolha: () -> Unit
+    ) {
 
         popupLista.setOnItemClickListener(object : AdapterView.OnItemClickListener {
             override fun onItemClick(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-
-                val item = editaTextoSeMoeda(lista[position])
-                campoDeTexto.setText(item)
+                campoDeTexto.setText(lista[position])
+                acaoPosEscolha()
                 popupLista.dismiss()
             }
         })
-    }
-
-    private fun editaTextoSeMoeda(texto: String): String{
-        return if (texto.startsWith("USD")){
-            "USD"
-        }else if (texto.startsWith("USDT")){
-            "USDT"
-        }else if (texto.startsWith("CAD")){
-            "CAD"
-        }else if (texto.startsWith("AUD")){
-            "AUD"
-        }else if (texto.startsWith("EUR")){
-            "EUR"
-        }else if (texto.startsWith("GBP")){
-            "GBR"
-        }else if (texto.startsWith("ARS")){
-            "ARS"
-        }else if (texto.startsWith("JPY")){
-            "JPY"
-        }else if (texto.startsWith("CHF")){
-            "CHF"
-        }else if (texto.startsWith("CNY")){
-            "CNY"
-        }else if (texto.startsWith("YLS")){
-            "YLS"
-        }else{
-            texto
-        }
     }
 }

@@ -10,7 +10,9 @@ import java.util.*
 
 object DateDialog {
 
-    fun configuraCliqueCampoData(context: Context, campoData: TextInputEditText) {
+    fun configuraCliqueCampoData(context: Context,
+                                 campoData: TextInputEditText,
+                                 acaoPosEscolherData: ()->Unit) {
         campoData.setOnClickListener {
 
             val diaSelecionado = campoData.text.toString().toCalendar()
@@ -23,6 +25,7 @@ object DateDialog {
                         dataSelecionada.set(year, month, dayOfMonth)
 
                         campoData.setText(dataSelecionada.formatoBrasileiro())
+                        acaoPosEscolherData()
                     }
                 },
                 diaSelecionado.get(Calendar.YEAR),

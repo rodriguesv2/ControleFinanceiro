@@ -4,22 +4,21 @@ import android.app.Activity
 import android.app.AlertDialog
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.View
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import br.com.rubensrodrigues.controlefinanceiro.R
-import br.com.rubensrodrigues.controlefinanceiro.extensions.converterReaisParaBigDecimal
-import br.com.rubensrodrigues.controlefinanceiro.extensions.duasCasasComVirgula
-import br.com.rubensrodrigues.controlefinanceiro.extensions.formatoBrasileiro
-import br.com.rubensrodrigues.controlefinanceiro.extensions.toCalendar
+import br.com.rubensrodrigues.controlefinanceiro.extensions.*
 import br.com.rubensrodrigues.controlefinanceiro.model.Tipo
 import br.com.rubensrodrigues.controlefinanceiro.model.TipoSaldo
 import br.com.rubensrodrigues.controlefinanceiro.model.Transacao
 import br.com.rubensrodrigues.controlefinanceiro.persistence.asynktask.TotaisPorTipoTask
 import br.com.rubensrodrigues.controlefinanceiro.persistence.util.DBUtil
+import br.com.rubensrodrigues.controlefinanceiro.preferences.CotacaoPreferences
 import br.com.rubensrodrigues.controlefinanceiro.ui.dialog.DateDialog
 import br.com.rubensrodrigues.controlefinanceiro.ui.dropdown.EditTextDropDown
 import br.com.rubensrodrigues.controlefinanceiro.ui.util.CampoValorUtil
+import br.com.rubensrodrigues.controlefinanceiro.ui.util.CotacaoFormularioUtil
 import br.com.rubensrodrigues.controlefinanceiro.ui.util.DateUtil
 import br.com.rubensrodrigues.controlefinanceiro.ui.util.FormularioUtil
 import br.com.rubensrodrigues.controlefinanceiro.webservice.util.CotacaoUtil
@@ -35,6 +34,7 @@ class FormularioTransacaoActivity : AppCompatActivity() {
     private val containerFormaPagamento by lazy {formulario_transacao_forma_pagamento}
     private val campoValorEstrangeira by lazy {formulario_transacao_valor_estrangeiro_edittext}
     private val campoMoeda by lazy {formulario_transacao_moeda_edittext}
+    private val infoMoedaEstrangeira by lazy {formulario_transacao_moeda_valor_info}
     private val campoData by lazy {formulario_Transacao_data_edittext}
     private val campoValor by lazy {formulario_transacao_valor_edittext}
     private val seletorSaldo by lazy {formulario_transacao_seletor_saldo}
@@ -49,6 +49,7 @@ class FormularioTransacaoActivity : AppCompatActivity() {
     private val dao by lazy {DBUtil.getInstance(this).getTransacaoDao()}
 
     private lateinit var tipoSaldoOriginal: TipoSaldo
+    private var valorEstrangeiro = BigDecimal.ONE
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -59,29 +60,6 @@ class FormularioTransacaoActivity : AppCompatActivity() {
         if (ehEdicao())
             tipoSaldoOriginal = getTransacaoEdicao().tipoSaldo
 
-        val data = Calendar.getInstance()
-
-        CotacaoUtil.pegaCotacao("USD", data, object : CotacaoUtil.OnResponseListener {
-            override fun sucesso(valor: BigDecimal) {
-                Toast
-                    .makeText(
-                        this@FormularioTransacaoActivity,
-                        valor.toString(),
-                        Toast.LENGTH_SHORT
-                    ).show()
-            }
-
-            override fun falha(t: Throwable) {
-                Toast
-                    .makeText(
-                        this@FormularioTransacaoActivity,
-                        t.message,
-                        Toast.LENGTH_LONG
-                    ).show()
-            }
-        })
-
-
         setaPadraoParaSaldo()
         configuraDropdownCategoria()
         configuraCampoFormaPagamentoSeDespesa()
@@ -89,7 +67,19 @@ class FormularioTransacaoActivity : AppCompatActivity() {
         populaCamposSeEdicao()
         aplicaRegraDeEdicaoDeTextoCampoValor()
         configuraCampoData()
+        buscarCotacaoAndSetaVariaveisAndLabel()
         configuraCliqueBotaoSalvar()
+    }
+
+    private fun buscarCotacaoAndSetaVariaveisAndLabel() {
+        CotacaoFormularioUtil.buscarCotacaoAndSetaVariaveisAndLabel(
+            this, campoMoeda, campoData, infoMoedaEstrangeira,
+            object : CotacaoFormularioUtil.OnResponseValorListener {
+                override fun posThread(valor: BigDecimal) {
+                    Log.i("COTACAO", valor.formatoBrasileiroMonetario())
+                    valorEstrangeiro = valor
+                }
+            })
     }
 
     private fun configuraDropdownMoeda() {
@@ -97,7 +87,9 @@ class FormularioTransacaoActivity : AppCompatActivity() {
             this,
             campoMoeda,
             resources.getStringArray(R.array.moeda_estrangeira)
-        )
+        ){
+            buscarCotacaoAndSetaVariaveisAndLabel()
+        }
     }
 
     private fun configuraCampoFormaPagamentoSeDespesa() {
@@ -317,12 +309,14 @@ class FormularioTransacaoActivity : AppCompatActivity() {
     private fun configuraCampoData() {
         if (!ehEdicao())
             DateUtil.setaDataAtualNoCampoData(campoData)
-        DateDialog.configuraCliqueCampoData(this, campoData)
+        DateDialog.configuraCliqueCampoData(this, campoData){
+            buscarCotacaoAndSetaVariaveisAndLabel()
+        }
     }
 
     private fun configuraDropdownCategoria() {
         val lista = listaCategoriaPorTipo()
-        EditTextDropDown.injetaDropdown(this, campoCategoria, lista)
+        EditTextDropDown.injetaDropdown(this, campoCategoria, lista){}
     }
 
     private fun listaCategoriaPorTipo(): Array<String> {
@@ -341,7 +335,7 @@ class FormularioTransacaoActivity : AppCompatActivity() {
                 this,
                 campoFormaPagamento,
                 resources.getStringArray(R.array.forma_pagamento)
-            )
+            ){}
     }
 
 }
