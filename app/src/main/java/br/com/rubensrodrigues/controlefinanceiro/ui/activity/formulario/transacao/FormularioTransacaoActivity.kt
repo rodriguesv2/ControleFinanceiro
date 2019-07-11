@@ -1,4 +1,4 @@
-package br.com.rubensrodrigues.controlefinanceiro.ui.activity
+package br.com.rubensrodrigues.controlefinanceiro.ui.activity.formulario.transacao
 
 import android.app.Activity
 import android.app.AlertDialog
@@ -14,14 +14,9 @@ import br.com.rubensrodrigues.controlefinanceiro.model.TipoSaldo
 import br.com.rubensrodrigues.controlefinanceiro.model.Transacao
 import br.com.rubensrodrigues.controlefinanceiro.persistence.asynktask.TotaisPorTipoTask
 import br.com.rubensrodrigues.controlefinanceiro.persistence.util.DBUtil
-import br.com.rubensrodrigues.controlefinanceiro.preferences.CotacaoPreferences
 import br.com.rubensrodrigues.controlefinanceiro.ui.dialog.DateDialog
 import br.com.rubensrodrigues.controlefinanceiro.ui.dropdown.EditTextDropDown
-import br.com.rubensrodrigues.controlefinanceiro.ui.util.CampoValorUtil
-import br.com.rubensrodrigues.controlefinanceiro.ui.util.CotacaoFormularioUtil
-import br.com.rubensrodrigues.controlefinanceiro.ui.util.DateUtil
-import br.com.rubensrodrigues.controlefinanceiro.ui.util.FormularioUtil
-import br.com.rubensrodrigues.controlefinanceiro.webservice.util.CotacaoUtil
+import br.com.rubensrodrigues.controlefinanceiro.ui.util.*
 import kotlinx.android.synthetic.main.activity_formulario_transacao.*
 import java.math.BigDecimal
 import java.util.*
@@ -32,7 +27,7 @@ class FormularioTransacaoActivity : AppCompatActivity() {
     private val campoCategoria by lazy {formulario_transacao_categoria_edittext}
     private val campoFormaPagamento by lazy{formulario_transacao_forma_pagamento_edittext}
     private val containerFormaPagamento by lazy {formulario_transacao_forma_pagamento}
-    private val campoValorEstrangeira by lazy {formulario_transacao_valor_estrangeiro_edittext}
+    private val campoValorEstrangeiro by lazy {formulario_transacao_valor_estrangeiro_edittext}
     private val campoMoeda by lazy {formulario_transacao_moeda_edittext}
     private val infoMoedaEstrangeira by lazy {formulario_transacao_moeda_valor_info}
     private val campoData by lazy {formulario_Transacao_data_edittext}
@@ -68,6 +63,7 @@ class FormularioTransacaoActivity : AppCompatActivity() {
         aplicaRegraDeEdicaoDeTextoCampoValor()
         configuraCampoData()
         buscarCotacaoAndSetaVariaveisAndLabel()
+        aplicaRegraDeEdicaoDeTextoCampoValorEstrangeiro()
         configuraCliqueBotaoSalvar()
     }
 
@@ -76,8 +72,8 @@ class FormularioTransacaoActivity : AppCompatActivity() {
             this, campoMoeda, campoData, infoMoedaEstrangeira,
             object : CotacaoFormularioUtil.OnResponseValorListener {
                 override fun posThread(valor: BigDecimal) {
-                    Log.i("COTACAO", valor.formatoBrasileiroMonetario())
                     valorEstrangeiro = valor
+                    editaValorPeloValorEstrangeiro(campoValorEstrangeiro.text.toString())
                 }
             })
     }
@@ -130,6 +126,25 @@ class FormularioTransacaoActivity : AppCompatActivity() {
 
     private fun aplicaRegraDeEdicaoDeTextoCampoValor() {
         CampoValorUtil.unicaVirgula(campoValor)
+    }
+
+    private fun aplicaRegraDeEdicaoDeTextoCampoValorEstrangeiro() {
+        CampoValorEstrangeiroUtil.unicaVirgula(campoValorEstrangeiro){
+            editaValorPeloValorEstrangeiro(it)
+        }
+    }
+
+    private fun editaValorPeloValorEstrangeiro(textoValorEstrangeiro: String) {
+        var valorTransacaoEdicao = ""
+        if (ehEdicao())
+            valorTransacaoEdicao = getTransacaoEdicao().valor.duasCasasComVirgula()
+
+        CampoValorUtil.editaValorPeloValorEstrangeiro(
+            textoValorEstrangeiro,
+            campoValor,
+            valorEstrangeiro,
+            valorTransacaoEdicao
+        )
     }
 
     private fun ehEdicao() = intent.hasExtra(CHAVE_TRANSACAO)

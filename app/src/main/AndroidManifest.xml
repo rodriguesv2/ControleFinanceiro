@@ -29,11 +29,11 @@
             </intent-filter>
         </activity>
         <activity
-                android:name=".ui.activity.FormularioTransacaoActivity"
+                android:name=".ui.activity.formulario.transacao.FormularioTransacaoActivity"
                 android:screenOrientation="portrait">
         </activity>
         <activity
-                android:name=".ui.activity.FormularioReceitaActivity"
+                android:name=".ui.activity.formulario.transacao.FormularioReceitaActivity"
                 android:screenOrientation="portrait">
         </activity>
     </application>

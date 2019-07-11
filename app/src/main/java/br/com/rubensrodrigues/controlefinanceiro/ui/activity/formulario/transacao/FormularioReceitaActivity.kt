@@ -1,4 +1,4 @@
-package br.com.rubensrodrigues.controlefinanceiro.ui.activity
+package br.com.rubensrodrigues.controlefinanceiro.ui.activity.formulario.transacao
 
 import android.app.Activity
 import android.content.Intent
@@ -9,19 +9,13 @@ import android.view.View
 import android.widget.SeekBar
 import androidx.appcompat.app.AppCompatActivity
 import br.com.rubensrodrigues.controlefinanceiro.R
-import br.com.rubensrodrigues.controlefinanceiro.extensions.converterReaisParaBigDecimal
-import br.com.rubensrodrigues.controlefinanceiro.extensions.duasCasasVirgula
-import br.com.rubensrodrigues.controlefinanceiro.extensions.toBigDecimalOrNullDeVirgulaParaPonto
-import br.com.rubensrodrigues.controlefinanceiro.extensions.toCalendar
+import br.com.rubensrodrigues.controlefinanceiro.extensions.*
 import br.com.rubensrodrigues.controlefinanceiro.model.Tipo
 import br.com.rubensrodrigues.controlefinanceiro.model.TipoSaldo
 import br.com.rubensrodrigues.controlefinanceiro.model.Transacao
 import br.com.rubensrodrigues.controlefinanceiro.ui.dialog.DateDialog
 import br.com.rubensrodrigues.controlefinanceiro.ui.dropdown.EditTextDropDown
-import br.com.rubensrodrigues.controlefinanceiro.ui.util.CampoValorUtil
-import br.com.rubensrodrigues.controlefinanceiro.ui.util.CotacaoFormularioUtil
-import br.com.rubensrodrigues.controlefinanceiro.ui.util.DateUtil
-import br.com.rubensrodrigues.controlefinanceiro.ui.util.FormularioUtil
+import br.com.rubensrodrigues.controlefinanceiro.ui.util.*
 import kotlinx.android.synthetic.main.activity_formulario_receita.*
 import java.math.BigDecimal
 
@@ -57,6 +51,7 @@ class FormularioReceitaActivity : AppCompatActivity() {
         desabilitaSeekBarSeCampoValorVazio()
 
         buscarCotacaoAndSetaVariaveisAndLabel()
+        aplicaRegraDeEdicaoDeTextoCampoValorEstrangeiro()
         configuraCliqueBotaoSalvar()
     }
 
@@ -73,6 +68,7 @@ class FormularioReceitaActivity : AppCompatActivity() {
             object : CotacaoFormularioUtil.OnResponseValorListener {
                 override fun posThread(valor: BigDecimal) {
                     valorEstrangeiro = valor
+                    editaValorPeloValorEstrangeiro(campoValorEstrangeiro.text.toString())
                 }
             })
     }
@@ -149,6 +145,20 @@ class FormularioReceitaActivity : AppCompatActivity() {
 
     private fun configuraCampoValor() {
         configuraListenerDeTextoAlterado()
+    }
+
+    private fun aplicaRegraDeEdicaoDeTextoCampoValorEstrangeiro() {
+        CampoValorEstrangeiroUtil.unicaVirgula(campoValorEstrangeiro){
+            editaValorPeloValorEstrangeiro(it)
+        }
+    }
+
+    private fun editaValorPeloValorEstrangeiro(textoValorEstrangeiro: String) {
+        CampoValorUtil.editaValorPeloValorEstrangeiro(
+            textoValorEstrangeiro,
+            campoValor,
+            valorEstrangeiro
+        )
     }
 
     private fun configuraListenerDeTextoAlterado() {

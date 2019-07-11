@@ -19,6 +19,8 @@ import br.com.rubensrodrigues.controlefinanceiro.persistence.asynktask.listener.
 import br.com.rubensrodrigues.controlefinanceiro.persistence.util.DBUtil
 import br.com.rubensrodrigues.controlefinanceiro.preferences.CotacaoPreferences
 import br.com.rubensrodrigues.controlefinanceiro.preferences.PeriodoListasPreferences
+import br.com.rubensrodrigues.controlefinanceiro.ui.activity.formulario.transacao.FormularioReceitaActivity
+import br.com.rubensrodrigues.controlefinanceiro.ui.activity.formulario.transacao.FormularioTransacaoActivity
 import br.com.rubensrodrigues.controlefinanceiro.ui.activity.fragment.ListaTransacoesFragment
 import br.com.rubensrodrigues.controlefinanceiro.ui.dialog.TransferenciaDialog
 import br.com.rubensrodrigues.controlefinanceiro.ui.viewpager.adapter.ViewPagerAdapter
