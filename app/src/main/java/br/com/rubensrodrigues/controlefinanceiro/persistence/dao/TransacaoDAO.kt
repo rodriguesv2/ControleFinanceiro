@@ -45,11 +45,11 @@ interface TransacaoDAO {
 
     @Query("SELECT " +
             "IFNULL(" +
-            "(SELECT SUM(valor) FROM Transacao WHERE tipoSaldo = :tipoSaldo AND tipo = 'RECEITA'),0)" +
+            "(SELECT SUM(valor) FROM Transacao WHERE tipoSaldo = :tipoSaldo AND tipo = 'RECEITA' AND data < :dataHoje),0)" +
             "-" +
             "IFNULL(" +
-            "(SELECT SUM(valor) FROM Transacao WHERE tipoSaldo = :tipoSaldo AND tipo = 'DESPESA'),0)")
-    fun totalPor(tipoSaldo: TipoSaldo) : BigDecimal
+            "(SELECT SUM(valor) FROM Transacao WHERE tipoSaldo = :tipoSaldo AND tipo = 'DESPESA' AND data < :dataHoje),0)")
+    fun totalPor(tipoSaldo: TipoSaldo, dataHoje: Calendar = Calendar.getInstance()) : BigDecimal
 
     @Query("SELECT " +
             "IFNULL(" +
