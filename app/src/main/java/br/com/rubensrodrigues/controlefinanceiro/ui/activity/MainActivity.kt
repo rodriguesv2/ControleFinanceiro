@@ -29,6 +29,7 @@ import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.banner_saldos.*
 import java.math.BigDecimal
 import java.util.*
+import kotlin.collections.HashMap
 
 class MainActivity : AppCompatActivity() {
 
@@ -452,20 +453,27 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun logicaParaIrFormularioDespesa() {
-        val totalSuperfluo = infoValorSuperfluoGeral.text.converterReaisParaBigDecimal()
-        val totalImportante = infoValorImportanteGeral.text.converterReaisParaBigDecimal()
+//        val totalSuperfluo = infoValorSuperfluoGeral.text.converterReaisParaBigDecimal()
+//        val totalImportante = infoValorImportanteGeral.text.converterReaisParaBigDecimal()
 
-        if (ehSaldoMenorIgualAZero(totalSuperfluo) &&
-            ehSaldoMenorIgualAZero(totalImportante)
-        ) {
-            alertParaSemAmbosSaldos()
-        } else if (ehSaldoMenorIgualAZero(totalSuperfluo)) {
-            preparaIntentEVaiParaFormularioDespesa("importante")
-        } else if (ehSaldoMenorIgualAZero(totalImportante)) {
-            preparaIntentEVaiParaFormularioDespesa("superfluo")
-        } else {
-            vaiParaFormutarioDespesa(getIntentParaFomulario())
-        }
+        TotaisPorTipoTask(dao, object: TotaisPorTipoTask.OnPostExecuteListener{
+            override fun posThread(valores: HashMap<String, BigDecimal>) {
+                val totalSuperfluo = valores["superfluo"]!!
+                val totalImportante = valores["importante"]!!
+
+                if (ehSaldoMenorIgualAZero(totalSuperfluo) &&
+                    ehSaldoMenorIgualAZero(totalImportante)
+                ) {
+                    alertParaSemAmbosSaldos()
+                } else if (ehSaldoMenorIgualAZero(totalSuperfluo)) {
+                    preparaIntentEVaiParaFormularioDespesa("importante")
+                } else if (ehSaldoMenorIgualAZero(totalImportante)) {
+                    preparaIntentEVaiParaFormularioDespesa("superfluo")
+                } else {
+                    vaiParaFormutarioDespesa(getIntentParaFomulario())
+                }
+            }
+        }).execute()
     }
 
     private fun cliqueFabTransferencia() {

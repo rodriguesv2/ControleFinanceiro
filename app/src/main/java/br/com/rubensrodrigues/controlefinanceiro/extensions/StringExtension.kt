@@ -13,7 +13,9 @@ fun String.toCalendar() : Calendar {
 }
 
 fun String.converterReaisParaBigDecimal() : BigDecimal{
-    val valorLimpo = this.replace("R$ ", "").replace(",", ".")
+    val valorLimpo = this
+        .replace("R$ ", "")
+        .replace(",", ".")
     return valorLimpo.toBigDecimal()
 }
 
