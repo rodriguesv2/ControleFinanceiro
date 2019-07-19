@@ -4,7 +4,6 @@ import com.google.android.material.textfield.TextInputEditText
 import android.text.Editable
 import android.text.TextWatcher
 import br.com.rubensrodrigues.controlefinanceiro.ui.util.abstracts.CamposValor
-import java.util.regex.Pattern
 
 object CampoValorEstrangeiroUtil : CamposValor(){
 
@@ -15,7 +14,7 @@ object CampoValorEstrangeiroUtil : CamposValor(){
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
 
             override fun afterTextChanged(s: Editable?) {
-                excluiVirgulaIrregular(campoValor, s)
+                mudarPontuacaoIrregular(campoValor, s)
                 acaoPosDigitarUmaTecla(s.toString())
             }
         })

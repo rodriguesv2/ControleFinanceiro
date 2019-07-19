@@ -87,7 +87,7 @@
                         android:id="@+id/formulario_receita_valor_estrangeiro_edittext"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:digits="0123456789,"
+                        android:digits="0123456789,."
                         android:inputType="numberDecimal"
                         android:hint="Valor estrangeiro"/>
 
@@ -133,7 +133,7 @@
                     android:id="@+id/formulario_receita_valor_edittext"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:digits="0123456789,"
+                    android:digits="0123456789,."
                     android:inputType="numberDecimal"
                     android:hint="Valor (R$)"
             />

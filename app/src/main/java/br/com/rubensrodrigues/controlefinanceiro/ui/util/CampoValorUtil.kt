@@ -7,7 +7,6 @@ import br.com.rubensrodrigues.controlefinanceiro.extensions.duasCasasComVirgula
 import br.com.rubensrodrigues.controlefinanceiro.extensions.toBigDecimalOrNullDeVirgulaParaPonto
 import br.com.rubensrodrigues.controlefinanceiro.ui.util.abstracts.CamposValor
 import java.math.BigDecimal
-import java.util.regex.Pattern
 
 object CampoValorUtil : CamposValor(){
 
@@ -17,7 +16,7 @@ object CampoValorUtil : CamposValor(){
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
             override fun afterTextChanged(s: Editable?) {
-                excluiVirgulaIrregular(campoValor, s)
+                mudarPontuacaoIrregular(campoValor, s)
             }
         })
     }

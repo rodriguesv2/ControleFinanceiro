@@ -167,7 +167,7 @@ class FormularioReceitaActivity : AppCompatActivity() {
                 val valorStr = campoValor.text.toString()
                 configuraProporcaoPeloCampoValor(valorStr)
 
-                CampoValorUtil.excluiVirgulaIrregular(campoValor, editable)
+                CampoValorUtil.mudarPontuacaoIrregular(campoValor, editable)
             }
 
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
