@@ -14,8 +14,8 @@ android {
         minSdkVersion 19
         targetSdkVersion 28
         multiDexEnabled true
-        versionCode 13
-        versionName "2.4.3"
+        versionCode 14
+        versionName "2.4.4"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -33,7 +33,7 @@ android {
 dependencies {
     implementation 'androidx.room:room-runtime:2.1.0'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
-    implementation 'com.google.firebase:firebase-database:18.0.0'
+    implementation 'com.google.firebase:firebase-database:18.0.1'
     kapt 'androidx.room:room-compiler:2.1.0'
 
     implementation fileTree(dir: 'libs', include: ['*.jar'])
@@ -55,4 +55,5 @@ dependencies {
     implementation 'com.google.api-client:google-api-client:1.23.0'
     implementation 'com.google.oauth-client:google-oauth-client-jetty:1.23.0'
     implementation 'com.google.apis:google-api-services-drive:v3-rev110-1.23.0'
+    implementation 'com.google.android.gms:play-services-drive:17.0.0'
 }

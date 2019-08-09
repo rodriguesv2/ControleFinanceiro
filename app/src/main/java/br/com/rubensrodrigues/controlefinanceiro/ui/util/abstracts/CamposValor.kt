@@ -13,7 +13,7 @@ abstract class CamposValor {
     ) {
         val posicaoCursor = campoValor.selectionStart
 
-        if (editavel!!.isNotEmpty()) {
+        if (editavel!!.isNotEmpty() && posicaoCursor > 0) {
             val caractereDoCursor = editavel[posicaoCursor - 1]
 
             when(caractereDoCursor){
