@@ -10,8 +10,8 @@
 
 
     <TextView
-            android:id="@+id/banner_info_superfluo"
-            android:text="supérfluo"
+            android:id="@+id/bannerInfoSuperfluo"
+            android:text="@string/banner_superfluo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="5dp"
@@ -22,8 +22,8 @@
             app:layout_constraintTop_toTopOf="parent"/>
 
     <TextView
-            android:id="@+id/banner_info_importante"
-            android:text="importante"
+            android:id="@+id/bannerInfoImportante"
+            android:text="@string/banner_importante"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
@@ -34,107 +34,107 @@
             app:layout_constraintEnd_toEndOf="parent"/>
 
     <View
-            android:id="@+id/banner_info_separador_primeiro"
+            android:id="@+id/bannerInfoSeparadorPrimeiro"
             android:layout_width="0dp"
             android:layout_height="1dp"
             android:layout_marginTop="5dp"
             android:background="@color/divisor"
-            app:layout_constraintStart_toStartOf="@+id/banner_info_superfluo"
-            app:layout_constraintEnd_toEndOf="@id/banner_info_importante"
-            app:layout_constraintTop_toBottomOf="@id/banner_info_superfluo"/>
+            app:layout_constraintStart_toStartOf="@+id/bannerInfoSuperfluo"
+            app:layout_constraintEnd_toEndOf="@id/bannerInfoImportante"
+            app:layout_constraintTop_toBottomOf="@id/bannerInfoSuperfluo"/>
 
     <TextView
             android:id="@+id/bannerInfoValorSuperfluoGeral"
-            tools:text="R$ 60,00"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="18sp"
             android:textStyle="bold"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintVertical_bias="0.5"
-            app:layout_constraintStart_toStartOf="@+id/banner_info_separador_primeiro"
-            app:layout_constraintTop_toBottomOf="@+id/banner_info_separador_primeiro"
-            app:layout_constraintBottom_toTopOf="@+id/banner_info_separador_segundo"
-            app:layout_constraintEnd_toStartOf="@+id/banner_info_geral"/>
+            app:layout_constraintStart_toStartOf="@+id/bannerInfoSeparadorPrimeiro"
+            app:layout_constraintTop_toBottomOf="@+id/bannerInfoSeparadorPrimeiro"
+            app:layout_constraintBottom_toTopOf="@+id/bannerInfoSeparadorSegundo"
+            app:layout_constraintEnd_toStartOf="@+id/bannerInfoGeral"
+            tools:text="R$ 60,00"/>
 
 
     <TextView
             android:id="@+id/banneInfoValorImportanteGeral"
-            tools:text="R$ 180,00"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="18sp"
             android:textStyle="bold"
             app:layout_constraintHorizontal_bias="1"
             app:layout_constraintVertical_bias="0.5"
-            app:layout_constraintEnd_toEndOf="@+id/banner_info_separador_primeiro"
-            app:layout_constraintTop_toBottomOf="@+id/banner_info_separador_primeiro"
-            app:layout_constraintBottom_toTopOf="@+id/banner_info_separador_segundo"
-            app:layout_constraintStart_toEndOf="@+id/banner_info_geral"/>
+            app:layout_constraintEnd_toEndOf="@+id/bannerInfoSeparadorPrimeiro"
+            app:layout_constraintTop_toBottomOf="@+id/bannerInfoSeparadorPrimeiro"
+            app:layout_constraintBottom_toTopOf="@+id/bannerInfoSeparadorSegundo"
+            app:layout_constraintStart_toEndOf="@+id/bannerInfoGeral"
+            tools:text="R$ 180,00"/>
 
     <TextView
-            android:id="@+id/banner_info_geral"
+            android:id="@+id/bannerInfoGeral"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Geral"
+            android:text="@string/banner_geral"
             android:textSize="18sp"
             android:layout_margin="5dp"
             app:layout_constraintVertical_bias="0.5"
-            app:layout_constraintStart_toStartOf="@+id/banner_info_separador_primeiro"
-            app:layout_constraintEnd_toEndOf="@+id/banner_info_separador_primeiro"
-            app:layout_constraintTop_toBottomOf="@+id/banner_info_separador_primeiro"
-            app:layout_constraintBottom_toTopOf="@+id/banner_info_separador_segundo"/>
+            app:layout_constraintStart_toStartOf="@+id/bannerInfoSeparadorPrimeiro"
+            app:layout_constraintEnd_toEndOf="@+id/bannerInfoSeparadorPrimeiro"
+            app:layout_constraintTop_toBottomOf="@+id/bannerInfoSeparadorPrimeiro"
+            app:layout_constraintBottom_toTopOf="@+id/bannerInfoSeparadorSegundo"/>
 
     <View
-            android:id="@+id/banner_info_separador_segundo"
+            android:id="@+id/bannerInfoSeparadorSegundo"
             android:layout_width="0dp"
             android:layout_height="1dp"
             android:layout_marginTop="5dp"
             android:background="@color/divisor"
             app:layout_constraintStart_toStartOf="@+id/bannerInfoValorSuperfluoGeral"
             app:layout_constraintEnd_toEndOf="@id/banneInfoValorImportanteGeral"
-            app:layout_constraintTop_toBottomOf="@id/banner_info_geral"/>
+            app:layout_constraintTop_toBottomOf="@id/bannerInfoGeral"/>
 
     <TextView
             android:id="@+id/bannerInfoLabelTotaisPeriodo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            tools:text="7 dias"
             android:textSize="18sp"
             android:layout_margin="5dp"
             app:layout_constraintVertical_bias="0.5"
-            app:layout_constraintStart_toStartOf="@+id/banner_info_separador_segundo"
-            app:layout_constraintEnd_toEndOf="@+id/banner_info_separador_segundo"
-            app:layout_constraintTop_toBottomOf="@+id/banner_info_separador_segundo"
-            app:layout_constraintBottom_toBottomOf="parent"/>
+            app:layout_constraintStart_toStartOf="@+id/bannerInfoSeparadorSegundo"
+            app:layout_constraintEnd_toEndOf="@+id/bannerInfoSeparadorSegundo"
+            app:layout_constraintTop_toBottomOf="@+id/bannerInfoSeparadorSegundo"
+            app:layout_constraintBottom_toBottomOf="parent"
+            tools:text="7 dias"/>
 
     <TextView
             android:id="@+id/bannerInfoValorSuperfluoPeriodo"
-            tools:text="R$ 60,00"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="18sp"
             android:textStyle="bold"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintVertical_bias="0.5"
-            app:layout_constraintStart_toStartOf="@+id/banner_info_separador_segundo"
-            app:layout_constraintTop_toBottomOf="@+id/banner_info_separador_segundo"
+            app:layout_constraintStart_toStartOf="@+id/bannerInfoSeparadorSegundo"
+            app:layout_constraintTop_toBottomOf="@+id/bannerInfoSeparadorSegundo"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/banner_info_geral"/>
+            app:layout_constraintEnd_toStartOf="@+id/bannerInfoGeral"
+            tools:text="R$ 60,00" />
 
 
     <TextView
             android:id="@+id/bannerInfoValorImportantePeriodo"
-            tools:text="R$ 180,00"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="18sp"
             android:textStyle="bold"
             app:layout_constraintHorizontal_bias="1"
             app:layout_constraintVertical_bias="0.5"
-            app:layout_constraintEnd_toEndOf="@+id/banner_info_separador_segundo"
-            app:layout_constraintTop_toBottomOf="@+id/banner_info_separador_segundo"
+            app:layout_constraintEnd_toEndOf="@+id/bannerInfoSeparadorSegundo"
+            app:layout_constraintTop_toBottomOf="@+id/bannerInfoSeparadorSegundo"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/banner_info_geral"/>
+            app:layout_constraintStart_toEndOf="@+id/bannerInfoGeral"
+            tools:text="R$ 180,00" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

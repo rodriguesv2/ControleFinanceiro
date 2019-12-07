@@ -1,3 +1,6 @@
 <resources>
     <string name="app_name">Finpoup</string>
+    <string name="banner_superfluo">supérfluo</string>
+    <string name="banner_importante">importante</string>
+    <string name="banner_geral">Geral</string>
 </resources>

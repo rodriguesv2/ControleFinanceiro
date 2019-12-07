@@ -9,14 +9,13 @@
 
 
     <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/fragment_lista_recyclerview"
+            android:id="@+id/fragmentListaRecyclerview"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@drawable/wallpaper_gradient"
             android:scrollbarAlwaysDrawVerticalTrack="true"
             android:overScrollMode="always"
             tools:listitem="@layout/item_transacao"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-    />
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

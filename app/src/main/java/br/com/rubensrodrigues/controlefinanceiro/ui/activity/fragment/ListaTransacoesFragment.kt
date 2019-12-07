@@ -30,7 +30,7 @@ class ListaTransacoesFragment(var listaTransacoes: MutableList<Transacao>) : Fra
 
     private fun configuraRecyclerView() {
         if (listaTransacoesAdapter != null) {
-            view!!.fragment_lista_recyclerview.adapter = listaTransacoesAdapter
+            view!!.fragmentListaRecyclerview.adapter = listaTransacoesAdapter
 
             listaTransacoesAdapter?.setOnItemClickListener(object :
                 ListaTransacoesAdapter.ListaTransacoesAdapterListener {

@@ -46,13 +46,11 @@ class ListaTransacoesAdapter(
         viewHolder: TransacoesViewHolder,
         transacao: Transacao
     ) {
-        viewHolder.itemView.setOnLongClickListener(object : View.OnLongClickListener {
-            override fun onLongClick(v: View?): Boolean {
-                this@ListaTransacoesAdapter.transacaoParaRemover = transacao
-                this@ListaTransacoesAdapter.posicao = viewHolder.adapterPosition
-                return false
-            }
-        })
+        viewHolder.itemView.setOnLongClickListener {
+            this@ListaTransacoesAdapter.transacaoParaRemover = transacao
+            this@ListaTransacoesAdapter.posicao = viewHolder.adapterPosition
+            false
+        }
     }
 
     fun setOnItemClickListener(listener: ListaTransacoesAdapterListener){
