@@ -44,7 +44,7 @@
             app:layout_constraintTop_toBottomOf="@id/banner_info_superfluo"/>
 
     <TextView
-            android:id="@+id/banner_info_superfluo_valor_geral"
+            android:id="@+id/bannerInfoValorSuperfluoGeral"
             tools:text="R$ 60,00"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -59,7 +59,7 @@
 
 
     <TextView
-            android:id="@+id/banner_info_importante_valor_geral"
+            android:id="@+id/banneInfoValorImportanteGeral"
             tools:text="R$ 180,00"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -91,12 +91,12 @@
             android:layout_height="1dp"
             android:layout_marginTop="5dp"
             android:background="@color/divisor"
-            app:layout_constraintStart_toStartOf="@+id/banner_info_superfluo_valor_geral"
-            app:layout_constraintEnd_toEndOf="@id/banner_info_importante_valor_geral"
+            app:layout_constraintStart_toStartOf="@+id/bannerInfoValorSuperfluoGeral"
+            app:layout_constraintEnd_toEndOf="@id/banneInfoValorImportanteGeral"
             app:layout_constraintTop_toBottomOf="@id/banner_info_geral"/>
 
     <TextView
-            android:id="@+id/banner_info_totais_periodo"
+            android:id="@+id/bannerInfoLabelTotaisPeriodo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             tools:text="7 dias"
@@ -109,7 +109,7 @@
             app:layout_constraintBottom_toBottomOf="parent"/>
 
     <TextView
-            android:id="@+id/banner_info_superfluo_valor_periodo"
+            android:id="@+id/bannerInfoValorSuperfluoPeriodo"
             tools:text="R$ 60,00"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -124,7 +124,7 @@
 
 
     <TextView
-            android:id="@+id/banner_info_importante_valor_periodo"
+            android:id="@+id/bannerInfoValorImportantePeriodo"
             tools:text="R$ 180,00"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

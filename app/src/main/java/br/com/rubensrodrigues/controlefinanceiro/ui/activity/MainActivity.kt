@@ -35,16 +35,6 @@ class MainActivity : AppCompatActivity() {
 
     private val viewGroup by lazy { window.decorView as ViewGroup }
 
-    private val infoValorImportanteGeral by lazy { banner_info_importante_valor_geral }
-    private val infoValorSuperfluoGeral by lazy { banner_info_superfluo_valor_geral }
-    private val infoValorImportantePeriodo by lazy { banner_info_importante_valor_periodo }
-    private val infoValorSuperfluoPeriodo by lazy { banner_info_superfluo_valor_periodo }
-    private val infoLabelTotaisPeriodo by lazy { banner_info_totais_periodo }
-    private val fabReceita by lazy { main_fab_receita }
-    private val fabDespesa by lazy { main_fab_despesa }
-    private val fabTransferencia by lazy { main_fab_transferencia }
-    private val fabMenu by lazy { main_fab_menu }
-
     private val CODIGO_REQUEST_INSERIR_RECEITA = 1
     private val CODIGO_REQUEST_INSERIR_DESPESA = 2
     private val CODIGO_REQUEST_ALTERAR = 3
@@ -435,9 +425,9 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun cliqueFabReceita() {
-        fabReceita.setOnClickListener(object : View.OnClickListener {
+        mainFabReceita.setOnClickListener(object : View.OnClickListener {
             override fun onClick(v: View?) {
-                fabMenu.close(true)
+                mainFabMenu.close(true)
                 val intent = Intent(this@MainActivity, FormularioReceitaActivity::class.java)
                 startActivityForResult(intent, CODIGO_REQUEST_INSERIR_RECEITA)
             }
@@ -445,7 +435,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun cliqueFabDespesa() {
-        fabDespesa.setOnClickListener(object : View.OnClickListener {
+        mainFabDespesa.setOnClickListener(object : View.OnClickListener {
             override fun onClick(v: View?) {
                 logicaParaIrFormularioDespesa()
             }
@@ -477,7 +467,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun cliqueFabTransferencia() {
-        fabTransferencia.setOnClickListener(object : View.OnClickListener {
+        mainFabTransferencia.setOnClickListener(object : View.OnClickListener {
             override fun onClick(v: View?) {
                 mostraDialogFormularioAndAtualizaLista()
             }
@@ -490,7 +480,7 @@ class MainActivity : AppCompatActivity() {
                 val ehSuperfluoInsuficiente = valores["superfluo"]!!.compareTo(BigDecimal.ZERO) <= 0
                 val ehImportanteInsuficiente = valores["importante"]!!.compareTo(BigDecimal.ZERO) <= 0
 
-                fabMenu.close(true)
+                mainFabMenu.close(true)
                 mostraDialog(ehSuperfluoInsuficiente, ehImportanteInsuficiente)
             }
         }).execute()
@@ -544,7 +534,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun vaiParaFormutarioDespesa(intent: Intent) {
-        fabMenu.close(true)
+        mainFabMenu.close(true)
         startActivityForResult(intent, CODIGO_REQUEST_INSERIR_DESPESA)
     }
 
@@ -559,8 +549,8 @@ class MainActivity : AppCompatActivity() {
     private fun saldosGerais() {
         TotaisPorTipoTask(dao, object : TotaisPorTipoTask.OnPostExecuteListener {
             override fun posThread(valores: HashMap<String, BigDecimal>) {
-                infoValorImportanteGeral.text = valores["importante"]!!.formatoBrasileiroMonetario()
-                infoValorSuperfluoGeral.text = valores["superfluo"]!!.formatoBrasileiroMonetario()
+                banneInfoValorImportanteGeral.text = valores["importante"]!!.formatoBrasileiroMonetario()
+                bannerInfoValorSuperfluoGeral.text = valores["superfluo"]!!.formatoBrasileiroMonetario()
             }
         }).execute()
     }
@@ -575,9 +565,9 @@ class MainActivity : AppCompatActivity() {
             dataFinal,
             object : TotaisPorTipoPorPeriodoTask.OnPostExecuteListener {
                 override fun posThread(valores: HashMap<String, BigDecimal>) {
-                    infoValorImportantePeriodo.text = valores["importante"]!!.formatoBrasileiroMonetario()
-                    infoValorSuperfluoPeriodo.text = valores["superfluo"]!!.formatoBrasileiroMonetario()
-                    infoLabelTotaisPeriodo.text = customizaTextoLabelPeriodo()
+                    bannerInfoValorImportantePeriodo.text = valores["importante"]!!.formatoBrasileiroMonetario()
+                    bannerInfoValorSuperfluoPeriodo.text = valores["superfluo"]!!.formatoBrasileiroMonetario()
+                    bannerInfoLabelTotaisPeriodo.text = customizaTextoLabelPeriodo()
                 }
             }).execute()
     }
