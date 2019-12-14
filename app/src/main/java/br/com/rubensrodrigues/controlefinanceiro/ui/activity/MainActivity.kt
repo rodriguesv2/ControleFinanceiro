@@ -10,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.ViewModelProvider
 import br.com.rubensrodrigues.controlefinanceiro.R
 import br.com.rubensrodrigues.controlefinanceiro.extensions.*
 import br.com.rubensrodrigues.controlefinanceiro.model.Tipo
@@ -23,6 +24,7 @@ import br.com.rubensrodrigues.controlefinanceiro.ui.activity.formulario.transaca
 import br.com.rubensrodrigues.controlefinanceiro.ui.activity.formulario.transacao.FormularioTransacaoActivity
 import br.com.rubensrodrigues.controlefinanceiro.ui.activity.fragment.ListaTransacoesFragment
 import br.com.rubensrodrigues.controlefinanceiro.ui.dialog.TransferenciaDialog
+import br.com.rubensrodrigues.controlefinanceiro.ui.util.AppInjector
 import br.com.rubensrodrigues.controlefinanceiro.ui.viewpager.adapter.ViewPagerAdapter
 import br.com.rubensrodrigues.controlefinanceiro.webservice.util.CotacaoUtil
 import kotlinx.android.synthetic.main.activity_main.*
@@ -34,6 +36,11 @@ import kotlin.collections.HashMap
 class MainActivity : AppCompatActivity() {
 
     private val viewGroup by lazy { window.decorView as ViewGroup }
+
+    private val viewModel by lazy {
+        val factory = AppInjector.getMainViewModel()
+        ViewModelProvider(this, factory).get(MainViewModel::class.java)
+    }
 
     private val CODIGO_REQUEST_INSERIR_RECEITA = 1
     private val CODIGO_REQUEST_INSERIR_DESPESA = 2

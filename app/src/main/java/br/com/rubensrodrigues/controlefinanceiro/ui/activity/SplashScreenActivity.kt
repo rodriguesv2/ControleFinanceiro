@@ -33,11 +33,9 @@ class SplashScreenActivity : AppCompatActivity() {
     }
 
     private fun executeThread() {
-        Handler().postDelayed(object : Runnable {
-            override fun run() {
-                startActivity(Intent(this@SplashScreenActivity, MainActivity::class.java))
-                finish()
-            }
+        Handler().postDelayed({
+            startActivity(Intent(this@SplashScreenActivity, MainActivity::class.java))
+            finish()
         }, tempo)
     }
 }
