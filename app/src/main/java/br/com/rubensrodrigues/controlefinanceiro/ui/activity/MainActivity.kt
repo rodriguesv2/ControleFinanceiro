@@ -8,11 +8,14 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import br.com.rubensrodrigues.controlefinanceiro.R
-import br.com.rubensrodrigues.controlefinanceiro.extensions.*
+import br.com.rubensrodrigues.controlefinanceiro.extensions.dataHorarioZerado
+import br.com.rubensrodrigues.controlefinanceiro.extensions.formatoBrasileiroMonetario
+import br.com.rubensrodrigues.controlefinanceiro.extensions.getDataFinalPeriodo
+import br.com.rubensrodrigues.controlefinanceiro.extensions.getDataInicialPeriodo
 import br.com.rubensrodrigues.controlefinanceiro.model.Tipo
 import br.com.rubensrodrigues.controlefinanceiro.model.Transacao
 import br.com.rubensrodrigues.controlefinanceiro.persistence.asynktask.*
@@ -29,24 +32,26 @@ import br.com.rubensrodrigues.controlefinanceiro.ui.viewpager.adapter.ViewPagerA
 import br.com.rubensrodrigues.controlefinanceiro.webservice.util.CotacaoUtil
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.banner_saldos.*
+import org.jetbrains.anko.toast
 import java.math.BigDecimal
-import java.util.*
-import kotlin.collections.HashMap
+import java.util.Calendar
 
 class MainActivity : AppCompatActivity() {
 
     private val viewGroup by lazy { window.decorView as ViewGroup }
 
+//    private val dao by lazy { DBUtil.getInstance(this).getTransacaoDao() }
+
     private val viewModel by lazy {
-        val factory = AppInjector.getMainViewModel()
+        val dao = DBUtil.getInstance(this).getTransacaoDao()
+
+        val factory = AppInjector.getMainViewModel(dao)
         ViewModelProvider(this, factory).get(MainViewModel::class.java)
     }
-
     private val CODIGO_REQUEST_INSERIR_RECEITA = 1
     private val CODIGO_REQUEST_INSERIR_DESPESA = 2
-    private val CODIGO_REQUEST_ALTERAR = 3
 
-    private val dao by lazy { DBUtil.getInstance(this).getTransacaoDao() }
+    private val CODIGO_REQUEST_ALTERAR = 3
 
     private lateinit var listaTodosFrag: ListaTransacoesFragment
     private lateinit var listaDespesaFrag: ListaTransacoesFragment
@@ -71,6 +76,15 @@ class MainActivity : AppCompatActivity() {
         configuraCliqueFabs()
     }
 
+    private fun setObservers(){
+        viewModel.run {
+            listasConfigTabLayout.observe(this@MainActivity, Observer {
+
+            })
+
+        }
+    }
+
     private fun salvaCotacoesDoDia() {
         CotacaoUtil.getListaMoedas().forEach {
 
@@ -86,10 +100,7 @@ class MainActivity : AppCompatActivity() {
 
                 override fun falha(t: Throwable) {
                     if (it == CotacaoUtil.USD)
-                        Toast.makeText(
-                            this@MainActivity,
-                            "Falha de conexão. Trabalhando offline",
-                            Toast.LENGTH_LONG).show()
+                        toast("Falha de conexão. Trabalhando offline")
                 }
             })
         }
@@ -181,9 +192,7 @@ class MainActivity : AppCompatActivity() {
             vaiParaFormulario.putExtra("transacaoParaRemover", transacao)
             startActivityForResult(vaiParaFormulario, CODIGO_REQUEST_ALTERAR)
         } else {
-            Toast
-                .makeText(this@MainActivity, "Não é possível editar transferência", Toast.LENGTH_SHORT)
-                .show()
+            toast("Não é possível editar transferência")
         }
     }
 
@@ -450,9 +459,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun logicaParaIrFormularioDespesa() {
-//        val totalSuperfluo = infoValorSuperfluoGeral.text.converterReaisParaBigDecimal()
-//        val totalImportante = infoValorImportanteGeral.text.converterReaisParaBigDecimal()
-
         TotaisPorTipoTask(dao, object: TotaisPorTipoTask.OnPostExecuteListener{
             override fun posThread(valores: HashMap<String, BigDecimal>) {
                 val totalSuperfluo = valores["superfluo"]!!
@@ -474,11 +480,9 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun cliqueFabTransferencia() {
-        mainFabTransferencia.setOnClickListener(object : View.OnClickListener {
-            override fun onClick(v: View?) {
-                mostraDialogFormularioAndAtualizaLista()
-            }
-        })
+        mainFabTransferencia.setOnClickListener {
+            mostraDialogFormularioAndAtualizaLista()
+        }
     }
 
     private fun mostraDialogFormularioAndAtualizaLista() {

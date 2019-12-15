@@ -8,15 +8,6 @@ import br.com.rubensrodrigues.controlefinanceiro.persistence.dao.TransacaoDAO
 import java.util.*
 import kotlin.collections.HashMap
 
-fun AsyncTask<Unit, Unit, HashMap<Int, MutableList<Transacao>>>.buscaDespesaReceitaAndTodos(dao: TransacaoDAO
-): HashMap<Int, MutableList<Transacao>> {
-    return hashMapOf(
-        ConstantesTask.TODOS to dao.todos().toMutableList(),
-        ConstantesTask.DESPESA to dao.todosPor(Tipo.DESPESA).toMutableList(),
-        ConstantesTask.RECEITA to dao.todosPor(Tipo.RECEITA).toMutableList()
-    )
-}
-
 fun AsyncTask<Unit, Unit, HashMap<Int, MutableList<Transacao>>>.buscaDespesaReceitaAndTodosPorData(dao: TransacaoDAO,
                                                                                                    dataInicial: Calendar,
                                                                                                    dataFinal: Calendar
